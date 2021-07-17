@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Овощ</title>
+
+	<link rel="manifest" href="/app/manifest.json">
+    <meta name="theme-color" content="#9b9b9b" />
+</head>
+
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+</style>
+<link rel="stylesheet" href="/style.css">
+<body class="noselect">
+	<nav class="noselect">
+		<h1>
+			<img src="/app/potato.png" alt="potato" style="width:1.2rem;">
+			Potato
+
+			<a href="/login" id="login">
+				<img src="https://img.icons8.com/fluent-systems-regular/96/000000/user-male-circle.png"/>
+			</a>
+
+			<span style="float:right; font-size:12px; text-align:center; transform:rotate(45deg); margin-right:-1.5rem; margin-top:-0.5rem; display:none;">
+				Сайт в <br>
+				Разработке
+			</span>
+		</h1>
+	</nav>
+	<main>
+		<a href="/qr">
+			<div class="option">
+				<table class="center">
+					<tbody>
+						<tr>
+							<td>
+								<img src="https://img.icons8.com/fluent-systems-regular/452/qr-code--v1.png" alt="таблица" class="icon center"/>
+								<br>
+								<h1>Сделать QR</h1>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</a>
+		<a href="/phone">
+			<div class="option" style="border-top: solid 1px #9b9b9b;">
+				<table class="center">
+					<tbody>
+						<tr>
+							<td>
+								<img src="https://img.icons8.com/fluent-systems-regular/452/phone.png" alt="телефон" class="icon center"/>
+								<br>
+								<h1>По Телефону</h1>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</a>
+		<a href="/table">
+			<div class="option" style="border-top: solid 1px #9b9b9b;">
+				<table class="center">
+					<tbody>
+						<tr>
+							<td>
+								<img src="https://img.icons8.com/fluent-systems-regular/452/table-1.png" alt="таблица" class="icon center"/>
+								<br>
+								<h1>Смотреть Отчет</h1>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</a>
+	</main>
+</body>
+
+<script type="text/javascript" src="https://cdn.rawgit.com/alexgibson/shake.js/master/shake.js"></script>
+<script>  
+    //listen to shake event
+    var shakeEvent = new Shake({threshold: 15});
+    shakeEvent.start();
+    window.addEventListener('shake', function(){
+        document.querySelector("#login").style.display = "block";
+    }, false);
+
+    //stop listening
+    function stopShake(){
+        shakeEvent.stop();
+    }
+
+    //check if shake is supported or not.
+    if(!("ondevicemotion" in window)){
+		console.log("Not Supported");
+	}
+</script>
+
+</html>
