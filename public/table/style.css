@@ -1,0 +1,160 @@
+:root{
+	--nav-height:3.75rem;
+	--main-height:calc(100vh - var(--nav-height));
+	--option-height:calc(var(--main-height) / 2);
+
+	--button-width:2.5rem;
+	--toggle-time:100ms;
+}
+body{
+	height:100vh;
+	width:100vw;
+	margin:0;
+	padding:0;
+
+	position: absolute;
+	font-family: Roboto, sans-serif;
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+a{
+	text-decoration: none;
+	color:black;
+}
+
+nav{
+	height:var(--nav-height);
+	width:100vw;
+	
+	position:fixed;
+	top:0;
+	left:0;
+
+	padding: calc(var(--nav-height)/3);
+	box-sizing: border-box;
+	box-shadow: 0 0 6px #9b9b9b;
+}
+
+nav h1{
+	margin:0;
+	display: inline;
+}
+
+nav svg{
+	height:1.5rem;
+	margin-right:1rem;
+}
+
+main{
+	height:var(--main-height);
+	width:100vw;
+
+	position: fixed;
+	top:var(--nav-height);
+	left:0;
+	padding: 1vw;
+
+	overflow:scroll;
+}
+
+
+td{
+	padding:0.25rem;
+	text-align:center;
+}
+
+/* ------------------- */
+
+.name{
+	position:relative;
+}
+.name .phone{
+	background-color: white;
+	border: 4px double #808080;
+	display:none;
+	position:absolute;
+	bottom:-0.25rem;
+	left:4.245rem;
+	padding: 0.25rem;
+}
+.name .phone::before{
+	content: '📞';
+}
+.name:hover .phone{
+	display: block;
+}
+
+
+/* ------------------- */
+
+/* The switch - the box around the slider */
+
+.switch-wrapper{
+	float:right;
+	margin-right:calc(var(--button-width)/3 + 1vw);
+}
+
+.switch {
+	-webkit-tap-highlight-color: transparent;
+	position: relative;
+	display: inline-block;
+	width: var(--button-width);
+	height: calc(34 / 60 * var(--button-width));
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+	-webkit-tap-highlight-color: transparent;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+/* The slider */
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: var(--toggle-time);
+	transition: var(--toggle-time);
+}
+
+.slider:before {
+	position: absolute;
+	content: "";
+	height: calc(26 / 60 * var(--button-width));
+	width: calc(26 / 60 * var(--button-width));
+	left: calc(4 / 60 * var(--button-width));
+	bottom: calc(4 / 60 * var(--button-width));
+	background-color: white;
+	-webkit-transition: var(--toggle-time);
+	transition: var(--toggle-time);
+}
+
+input:checked + .slider {
+	background-color: #34c759;
+}
+
+input:focus + .slider {
+	box-shadow: 0 0 1px #ccc;
+}
+
+input:checked + .slider:before {
+	-webkit-transform: translateX(calc(26 / 60 * var(--button-width)));
+	-ms-transform: translateX(calc(26 / 60 * var(--button-width)));
+	transform: translateX(calc(26 / 60 * var(--button-width)));
+}
+
+.slider.round {
+	border-radius: calc(34 / 60 * var(--button-width));
+}
+
+.slider.round:before {
+	border-radius: 50%;
+}

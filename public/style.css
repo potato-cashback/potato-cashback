@@ -1,0 +1,104 @@
+:root{
+	--nav-height:3.75rem;
+	--main-height:calc(100vh - var(--nav-height));
+	--option-height:calc(var(--main-height) / 3);
+}
+body{
+	height:100vh;
+	width:100vw;
+	margin:0;
+	padding:0;
+	overflow: hidden;
+
+	position: absolute;
+	font-family: Roboto, sans-serif;
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+nav{
+	height:var(--nav-height);
+	width:100vw;
+	
+	position:fixed;
+	top:0;
+	left:0;
+
+	padding: calc(var(--nav-height)/3);
+	box-sizing: border-box;
+	box-shadow: 0 0 6px #9b9b9b;
+}
+
+main{
+	height:var(--main-height);
+	width:100vw;
+
+	position: fixed;
+	top:var(--nav-height);
+	left:0;
+}
+
+a{
+	-webkit-tap-highlight-color: #50505030;
+	text-decoration: none;
+	color:black;
+}
+
+.option{
+	height:var(--option-height);
+	box-sizing: border-box;
+}
+
+.option .icon{
+	width:5rem;
+}
+
+table{
+	height: var(--option-height);
+	vertical-align: center;
+}
+td{
+	vertical-align: center;
+	text-align: center;
+}
+
+nav h1{
+	margin:0;
+}
+
+@media (max-width: 250px) {
+	:root{
+		font-size:12px;
+	}
+}
+
+@media (max-height: 400px) {
+	:root{
+		font-size:10px;
+	}
+}
+
+@media (max-height: 300px) and (max-width: 200px) {
+	:root{
+		font-size:8px;
+	}
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently */
+}
+
+#login{
+	float:right;
+	display: none;
+}
+#login img{
+	width:1.2em;
+}
