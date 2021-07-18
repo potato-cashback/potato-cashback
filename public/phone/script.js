@@ -32,12 +32,18 @@ ph.addEventListener("click", () =>{
 	setCaretPosition(ph, place);
 })
 
-ph.addEventListener("keyup", ()=>{
+ph.addEventListener("keyup", (e)=>{
 	phone = ph.value.split(" ").join("").split("(").join("").split(")").join("").split("–").join("")
+	if(e.key == "Enter"){
+		sm.focus()
+	}
 
 	if(phone.length == 12){
 		fetch(`/mongodb/phone/${phone}`)
-		.then(r => r.text())
+		.then(r => {
+			if(r.ok) return r.text()
+			else return ""
+		})
 		.then(t => {
 			if(t != ""){
 				document.querySelector("#name").innerText = t;
@@ -45,6 +51,10 @@ ph.addEventListener("keyup", ()=>{
 			}else{
 				document.querySelector("#name").style.display = "none";
 			}
+		})
+		.catch((err) => {
+			document.querySelector("#name").innerText = "";
+			document.querySelector("#name").style.display = "none";
 		})
 	}
 	else{
@@ -63,8 +73,10 @@ sm.addEventListener('keydown', (e)=>{
 			e.preventDefault()
 			sm.innerHTML = 0;
 		}
-	}
-	else{
+	}else if(e.key == 'Enter'){
+		e.preventDefault()
+		document.querySelector("#submit").click()
+	}else{
 		e.preventDefault()
 	}
 })

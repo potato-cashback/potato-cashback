@@ -97,8 +97,9 @@ nav h1{
 
 #login{
 	float:right;
-	display: none;
+	/* display: none; */
+	-webkit-tap-highlight-color: #00000000;
 }
 #login img{
-	width:1.2em;
+	height:1.5rem;
 }

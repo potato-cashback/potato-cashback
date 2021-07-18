@@ -102,7 +102,6 @@ const findFile = async (id) =>{
 	.then(res => res.json())
 }
 
-
 const cashback = (s) => {
 	let coef = [0.06, 0.11]
     let res = 0
