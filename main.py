@@ -1,7 +1,6 @@
 from flask import Flask, send_from_directory
 from flask_pymongo import PyMongo
 from config import *
-import urllib.request
 import requests
 import os
 
@@ -129,7 +128,7 @@ def send_file11(path):
 
 @app.route('/admin/<u>/<p>/<path>')
 def loggingin(u, p, path):
-	if(u == 'admin' and p == 'analitic'):
+	if(u == username and p == password):
 		return send_from_directory('./hidden/admin/', path + '/index.html')
 	else:
 		return '<script>window.location.href = "/"</script>'

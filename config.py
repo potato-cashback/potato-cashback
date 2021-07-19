@@ -6,6 +6,9 @@ URL = 'https://qr-code-telegram-bot.herokuapp.com/'
 URI = 'mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 MAX_BALANCE = 20000
 
+username = 'admin'
+password = 'admin'
+
 cashback = [0.06, 0.11]
 def cashback_logic(sum):
     res = 0
