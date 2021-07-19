@@ -4,7 +4,7 @@ let subm = document.querySelector("#submit")
 
 const login = () => {
 	u = user.innerText
-	p = pass.innerText
+	p = pass.innerHTML
 
 	window.location.href = `/admin/${u}/${p}/menu`;
 }

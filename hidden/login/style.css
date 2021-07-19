@@ -75,6 +75,11 @@ main svg, main img{
 	padding: 1rem;
 	margin: 0;
 }
+#password{
+	-webkit-text-security: disc;
+	-webkit-appearance: textfield;
+	-webkit-user-select: text;
+}
 #submit{
 	width:100vw;
 	height: 3rem;
