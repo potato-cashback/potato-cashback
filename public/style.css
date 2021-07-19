@@ -8,7 +8,6 @@ body{
 	width:100vw;
 	margin:0;
 	padding:0;
-	overflow: hidden;
 
 	position: absolute;
 	font-family: Roboto, sans-serif;
@@ -97,7 +96,8 @@ nav h1{
 
 #login{
 	float:right;
-	/* display: none; */
+	display: none;
+	opacity: 0.02;
 	-webkit-tap-highlight-color: #00000000;
 }
 #login img{

@@ -9,8 +9,12 @@ sm.addEventListener('keydown', (e)=>{
 			e.preventDefault()
 			sm.innerHTML = 0;
 		}
-	}
-	else{
+		else if(sm.innerHTML.length >= 5 && e.key !='Backspace')
+			e.preventDefault()
+	}else if(e.key == 'Enter'){
+		e.preventDefault()
+		document.querySelector("#submit").click()
+	}else{
 		e.preventDefault()
 	}
 })
