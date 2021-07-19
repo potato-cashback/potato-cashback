@@ -25,7 +25,10 @@
 </style>
 <script>
 	const dope = fetch("/mongodb")
-	.then(res => res.text())
+	.then(res => {
+		if(res.ok) return res.text()
+		else return "[]"
+	})
 	.then(res => res.split("False").join("false").split("True").join("true").split("'").join('"').split("None").join('"None"').split(/ObjectId\("\S*"\)/gm).join('""'))
 	.then(JSON.parse)
 	.then(r =>{
