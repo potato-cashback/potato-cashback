@@ -39,32 +39,7 @@ def phone_name(phone):
 
 @app.route('/mongodb/phone/<phone>/<sum>')
 def send_data(phone, sum):
-
-	sum = int(sum)
-	value = int(sum * cashback_logic(sum))
-	user = users.find_one({'phone': phone})
-	
-	# Check if Unregistered
-	if user == None:
-		users.insert_one({
-			'phone': phone,
-			'balance': 0,
-			'operations': [],
-			'not_joined': True
-		})
-		# // MANSUR LOH
-	user = users.find_one({'phone': phone})
-
-	cdate = get_today().strftime("%d/%m/%Y")
-	ctime = get_today().strftime("%H:%M")
-	new_operation = create_operation(cdate, ctime, 'кешбэк', sum, value)
-
-	print(new_operation, value, sum)
-
-	users.update_one({'phone': phone}, {'$set': {'balance': user['balance'] + value},
-										'$push': {'operations': new_operation}})
-	if '_id' in user:
-		urllib.request.urlopen('https://qr-code-telegram-bot.herokuapp.com/send_data/'+str(user['_id'])+'/'+str(value))
+	urllib.request.urlopen('https://qr-code-telegram-bot.herokuapp.com/send_data/'+phone+'/'+sum)
 	return "bruh"
 
 
