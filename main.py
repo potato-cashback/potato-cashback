@@ -2,6 +2,7 @@ from flask import Flask, send_from_directory
 from flask_pymongo import PyMongo
 from config import *
 import urllib.request
+import requests
 import os
 
 app = Flask(__name__)
@@ -39,8 +40,11 @@ def phone_name(phone):
 
 @app.route('/mongodb/phone/<phone>/<sum>')
 def send_data(phone, sum):
-	urllib.request.urlopen('https://qr-code-telegram-bot.herokuapp.com/send_data/'+phone+'/'+sum)
-	return "bruh"
+	r = requests.get('https://qr-code-telegram-bot.herokuapp.com/send_data/'+phone+'/'+sum)
+	if(r.text == 'nice'):
+		return 'good'
+	else:
+		return 'bad'
 
 
 # ----------------------- FILES ------------------------------------

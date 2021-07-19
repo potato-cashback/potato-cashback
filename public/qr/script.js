@@ -62,7 +62,7 @@ const create = () =>{
 	<div id="qr">
 		<center>
 			<br>
-			<h1>QR на ${data.sum} тг</h1>
+			<h1>QR на ${data.sum} ₸</h1>
 			${createQR(JSON.stringify(data)) + script(data.date)}
 		</center>
 	</div>

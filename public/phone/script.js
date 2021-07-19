@@ -121,12 +121,16 @@ const sendCashback = () => {
 		console.log(url)
 		loading()
 		fetch(url)
+		.then(r => r.text())
 		.then(r =>{
-			phonefound(sum)
+			if(r == 'good')
+				phonefound(sum)
+			else
+				error('Произошла Ошибка','', 'достигнут лимит начисления кешбэка')
 		})
 	}
 	else
-		phonecanceled()
+		error('Неверный Телефон')
 }
 
 const cashback = (s) => {
@@ -168,11 +172,17 @@ const loading = ()=>{
 	</div>`
 }
 
-const phonecanceled = () =>{
+const error = (e1, e2, e3) =>{
+	e1 = e1 || 'Произошла Ошибка'
+	e2 = e2 || ''
+	e3 = e3 || ''
+
 	document.querySelector("main").innerHTML = `
-	<div id="phone-canceled">
+	<div id="error">
 		<center>
-			<h1>Неверный Телефон</h1>
+			${(e1!="")?`<h1>${e1}</h1>`:""}
+			${(e2!="")?`<h2>${e2}</h2>`:""}
+			${(e3!="")?`<h3>${e3}</h3>`:""}
 			<svg xml:space="preserve" viewBox="0 0 100 100" y="0" x="0" xmlns="http://www.w3.org/2000/svg" id="圖層_1" version="1.1" width="200px" height="200px"><g class="ldl-scale" style="transform-origin: 50% 50%; transform: rotate(0deg);"><g class="ldl-ani"><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 50px 50px; animation: 1.11111s linear -0.833333s infinite normal forwards running static-56f88607-cb0b-42f6-81ec-1c50b6a84277;"><circle stroke-miterlimit="10" stroke-width="8" stroke="#333" fill="none" r="40" cy="50" cx="50" style="stroke: rgb(51, 51, 51);"></circle></g></g><g class="ldl-layer"><g class="ldl-ani"><path fill="#e15b64" d="M68.536 38.536L57.065 50.007l11.458 11.458a5 5 0 1 1-7.072 7.071L49.993 57.078 39.205 67.867c-.977.976-2.256 1.464-3.536 1.464s-2.559-.488-3.536-1.464a5 5 0 0 1 0-7.071l10.789-10.789-11.458-11.458a5 5 0 1 1 7.071-7.071l11.458 11.458 11.471-11.471a5.001 5.001 0 0 1 7.072 7.071z" style="fill: rgb(225, 91, 100);"></path></g></g></g></g></g></g></g></svg>
 		</center>
 	</div>`
