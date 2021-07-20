@@ -1,5 +1,6 @@
 /* ------------------------------ QR Image ------------------------------*/
-#qr{
+#qr-image{
 	width:80vw;
 	max-width:400px;
+	image-rendering: pixelated;
 }

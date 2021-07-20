@@ -47,7 +47,7 @@ sm.addEventListener('click', (e)=>{
 
 
 const createQR = (data) => {
-    let template = `<img src='https://chart.googleapis.com/chart?cht=qr&chl=${data}&chs=180x180&choe=UTF-8&chld=L|2' alt='qr code' id='qr'>`
+    let template = `<img src='https://chart.googleapis.com/chart?cht=qr&chl=${data}&chs=70x70&choe=UTF-8&chld=L|2' alt='qr code' id='qr-image'>`
     return template;
 }
 
