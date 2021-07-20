@@ -8,6 +8,7 @@ import ssl
 cluster = PyMongo(app, uri=URI, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
 users = cluster.db.user
 
+
 # Find
 # users.find({}) # find all users
 # Update 

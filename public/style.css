@@ -1,48 +1,5 @@
 :root{
-	--nav-height:3.75rem;
-	--main-height:calc(100vh - var(--nav-height));
 	--option-height:calc(var(--main-height) / 3);
-}
-body{
-	height:100vh;
-	width:100vw;
-	margin:0;
-	padding:0;
-
-	position: absolute;
-	font-family: Roboto, sans-serif;
-}
-.center {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-nav{
-	height:var(--nav-height);
-	width:100vw;
-	
-	position:fixed;
-	top:0;
-	left:0;
-
-	padding: calc(var(--nav-height)/3);
-	box-sizing: border-box;
-	box-shadow: 0 0 6px #9b9b9b;
-}
-
-main{
-	height:var(--main-height);
-	width:100vw;
-
-	position: fixed;
-	top:var(--nav-height);
-	left:0;
-}
-
-a{
-	-webkit-tap-highlight-color: #50505030;
-	text-decoration: none;
-	color:black;
 }
 
 .option{
@@ -58,13 +15,26 @@ table{
 	height: var(--option-height);
 	vertical-align: center;
 }
+
 td{
 	vertical-align: center;
 	text-align: center;
 }
 
-nav h1{
-	margin:0;
+#login{
+	float:right;
+	display: none;
+	opacity: 0.02;
+	-webkit-tap-highlight-color: #00000000;
+}
+#login img{
+	height:1.5rem;
+}
+
+@media (min-width:1200px) {
+	#login{
+		display: block;
+	}	
 }
 
 @media (max-width: 250px) {
@@ -85,6 +55,7 @@ nav h1{
 	}
 }
 
+
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -92,14 +63,4 @@ nav h1{
        -moz-user-select: none; /* Old versions of Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently */
-}
-
-#login{
-	float:right;
-	display: none;
-	opacity: 0.02;
-	-webkit-tap-highlight-color: #00000000;
-}
-#login img{
-	height:1.5rem;
 }

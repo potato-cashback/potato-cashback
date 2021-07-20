@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>НеОвощ</title>
-
-	<link rel="manifest" href="/app/manifest.json">
-    <meta name="theme-color" content="#9b9b9b" />
+    <title>Admin</title>
+	<link rel="stylesheet" href="/uni.css">
+	<link rel="stylesheet" href="/style.css">
 </head>
 
-<style>
-	@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-</style>
-<link rel="stylesheet" href="/style.css">
 <body class="noselect">
 	<nav class="noselect">
 		<h1>
@@ -37,15 +32,15 @@
 				</table>
 			</div>
 		</a>
-		<a href="./phone">
+		<a href="./debugger">
 			<div class="option" style="border-top: solid 1px #9b9b9b;">
 				<table class="center">
 					<tbody>
 						<tr>
 							<td>
-								<img src="https://img.icons8.com/fluent-systems-regular/452/phone.png" alt="телефон" class="icon center"/>
+								<img src="https://img.icons8.com/windows/000000/452/bug.png" alt="телефон" class="icon center"/>
 								<br>
-								<h1>???</h1>
+								<h1>Debugger</h1>
 							</td>
 						</tr>
 					</tbody>
@@ -69,25 +64,4 @@
 		</a>
 	</main>
 </body>
-
-<script type="text/javascript" src="https://cdn.rawgit.com/alexgibson/shake.js/master/shake.js"></script>
-<script>  
-    //listen to shake event
-    var shakeEvent = new Shake({threshold: 15});
-    shakeEvent.start();
-    window.addEventListener('shake', function(){
-		window.location.href = "/"
-    }, false);
-
-    //stop listening
-    function stopShake(){
-        shakeEvent.stop();
-    }
-
-    //check if shake is supported or not.
-    if(!("ondevicemotion" in window)){
-		console.log("Not Supported");
-	}
-</script>
-
 </html>
