@@ -46,19 +46,19 @@ ph.addEventListener("keyup", (e)=>{
 		})
 		.then(t => {
 			if(t != ""){
-				document.querySelector("#name").innerText = t;
-				document.querySelector("#name").style.display = "block";
+				document.querySelector("#phone-name").innerText = t;
+				document.querySelector("#phone-name").style.display = "block";
 			}else{
-				document.querySelector("#name").style.display = "none";
+				document.querySelector("#phone-name").style.display = "none";
 			}
 		})
 		.catch((err) => {
-			document.querySelector("#name").innerText = "";
-			document.querySelector("#name").style.display = "none";
+			document.querySelector("#phone-name").innerText = "";
+			document.querySelector("#phone-name").style.display = "none";
 		})
 	}
 	else{
-		document.querySelector("#name").style.display = "none";
+		document.querySelector("#phone-name").style.display = "none";
 	}
 })
 

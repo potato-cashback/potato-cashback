@@ -1,20 +1,10 @@
+/* ------------------------------ Phone Input Area Additional Styles ------------------------------*/
 #phone{
-	width:100vw;
-	height: 4rem;
 	font-size: 1rem;
-
-	border:none;
-
-	box-sizing: border-box;
-
-	border-top:1px solid #9b9b9b;
-	border-bottom:1px solid #9b9b9b;
-	background-color: white;
 	padding: 1.75rem 1rem 1.25rem 1rem;
-	margin: 0;
 }
 
-/* ------------- */
+/* ------------------------------ Phone Label ------------------------------*/
 
 .floating-label{
 	position: absolute;
@@ -33,17 +23,10 @@
 	font-size: 1rem;
 }
 
-/* ------------- */
+/* ------------------------------ Name Display Additional Styles ------------------------------*/
 
-#name{
-	width:100vw;
-	height: 3rem;
-	border:none;
-	background-color: #03a9f4;
-	font-size: 1.1rem;
-	color:white;
+#phone-name{
 	padding: 0.995rem;
-	margin: 0;
 	margin-bottom: -1rem;
 	box-sizing: border-box;
 	display:none;
