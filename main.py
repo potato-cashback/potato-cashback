@@ -3,9 +3,10 @@ from flask_pymongo import PyMongo
 from config import *
 import requests
 import os
+import ssl
 
 app = Flask(__name__)
-cluster = PyMongo(app, uri=URI)
+cluster = PyMongo(app, uri=URI, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
 users = cluster.db.user
 
 # Find
@@ -42,9 +43,10 @@ def send_data(phone, sum):
 	r = requests.get('https://qr-code-telegram-bot.herokuapp.com/send_data/'+phone+'/'+sum)
 	if(r.text == 'nice'):
 		return 'good'
-	else:
+	elif(r.ok == True):
 		return 'bad'
-
+	else:
+		return 'server error'
 
 # ----------------------- FILES ------------------------------------
 @app.route('/')
