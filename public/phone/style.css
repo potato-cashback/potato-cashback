@@ -35,17 +35,6 @@
 
 /* ------------- */
 
-#submit{
-	width:100vw;
-	height: 3rem;
-	border:none;
-	background-color: #03a9f4;
-	font-size: 1.1rem;
-	color:white;
-	padding: 0;
-	margin: 0;
-}
-
 #name{
 	width:100vw;
 	height: 3rem;
@@ -58,25 +47,4 @@
 	margin-bottom: -1rem;
 	box-sizing: border-box;
 	display:none;
-}
-
-#sum{
-	width:100vw;
-	height: 4rem;
-	font-size: 2rem;
-	line-height: 2rem;
-
-	text-align: center;
-
-	border:none;
-	box-sizing: border-box;
-
-	border-top:1px solid #9b9b9b;
-	border-bottom:1px solid #9b9b9b;
-	background-color: white;
-	padding: 1rem;
-	margin: 0;
-}
-#sum::after{
-	content:" ₸";
 }
