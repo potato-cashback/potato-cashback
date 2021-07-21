@@ -1,4 +1,4 @@
-from __main__ import app
+from main import app
 from config import username, password
 
 from flask import send_from_directory, Response
