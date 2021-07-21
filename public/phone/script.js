@@ -127,8 +127,10 @@ const sendCashback = () => {
 		.then(r =>{
 			if(r == 'good')
 				phonefound(sum)
-			else
+			else if(r == 'bad')
 				error('Произошла Ошибка','', 'достигнут лимит начисления кешбэка')
+			else if(r == 'server error')
+				error('Произошла Ошибка', 'на сервере', '')
 		})
 	}
 	else

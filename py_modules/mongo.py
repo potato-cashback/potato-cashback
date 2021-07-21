@@ -5,9 +5,32 @@ from flask_pymongo import PyMongo
 import requests
 import ssl
 
-cluster = PyMongo(app, uri=URI, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
-users = cluster.db.user
+try:
+	cluster = PyMongo(app, uri=URI, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
+	users = cluster.db.user
 
+	@app.route('/mongodb')
+	def get_data():
+		d = str(list(users.find()))
+		return d
+
+	@app.route('/mongodb/phone/<phone>')
+	def phone_name(phone):
+		user = users.find_one({'phone': phone})
+		if user != None:
+			return user['name']
+		else:
+			return ""
+except:
+	@app.route('/mongodb')
+	def get_data():
+		return '[]'
+
+	@app.route('/mongodb/phone/<phone>')
+	def phone_name(phone):
+		return ""
+		
+	print('MongoDB not connected')
 
 # Find
 # users.find({}) # find all users
@@ -17,25 +40,13 @@ users = cluster.db.user
 # users.insert_one({})
 
 
-@app.route('/mongodb')
-def get_data():
-	d = str(list(users.find()))
-	return d
-
-@app.route('/mongodb/phone/<phone>')
-def phone_name(phone):
-	user = users.find_one({'phone': phone})
-	if user != None:
-		return user['name']
-	else:
-		return ""
-
 @app.route('/mongodb/phone/<phone>/<sum>')
 def send_data(phone, sum):
-	r = requests.get('https://qr-code-telegram-bot.herokuapp.com/send_data/'+phone+'/'+sum)
-	if(r.text == 'nice'):
-		return 'good'
-	elif(r.ok == True):
-		return 'bad'
-	else:
+	try:
+		r = requests.get('https://qr-code-telegram-bot.herokuapp.com/send_data/'+phone+'/'+sum)
+		if(r.text == 'nice'):
+			return 'good'
+		elif(r.ok == True):
+			return 'bad'
+	except:	
 		return 'server error'
