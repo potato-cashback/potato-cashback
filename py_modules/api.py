@@ -5,6 +5,10 @@ import os
 if not os.path.exists("./public/_ids/"):
 	print("folder created")
 	os.makedirs("./public/_ids/")
+else:
+	print("folder cleaned")
+	os.rmdir("./public/_ids/")
+	os.makedirs("./public/_ids/")
 
 def create_file(id, message):
 	file = open(f'./public/_ids/{id}', "w")
