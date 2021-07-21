@@ -8,6 +8,15 @@ import ssl
 cluster = PyMongo(app, uri=URI, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
 users = cluster.db.user
 
+
+# Find
+# users.find({}) # find all users
+# Update 
+# users.update_one({'phone': 'XXXXX'}, {'$set': {'cashback': value}})
+# Insert
+# users.insert_one({})
+
+
 @app.route('/mongodb')
 def get_data():
 	d = str(list(users.find()))
