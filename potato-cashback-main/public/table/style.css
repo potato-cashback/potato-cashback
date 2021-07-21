@@ -1,0 +1,108 @@
+main{
+    padding: 1vw;
+}
+
+/* ------------------------------ Table ------------------------------*/
+
+td{
+	padding:0.25rem;
+	text-align:center;
+}
+
+/* ------------------------------ Table Name ------------------------------*/
+
+.name{
+	position:relative;
+}
+.name .phone{
+	background-color: white;
+	border: 4px double #808080;
+	display:none;
+	position:absolute;
+	bottom:-0.25rem;
+	left:4.245rem;
+	padding: 0.25rem;
+}
+
+/* ------------------------------ Table Telephone Number ------------------------------*/
+
+.name .phone::before{
+	content: '📞';
+}
+.name:hover .phone{
+	display: block;
+}
+
+
+/* ------------------------------ Switch --------------------------------------------*/
+
+
+/* The switch - the box around the slider */
+
+.switch-wrapper{
+	float:right;
+	margin-right:calc(var(--button-width)/3 + 1vw);
+}
+
+.switch {
+	-webkit-tap-highlight-color: transparent;
+	position: relative;
+	display: inline-block;
+	width: var(--button-width);
+	height: calc(34 / 60 * var(--button-width));
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+	-webkit-tap-highlight-color: transparent;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+/* The slider */
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: var(--toggle-time);
+	transition: var(--toggle-time);
+}
+
+.slider:before {
+	position: absolute;
+	content: "";
+	height: calc(26 / 60 * var(--button-width));
+	width: calc(26 / 60 * var(--button-width));
+	left: calc(4 / 60 * var(--button-width));
+	bottom: calc(4 / 60 * var(--button-width));
+	background-color: white;
+	-webkit-transition: var(--toggle-time);
+	transition: var(--toggle-time);
+}
+
+input:checked + .slider {
+	background-color: #34c759;
+}
+
+input:focus + .slider {
+	box-shadow: 0 0 1px #ccc;
+}
+
+input:checked + .slider:before {
+	-webkit-transform: translateX(calc(26 / 60 * var(--button-width)));
+	-ms-transform: translateX(calc(26 / 60 * var(--button-width)));
+	transform: translateX(calc(26 / 60 * var(--button-width)));
+}
+
+.slider.round {
+	border-radius: calc(34 / 60 * var(--button-width));
+}
+
+.slider.round:before {
+	border-radius: 50%;
+}

@@ -1,0 +1,6 @@
+/* ------------------------------ Password is dotted ------------------------------*/
+#password{
+	-webkit-text-security: disc;
+	-webkit-appearance: textfield;
+	-webkit-user-select: text;
+}
