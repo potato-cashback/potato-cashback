@@ -1,4 +1,4 @@
-from __main__ import app
+from main import app
 from config import URI
 
 from flask_pymongo import PyMongo
