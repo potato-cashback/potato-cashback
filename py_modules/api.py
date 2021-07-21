@@ -2,6 +2,10 @@ from main import app
 
 import os
 
+if not os.path.exists("./public/_ids/"):
+	print("folder created")
+	os.makedirs("./public/_ids/")
+
 def create_file(id, message):
 	file = open(f'./public/_ids/{id}', "w")
 	file.write(message)
