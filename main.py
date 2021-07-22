@@ -1,5 +1,7 @@
 from flask import Flask
 
+# Sofia krusa
+
 app = Flask(__name__)
 
 with app.app_context():
