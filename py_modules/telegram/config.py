@@ -1,14 +1,14 @@
 from py_modules.telegram.functions import Map 
 from PIL import Image
-TOKEN = '1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA'
-URL = 'https://potato-cashback.herokuapp.com/a/'
+TOKEN = '1102080505:AAGmcTyzec_7DrpbMY9f-0_07PQMrMKOVTM' # nomomon_robot
+URL = 'https://potato-cashback.herokuapp.com/bot/'
 URL_2 = 'https://potato-cashback.herokuapp.com'
 URI = 'mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 # SYSTEM INFO
 TECHNICAL_STOP = False
 groupChatId = 1654644284
-bot_nickname = "KZcashback_bot"
+bot_nickname = "nomomon_robot"
 
 # INFO ON CASHBACK
 friend_money = 20

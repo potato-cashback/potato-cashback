@@ -43,7 +43,7 @@ except:
 @app.route('/mongodb/phone/<phone>/<sum>')
 def send_data(phone, sum):
 	try:
-		r = requests.get('https://potato-cashback.herokuapp.com/send_data/'+phone+'/'+sum)
+		r = requests.get('/send_data/'+phone+'/'+sum)
 		if(r.text == 'nice'):
 			return 'good'
 		elif(r.ok == True):
