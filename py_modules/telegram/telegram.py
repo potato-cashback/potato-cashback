@@ -104,7 +104,7 @@ def process_cashback(phone, sum):
 @app.route('/bot/')
 def webhook():
 	bot.remove_webhook()
-	bot.set_webhook(url = URL + TOKEN)
+	bot.set_webhook(url = URL_bot + TOKEN)
 	return '!', 200
 
 def create_keyboard(arr, vals):
@@ -144,7 +144,7 @@ def get_data_from_qr(message):
 	# ANTI-FRAUD SYSTEM
 	try:
 		data = Data(decoded[0].data)
-		response = urllib.request.urlopen(URL_2+'/api/react/'+str(data.date)).read().decode("utf-8")
+		response = urllib.request.urlopen(URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
 		status = Map(json.loads(response))
 		print(status)
 	except Exception as e:
@@ -390,7 +390,7 @@ def cashback_photo_finish(message, values):
 	true_money = int(true_money)
 	money = int(true_money * cashback_logic(true_money, cashback))
 
-	urllib.request.urlopen(URL_2+'/api/response/'+url)
+	urllib.request.urlopen(URL_ser+'/api/response/'+url)
 
 	user = users.find_one({'_id': userId})
 
@@ -408,7 +408,7 @@ def cashback_photo_finish(message, values):
 def cashback_photo_cancel(message, values):
 	[function_name, url] = values
 
-	urllib.request.urlopen(URL_2+'/api/cancel/'+url)
+	urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
 
 	possibles = globals().copy()
 	possibles.update(locals())
