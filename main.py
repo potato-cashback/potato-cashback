@@ -1,6 +1,7 @@
 from flask import Flask
 
 # Sofia krusa
+# sam ti krisa
 
 app = Flask(__name__)
 
