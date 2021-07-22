@@ -30,7 +30,7 @@ def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_
 	if pull_args != {}: users.update_one({'_id': userId}, {'$pull': pull_args})
 	return
 
-@app.route('/'+TOKEN, methods=['POST'], subdomain="telegram")
+@app.route('/a/'+TOKEN, methods=['POST'])
 def getMessage():
 	json_string = request.get_data().decode('utf-8')
 	update = telebot.types.Update.de_json(json_string)
@@ -57,7 +57,7 @@ def getMessage():
 	bot.process_new_updates([update])
 	return "!", 200
 
-@app.route('/send_data/<phone>/<sum>', subdomain="telegram")
+@app.route('/send_data/<phone>/<sum>')
 def process_cashback(phone, sum):
 	sum = int(sum)
 	money = int(sum * cashback_logic(sum, cashback))
@@ -101,7 +101,7 @@ def process_cashback(phone, sum):
 
 	return 'nice'
 
-@app.route('/', subdomain="telegram")
+@app.route('/a')
 def webhook():
 	bot.remove_webhook()
 	bot.set_webhook(url=URL + TOKEN)

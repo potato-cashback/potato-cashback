@@ -1,7 +1,7 @@
 from py_modules.telegram.functions import Map 
 from PIL import Image
 TOKEN = '1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA'
-URL = 'https://qr-code-telegram-bot.herokuapp.com/'
+URL = 'https://potato-cashback.herokuapp.com/a/'
 URL_2 = 'https://potato-cashback.herokuapp.com'
 URI = 'mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
