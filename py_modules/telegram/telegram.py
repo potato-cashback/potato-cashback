@@ -15,10 +15,7 @@ from PIL import Image
 
 from py_modules.telegram.config import *
 from py_modules.telegram.functions import *
-from flask import Flask, request
-
-from flask_pymongo import PyMongo
-
+from flask import request
 
 bot = telebot.TeleBot(TOKEN)
 
