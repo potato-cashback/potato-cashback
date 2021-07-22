@@ -1,6 +1,6 @@
-from main import app
 from config import URI
 
+from flask import current_app as app
 from flask_pymongo import PyMongo
 import requests
 import ssl

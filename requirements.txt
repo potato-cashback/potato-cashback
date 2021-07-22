@@ -13,11 +13,11 @@ certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
 idna==2.10
-itsdangerous==1.1.0
-Jinja2==2.11.3
-MarkupSafe==1.1.1
+itsdangerous==2.0
+Jinja2==3.0
+MarkupSafe==2.0
 pytz==2021.1
 pyTelegramBotAPI==3.7.7
 pyzbar==0.1.8
 urllib3==1.26.4
-Werkzeug==1.0.1
+Werkzeug==2.0

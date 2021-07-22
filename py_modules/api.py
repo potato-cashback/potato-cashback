@@ -1,14 +1,21 @@
-from main import app
+from flask import current_app as app
+import os, shutil
 
-import os
+folder = "./public/_ids/"
 
-if not os.path.exists("./public/_ids/"):
+if not os.path.exists(folder):
 	print("folder created")
-	os.makedirs("./public/_ids/")
+	os.makedirs(folder)
 else:
-	print("folder cleaned")
-	os.rmdir("./public/_ids/")
-	os.makedirs("./public/_ids/")
+	for filename in os.listdir(folder):
+		file_path = os.path.join(folder, filename)
+		try:
+			if os.path.isfile(file_path) or os.path.islink(file_path):
+				os.unlink(file_path)
+			elif os.path.isdir(file_path):
+				shutil.rmtree(file_path)
+		except Exception as e:
+			print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 def create_file(id, message):
 	file = open(f'./public/_ids/{id}', "w")

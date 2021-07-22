@@ -1,4 +1,4 @@
-from functions import Map 
+from py_modules.telegram.functions import Map 
 from PIL import Image
 TOKEN = '1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA'
 URL = 'https://qr-code-telegram-bot.herokuapp.com/'
@@ -29,35 +29,35 @@ items = [
 	[ # HOUSEHOLD ITEMS
 		Map({
 			'name': "Бумага",
-			'image': Image.open('./images/items/household/toilet-paper.png'),
+			'image': Image.open('./py_modules/telegram/images/items/household/toilet-paper.png'),
 			'price': 700,
 			'tag': "Туалетная бумага",
 			'limit': 4,
 		}),
 		Map({
 			'name': "Полотенце",
-			'image': Image.open('./images/items/household/towel.png'),
+			'image': Image.open('./py_modules/telegram/images/items/household/towel.png'),
 			'price': 1400,
 			'tag': "Полотенце",
 			'limit': 3,
 		}),
 		Map({
 			'name': "Тапочки",
-			'image': Image.open('./images/items/household/slippers.png'),
+			'image': Image.open('./py_modules/telegram/images/items/household/slippers.png'),
 			'price': 3000,
 			'tag': "Тапочки",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Порошок",
-			'image': Image.open('./images/items/household/powder.png'),
+			'image': Image.open('./py_modules/telegram/images/items/household/powder.png'),
 			'price': 3000,
 			'tag': "Порошок",
 			'limit': 2,
 		}),
 		Map({
 			'name': "Сковорода",
-			'image': Image.open('./images/items/household/pan.png'),
+			'image': Image.open('./py_modules/telegram/images/items/household/pan.png'),
 			'price': 10000,
 			'tag': "Сковорода",
 			'limit': 1,
@@ -66,98 +66,98 @@ items = [
 	[ # TOYS ITEMS
 		Map({
 			'name': "Кукла",
-			'image': Image.open('./images/items/toys/HKD207.jpg'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/HKD207.jpg'),
 			'price': 1680,
 			'tag': "HKD207",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Грузовик",
-			'image': Image.open('./images/items/toys/1817-1.jpg'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/1817-1.jpg'),
 			'price': 1953,
 			'tag': "1817-1",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Трактор",
-			'image': Image.open('./images/items/toys/1822-1.png'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/1822-1.png'),
 			'price': 1960,
 			'tag': "1822-1",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Малыш",
-			'image': Image.open('./images/items/toys/LM2587.jpg'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/LM2587.jpg'),
 			'price': 2079,
 			'tag': "LM2587",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Гоночная",
-			'image': Image.open('./images/items/toys/M38-B0633D.jpg'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0633D.jpg'),
 			'price': 2786,
 			'tag': "M38-B0633D",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Вертолет",
-			'image': Image.open('./images/items/toys/M38-B0651.jpg'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0651.jpg'),
 			'price': 4606,
 			'tag': "M38-B0651",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Автобус",
-			'image': Image.open('./images/items/toys/M38-B0330.jpg'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0330.jpg'),
 			'price': 4606,
 			'tag': "M38-B0330",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Автофургон",
-			'image': Image.open('./images/items/toys/M38-B0566.png'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0566.png'),
 			'price': 5166,
 			'tag': "M38-B0566",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Ресторан",
-			'image': Image.open('./images/items/toys/M38-B0567.png'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0567.png'),
 			'price': 5166,
 			'tag': "M38-B0567",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Автозаправка",
-			'image': Image.open('./images/items/toys/M38-B0568.png'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0568.png'),
 			'price': 5166,
 			'tag': "M38-B0568",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Пожарная",
-			'image': Image.open('./images/items/toys/M38-B0625.png'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0625.png'),
 			'price': 5166,
 			'tag': "M38-B0625",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Машина",
-			'image': Image.open('./images/items/toys/M38-B0655.png'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0655.png'),
 			'price': 6986,
 			'tag': "M38-B0655",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Вертолет",
-			'image': Image.open('./images/items/toys/M38-B0656.png'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0656.png'),
 			'price': 6986,
 			'tag': "M38-B0656",
 			'limit': NO_LIMIT,
 		}),
 		Map({
 			'name': "Автомойка",
-			'image': Image.open('./images/items/toys/M38-B0759D.jpg'),
+			'image': Image.open('./py_modules/telegram/images/items/toys/M38-B0759D.jpg'),
 			'price': 7966,
 			'tag': "M38-B0759D",
 			'limit': NO_LIMIT,
@@ -224,7 +224,7 @@ tree = Map({
 		]
 	},
 	'share': {
-		'image': Image.open('./images/get_nickname_intro.jpg'),
+		'image': Image.open('./py_modules/telegram/images/get_nickname_intro.jpg'),
 		'text': "1. Пригласи друзей 👬 и получи кешбэк {}₸ 💰 за каждого!\n2. Скинь боту 🤖 контакты ваших друзей.\n3. Как только друг скачает бота, твой кешбэк зачислят на счет!".format(friend_money),
 		'buttons': [
 			[
@@ -245,7 +245,7 @@ tree = Map({
 		'user_already_joined': "<strong>Ваш друг {} уже подписан на бота</strong>",
 		'user_is_written': "<strong>Ваш друг {} уже записан у вас</strong>",
 	
-		'image': Image.open('./images/get_nickname_instruction.jpg'),
+		'image': Image.open('./py_modules/telegram/images/get_nickname_instruction.jpg'),
 		'text': "1. Нажми на значок скрепочки «📎» и выбери «контакты»\n2. Выбери друга для приглашения\n3. Бот запишет всех кого ты собираешься пригласить\n4. Как только твои друзья из списка подпишутся, кешбэк твой!\n\nСПИСОК ДРУЗЕЙ ДЛЯ ПОДПИСКИ",
 		'buttons': [
 			[
@@ -350,7 +350,7 @@ tree = Map({
 		]
 	},
 	'сonditions': {
-		'image': Image.open('./images/how_to_work.png'),
+		'image': Image.open('./py_modules/telegram/images/how_to_work.png'),
 		'text': "1. Делай покупки у наших ПАРТНЕРОВ\n2. Скинь QR ЧЕК на покупки от Продавца\n3. Получи до 11% кешбэка на счет в Личном Кабинете\n4. Обменяй КЕШБЭК на ПОДАРКИ",
 		'buttons': [
 			[

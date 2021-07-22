@@ -1,6 +1,6 @@
-from main import app
 from config import username, password
 
+from flask import current_app as app
 from flask import send_from_directory, Response
 
 @app.route('/login')

@@ -1,5 +1,5 @@
-from main import app
-from py_modules.mongo import cluster, users
+from flask import current_app as app
+from py_modules.mongo import users
 
 from io import BytesIO
 import re
