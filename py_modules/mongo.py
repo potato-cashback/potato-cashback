@@ -1,4 +1,4 @@
-from config import URI
+from config import URI, URL
 
 from flask import current_app as app
 from flask_pymongo import PyMongo
@@ -43,7 +43,7 @@ except:
 @app.route('/mongodb/phone/<phone>/<sum>')
 def send_data(phone, sum):
 	try:
-		r = requests.get('/send_data/'+phone+'/'+sum)
+		r = requests.get(URL + '/send_data/'+phone+'/'+sum)
 		if(r.text == 'nice'):
 			return 'good'
 		elif(r.ok == True):
