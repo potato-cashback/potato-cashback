@@ -173,7 +173,7 @@ tree = Map({
 			[
 				{
 					'text': "Как это работает? 🤓",
-					'callback': "сonditions",
+					'callback': "conditions",
 				}
 			],
 			[
@@ -334,7 +334,7 @@ tree = Map({
 			[
 				{
 					'text': "Назад 🏘",
-					'callback': "сonditions",
+					'callback': "conditions",
 				}
 			],
 		]
@@ -350,7 +350,7 @@ tree = Map({
 			]
 		]
 	},
-	'сonditions': {
+	'conditions': {
 		'image': Image.open('./py_modules/telegram/images/how_to_work.png'),
 		'text': "1. Делай покупки у наших ПАРТНЕРОВ\n2. Скинь QR ЧЕК на покупки от Продавца\n3. Получи до 11% кешбэка на счет в Личном Кабинете\n4. Обменяй КЕШБЭК на ПОДАРКИ",
 		'buttons': [
@@ -386,7 +386,7 @@ tree = Map({
 			[
 				{
 					'text': "Назад 🏘",
-					'callback': "сonditions",
+					'callback': "conditions",
 				}
 			],
 		]

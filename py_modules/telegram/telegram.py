@@ -485,13 +485,13 @@ def get_nicknames(message):
 
 # CONDITIONS
 # <+=============================================================================================+>
-def сonditions(message):
+def conditions(message):
 	userId = message.chat.id
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree.сonditions.buttons, currentInlineState)
+	keyboard = create_keyboard(tree.conditions.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId, 
-				   photo=tree.сonditions.image, 
-				   caption=tree.сonditions.text, 
+				   photo=tree.conditions.image, 
+				   caption=tree.conditions.text, 
 				   reply_markup=keyboard)
 
 # <+=============================================================================================+>
