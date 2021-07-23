@@ -44,6 +44,9 @@ def plot_png(u, p):
 def create_figure():
 	fig = Figure()
 	axis = fig.add_subplot(1, 1, 1)
+	axis.set_title('Распредиление Покупок')
+	axis.set_xlabel('Стоимость')
+	axis.set_ylabel('Кол-во Покупок')
 	xs = getData(users)
 	axis.hist(xs, bins = int(180/5), color = 'blue', edgecolor = 'black')
 	return fig
