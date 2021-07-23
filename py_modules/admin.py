@@ -33,15 +33,13 @@ def getData(u):
 				output.append(operation["sum"])
 	return output
 
-@app.route('/admin/<u>/<p>/analytic/plot.png')
-def plot_png(u, p):
-	if(u == username and p == password):
-		fig = create_figure()
-		output = io.BytesIO()
-		FigureCanvas(fig).print_png(output)
-		return Response(output.getvalue(), mimetype='image/png')
+def plot(f):
+	output = io.BytesIO()
+	FigureCanvas(f).print_png(output)
+	return Response(output.getvalue(), mimetype='image/png')
 
-def create_figure():
+@app.route('/admin/<u>/<p>/analytic/plot_1.png')
+def plot_1(u, p):
 	fig = Figure()
 	axis = fig.add_subplot(1, 1, 1)
 	axis.set_title('Распредиление Покупок')
@@ -49,4 +47,16 @@ def create_figure():
 	axis.set_ylabel('Кол-во Покупок')
 	xs = getData(users)
 	axis.hist(xs, bins = int(180/5), color = 'blue', edgecolor = 'black')
-	return fig
+	if(u == username and p == password):
+		return plot(fig)
+
+@app.route('/admin/<u>/<p>/analytic/plot_2.png')
+def plot_2(u, p):
+	fig = Figure()
+	axis = fig.add_subplot(1, 1, 1)
+	axis.set_title('Распредиление Покупок')
+	axis.set_ylabel('Стоимость')
+	xs = getData(users)
+	axis.boxplot(xs, flierprops={'marker': 'o', 'markersize': 4, 'markerfacecolor': 'fuchsia'})
+	if(u == username and p == password):
+		return plot(fig)
