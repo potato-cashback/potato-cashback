@@ -19,6 +19,20 @@ def loggingin(u, p, path):
 	else:
 		return '<script>window.location.href = "/"</script>'
 
+
+@app.route('/admin/<u>/<p>/clean')
+def clean(u, p):
+	try:
+		if (username == u and password == p):
+			user_0 = users.delete_one({'phone': '+0'})
+			user_1 = users.delete_one({'phone': '+1'})
+
+			return 'cleaned'
+		else:
+			return 'wrong username or password'
+	except:	
+		return 'server error'
+
 import io
 import random
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
