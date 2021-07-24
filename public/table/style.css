@@ -1,3 +1,8 @@
+:root{
+	--button-width:2.5rem;
+	--toggle-time:100ms;
+}
+
 main{
     padding: 1vw;
 }
