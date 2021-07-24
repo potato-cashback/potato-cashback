@@ -59,7 +59,7 @@ items = [
 		Map({
 			'name': "Сковорода",
 			'image': Image.open('./py_modules/telegram/images/items/household/pan.png'),
-			'price': 10000,
+			'price': 9999,
 			'tag': "Сковорода",
 			'limit': 1,
 		}),
