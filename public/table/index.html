@@ -18,12 +18,17 @@
 	</a>
 	<main>
 		<br>
-		<input id="date" type="date" min="2021-07-20" max="2021-12-31">
-
+		<div id="simple">
+			<input id="date" type="date" min="2021-07-20" max="2021-12-31">
+		</div>
+		<div id="advanced">
+			
+		</div>
+		<input type="checkbox" id="sort">
 		<span class="switch-wrapper">
 			<label class="switch">
-				<input type="checkbox" id="sort">
-				<span class="slider round"></span>
+				<input type="checkbox" id="smart">
+				<span class="slider round smart"></span>
 			</label>
 		</span>
 		<br>
@@ -33,4 +38,6 @@
 	</main>
 </body>
     <script src="/table/script.js"></script>
+    <script src="/table/smart.js"></script>
+	<link rel="stylesheet" href="/table/smart.css">
 </html>

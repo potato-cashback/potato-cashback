@@ -1,8 +1,3 @@
-:root{
-	--button-width:2.5rem;
-	--toggle-time:100ms;
-}
-
 main{
     padding: 1vw;
 }
@@ -38,76 +33,29 @@ td{
 	display: block;
 }
 
-
-/* ------------------------------ Switch --------------------------------------------*/
-
-
-/* The switch - the box around the slider */
-
-.switch-wrapper{
-	float:right;
-	margin-right:calc(var(--button-width)/3 + 1vw);
+/* ------------------------------ Simple Sort --------------------------------------------*/
+#simple{
+	display: inline;
 }
 
-.switch {
-	-webkit-tap-highlight-color: transparent;
-	position: relative;
-	display: inline-block;
-	width: var(--button-width);
-	height: calc(34 / 60 * var(--button-width));
+#sort{
+	-webkit-appearance: none;
+	margin: 0;
+	line-height:1.5rem;
 }
-
-/* Hide default HTML checkbox */
-.switch input {
-	-webkit-tap-highlight-color: transparent;
-	opacity: 0;
-	width: 0;
-	height: 0;
-}
-
-/* The slider */
-.slider {
-	position: absolute;
-	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: #ccc;
-	-webkit-transition: var(--toggle-time);
-	transition: var(--toggle-time);
-}
-
-.slider:before {
-	position: absolute;
+#sort::before{
+	background-image: url('https://img.icons8.com/fluent-systems-regular/96/000000/sort-numeric-up.png');
+    display: inline-block;
+	height: 1.5rem;
+	width: 1.5rem;
+    background-size: 1.5rem 1.5rem;
 	content: "";
-	height: calc(26 / 60 * var(--button-width));
-	width: calc(26 / 60 * var(--button-width));
-	left: calc(4 / 60 * var(--button-width));
-	bottom: calc(4 / 60 * var(--button-width));
-	background-color: white;
-	-webkit-transition: var(--toggle-time);
-	transition: var(--toggle-time);
+    vertical-align: -30%;
 }
 
-input:checked + .slider {
-	background-color: #34c759;
+input:checked#sort{
+	background-color: #00000000;
 }
-
-input:focus + .slider {
-	box-shadow: 0 0 1px #ccc;
-}
-
-input:checked + .slider:before {
-	-webkit-transform: translateX(calc(26 / 60 * var(--button-width)));
-	-ms-transform: translateX(calc(26 / 60 * var(--button-width)));
-	transform: translateX(calc(26 / 60 * var(--button-width)));
-}
-
-.slider.round {
-	border-radius: calc(34 / 60 * var(--button-width));
-}
-
-.slider.round:before {
-	border-radius: 50%;
+input:checked#sort::before{
+	background-image: url('https://img.icons8.com/fluent-systems-regular/96/000000/sort-numeric-up-reversed.png');
 }
