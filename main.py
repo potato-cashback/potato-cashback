@@ -1,8 +1,5 @@
 from flask import Flask
 
-# Sofia krusa
-# sam ti krisa
-
 app = Flask(__name__)
 
 with app.app_context():
