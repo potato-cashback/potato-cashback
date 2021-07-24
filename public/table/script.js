@@ -45,46 +45,6 @@ const makeTable = (data) =>{
 	return output;
 }
 
-const filter_data = (data, date) => {
-	let cash_sum = 0;
-	let cashback_sum = 0;
-
-	if(date != null){ 
-		filtered_data = data.filter(o => {
-			// compare dates
-			return date == o["Дата"]
-		})
-		
-		if(filtered_data.length == 0)
-			return [{"Нет данных":"за этот день"}]
-
-		filtered_data.forEach(od => {
-			delete od["Дата"];
-			cash_sum += new Number(od["Сумма"])
-			cashback_sum += new Number(od["Кешбэк"])
-		})
-		filtered_data = filtered_data.sort(compare)
-		filtered_data.push({
-			"Имя":"",
-			"Телефон":"",
-			"Время":"Итого",
-			"Сумма":cash_sum,
-			"Кешбэк":cashback_sum
-		},{
-			"Имя":"",
-			"Телефон":"",
-			"Время":"Среднее",
-			"Сумма":Math.round(cash_sum / filtered_data.length),
-			"Кешбэк":Math.round(cashback_sum / filtered_data.length)
-		})
-	}else 
-		filtered_data = data
-
-	return filtered_data
-}
-
-
-
 const dope = fetch("/mongodb")
 .then(res => res.text())
 .then(res => res.split("False").join("false").split("True").join("true").split("'").join('"').split("None").join('"None"').split(/ObjectId\("\S*"\)/gm).join('""'))
@@ -110,7 +70,7 @@ const dope = fetch("/mongodb")
 	clone = JSON.parse(JSON.stringify(output))
 
 	let date = document.querySelector("#date").value.split("-").reverse().join("/")
-	document.querySelector("center").innerHTML = makeTable(filter_data(clone, date))
+	tableFilterise([(o) => o["Дата"] == date])
 
 	return output
 }).catch((err) =>{
@@ -140,7 +100,7 @@ document.querySelector("#date")
 	
 	clone = JSON.parse(JSON.stringify(dataS))
 
-	document.querySelector("center").innerHTML = makeTable(filter_data(clone, date))
+	tableFilterise([(o) => o["Дата"] == date])
 });
 
 document.querySelector("#sort")
@@ -149,6 +109,27 @@ document.querySelector("#sort")
 	let dataS = await dope;
 	
 	clone = JSON.parse(JSON.stringify(dataS))
+	tableFilterise()
 
-	document.querySelector("center").innerHTML = makeTable(filter_data(clone, date))
 });
+
+const tableFilterise = (newActiveFilters) =>{
+	activeFilters = newActiveFilters || activeFilters;
+	document.querySelector("center").innerHTML = makeTable(filter(clone, activeFilters))
+}
+
+const newFilters = () => {
+	output = []
+	document.querySelectorAll(".condition").forEach(el =>{
+		c = el.querySelector(".column").value
+		o = el.querySelector(".operator").value
+		v = el.querySelector("input").value
+	
+		x = eval(`(o) => o["${c}"] ${o} ${v}`)
+		console.log(x)
+		output.push(x)
+	})
+	return output
+}
+
+var activeFilters = [];

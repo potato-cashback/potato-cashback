@@ -3,6 +3,7 @@
 :root{
 	--button-width:2.5rem;
 	--toggle-time:100ms;
+	--filter:0;
 }
 
 .switch-wrapper{
@@ -80,12 +81,14 @@ input:checked + .slider:before {
 
 /* ------------------------------ Advanced --------------------------------------------*/
 #advanced{
+	position: relative;
+	z-index: 100;
     display: none;
     height: 1.5rem;
     line-height: 1.5rem;
 }
 
-#advanced::before{
+#advanced span::before{
     margin-left: 0.25rem;
 	background-image: url('https://img.icons8.com/fluent-systems-regular/48/000000/filter.png');
     display: inline-block;
@@ -94,4 +97,40 @@ input:checked + .slider:before {
     background-size: 1.5rem 1.5rem;
 	content: "";
     vertical-align: -30%;
+	filter: invert(var(--filter)) sepia() saturate(1000%) hue-rotate(100deg) brightness(0.95);
+}
+
+#adv_set{
+	display: none;
+
+	width:90vw;
+	max-width: 400px;
+
+	position: absolute;
+	top: 1.5rem;
+	left:0.25rem;
+
+	padding: 1rem;
+	box-sizing: border-box;
+
+	background-color: white;
+	border:1px solid #9b9b9b;
+	border-radius: 3px;
+	box-shadow: 0 0 2px #9b9b9b;
+}
+
+
+/* --------------------- */
+
+button{
+	-webkit-appearance: none; 
+	border: white;
+	box-sizing: border-box; 
+	padding: 0;
+	background:none;
+	line-height: 1rem;
+}
+button img{
+	margin-bottom: -0.2rem;
+	height: 1rem;
 }

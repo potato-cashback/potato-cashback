@@ -22,7 +22,36 @@
 			<input id="date" type="date" min="2021-07-20" max="2021-12-31">
 		</div>
 		<div id="advanced">
-			
+			<span></span>
+			<div id="adv_set">
+				<div class="condition">
+					<select name="column" class="column">
+						<option value="" disabled selected>Свойство</option>
+						<option>Сумма</option>
+						<option>Кешбэк</option>
+						<!-- <option>Дата</option>
+						<option>Время</option> -->
+					</select>
+					<select name="operator" class="operator">
+						<option value="==">равно</option>
+						<option value=">=">более</option>
+						<option value="<=">менее</option>
+						<option value="!=">не равно</option>
+					</select>
+					<input type="number"></input>
+					<button>
+						<img src="https://img.icons8.com/fluent-systems-regular/24/000000/delete-sign--v1.png"/>
+					</button>
+				</div>
+				<button onclick="addNewFilter()">
+					<img src="https://img.icons8.com/fluent-systems-regular/48/000000/plus-math.png"/>
+					Добавить фильтр
+				</button>
+				<br>
+				<button onclick="tableFilterise(newFilters())">
+					Фильтровать
+				</button>
+			</div>
 		</div>
 		<input type="checkbox" id="sort">
 		<span class="switch-wrapper">
