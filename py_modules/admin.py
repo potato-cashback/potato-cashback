@@ -74,3 +74,14 @@ def plot_2(u, p):
 	axis.boxplot(xs, flierprops={'marker': 'o', 'markersize': 4, 'markerfacecolor': 'fuchsia'})
 	if(u == username and p == password):
 		return plot(fig)
+
+@app.route('/admin/<u>/<p>/analytic/plot_3.png')
+def plot_3(u, p):
+	fig = Figure()
+	axis = fig.add_subplot(1, 1, 1)
+	axis.set_title('Распредиление Покупок')
+	axis.set_ylabel('Стоимость')
+	xs = getData(users)
+	axis.boxplot(xs, flierprops={'marker': 'o', 'markersize': 4, 'markerfacecolor': 'fuchsia'})
+	if(u == username and p == password):
+		return plot(fig)
