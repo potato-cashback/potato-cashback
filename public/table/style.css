@@ -1,3 +1,7 @@
+:root{
+	--date:none;
+}
+
 main{
     padding: 1vw;
 }
@@ -13,7 +17,7 @@ td{
 }
 
 .Дата{
-	display:none;
+	display:var(--date);
 }
 
 /* ------------------------------ Table Name ------------------------------*/

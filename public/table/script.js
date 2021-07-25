@@ -5,8 +5,11 @@ document.querySelector("#date").value = maxT
 
 
 const compare = (a, b) =>{
-	checkbox = 2* document.querySelector("#sort").checked - 1
-	return a["Время"].localeCompare(b["Время"]) * (-checkbox)
+	checkbox = 2 * document.querySelector("#sort").checked - 1
+	if(a["Дата"] == b["Дата"])
+		return a["Время"].localeCompare(b["Время"]) * (-checkbox)
+	else
+		return a["Дата"].localeCompare(b["Дата"]) * (-checkbox)
 }
 
 const makeTable = (data) =>{
@@ -33,6 +36,8 @@ const makeTable = (data) =>{
 						${data[i]["Телефон"]}
 					</div>
 				</td>`;
+			}else if(key == "Дата"){
+				output += `<td class="${key}">${data[i][key].split("/2021")[0]}</td>`;
 			}else if(key != "Телефон"){
 				output += `<td class="${key}">${data[i][key]}</td>`;
 			}
@@ -43,6 +48,8 @@ const makeTable = (data) =>{
 	
 	return output;
 }
+
+var clone = []
 
 const dope = fetch("/mongodb")
 .then(res => res.text())
@@ -95,21 +102,13 @@ const dope = fetch("/mongodb")
 document.querySelector("#date")
 .addEventListener('input', async () => {
 	let date = document.querySelector("#date").value.split("-").reverse().join("/")
-	let dataS = await dope;
-	
-	clone = JSON.parse(JSON.stringify(dataS))
-
 	tableFilterise([(o) => o["Дата"] == date])
 });
 
 document.querySelector("#sort")
 .addEventListener('input', async () => {
 	let date = document.querySelector("#date").value.split("-").reverse().join("/")
-	let dataS = await dope;
-	
-	clone = JSON.parse(JSON.stringify(dataS))
 	tableFilterise()
-
 });
 
 const tableFilterise = (newActiveFilters) =>{

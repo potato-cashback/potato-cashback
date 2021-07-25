@@ -3,11 +3,13 @@ var c2 = 0
 
 document.querySelector("#smart")
 .addEventListener('input', () => {
-    let simple = document.querySelector('#simple')
+	let simple = document.querySelector('#simple')
     let advanced = document.querySelector('#advanced')
+	let root = document.querySelector(":root");
     
     simple.style.display = (c1)?"inline":"none";
     advanced.style.display = (!c1)?"inline":"none";
+	root.style.setProperty("--date", (!c1)?"table-cell":"none");
     c1 = !c1
 });
 
@@ -45,12 +47,14 @@ const filter = (data, filters) => {
 		filtered_data.push({
 			"Имя":"",
 			"Телефон":"",
+			"Дата":" ",
 			"Время":"Итого",
 			"Сумма":cash_sum,
 			"Кешбэк":cashback_sum
 		},{
 			"Имя":"",
 			"Телефон":"",
+			"Дата":" ",
 			"Время":"Среднее",
 			"Сумма":Math.round(cash_sum / filtered_data.length),
 			"Кешбэк":Math.round(cashback_sum / filtered_data.length)
@@ -149,7 +153,7 @@ const newFilters = () => {
 			x = eval(`((o) => (o["${c}"]+"").split("/").reverse().join("/") ${o} ${v})`)
 		}else{
 			v = `"${v}"`
-			x = eval(`(o) => (o["${c}"]+"") ${o} ${v}`)
+			x = eval(`(o) => (o["${c}"]) ${o} ${v}`)
 		}
 		if((v + "").length > 0)
 			output.push(x)

@@ -47,7 +47,7 @@
 					Добавить фильтр
 				</button>
 				<br>
-				<button onclick="tableFilterise(newFilters()); (() => {let settings = document.querySelector('#adv_set');let root = document.querySelector(':root');
+				<button class="filter" onclick="tableFilterise(newFilters()); (() => {let settings = document.querySelector('#adv_set');let root = document.querySelector(':root');
 				settings.style.display = (!c2)?'block':'none';root.style.setProperty('--filter', (!c2)?'100%':'0');c2 = !c2;})()">
 					Фильтровать
 				</button>
