@@ -24,13 +24,12 @@
 		<div id="advanced">
 			<span></span>
 			<div id="adv_set">
-				<div class="condition">
+				<div class="condition" id="c_0">
 					<select name="column" class="column">
-						<option value="" disabled selected>Свойство</option>
 						<option>Сумма</option>
 						<option>Кешбэк</option>
-						<!-- <option>Дата</option>
-						<option>Время</option> -->
+						<option>Дата</option>
+						<option>Время</option>
 					</select>
 					<select name="operator" class="operator">
 						<option value="==">равно</option>
@@ -39,7 +38,7 @@
 						<option value="!=">не равно</option>
 					</select>
 					<input type="number"></input>
-					<button>
+					<button onclick="deleteElement('#c_0')">
 						<img src="https://img.icons8.com/fluent-systems-regular/24/000000/delete-sign--v1.png"/>
 					</button>
 				</div>
@@ -48,7 +47,8 @@
 					Добавить фильтр
 				</button>
 				<br>
-				<button onclick="tableFilterise(newFilters())">
+				<button onclick="tableFilterise(newFilters()); (() => {let settings = document.querySelector('#adv_set');let root = document.querySelector(':root');
+				settings.style.display = (!c2)?'block':'none';root.style.setProperty('--filter', (!c2)?'100%':'0');c2 = !c2;})()">
 					Фильтровать
 				</button>
 			</div>

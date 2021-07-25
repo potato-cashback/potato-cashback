@@ -2,7 +2,7 @@ var c1 = 0
 var c2 = 0
 
 document.querySelector("#smart")
-.addEventListener('input', async () => {
+.addEventListener('input', () => {
     let simple = document.querySelector('#simple')
     let advanced = document.querySelector('#advanced')
     
@@ -38,7 +38,6 @@ const filter = (data, filters) => {
 			return [{"Нет данных":"за этот день"}]
 
 		filtered_data.forEach(od => {
-			delete od["Дата"];
 			cash_sum += new Number(od["Сумма"])
 			cashback_sum += new Number(od["Кешбэк"])
 		})
@@ -89,14 +88,15 @@ var stringToHTML = function (str) {
 
 };
 
+let cond_counter = 1;
+
 const addNewFilter = () => {
-	const template =   `<div class="condition">
+	const template =   `<div class="condition" id="c_${cond_counter}">
 							<select name="column" class="column">
-								<option value="" disabled selected>Свойство</option>
 								<option>Сумма</option>
 								<option>Кешбэк</option>
-								<!-- <option>Дата</option>
-								<option>Время</option> -->
+								<option>Дата</option>
+								<option>Время</option>
 							</select>
 							<select name="operator" class="operator">
 								<option value="==">равно</option>
@@ -105,11 +105,63 @@ const addNewFilter = () => {
 								<option value="!=">не равно</option>
 							</select>
 							<input type="number"></input>
-							<button>
+							<button onclick="deleteElement('#c_${cond_counter}')">
 								<img src="https://img.icons8.com/fluent-systems-regular/24/000000/delete-sign--v1.png"/>
 							</button>
 						</div>`
 
-	let el = document.querySelector("#adv_set > div.condition:nth-last-child(4)")
-	el.after(stringToHTML(template))
+	let el = document.querySelector(`#adv_set > button:nth-last-child(3)`)
+	el.before(stringToHTML(template))
+	
+	changeListener(cond_counter)
+	cond_counter++;
 }
+
+const changeListener = (c) =>{
+	eval(`document.querySelector("#c_${c} > select.column").addEventListener('change', () =>{
+		console.log(document.querySelector("#c_${c}"))
+
+		c = document.querySelector("#c_${c} > select.column").value
+		inp = document.querySelector("#c_${c} > input")
+		inp.value = ""
+
+		if(c == 'Дата'){
+			inp.type = 'date'
+			inp.min="2021-07-20"
+			inp.max="2021-12-31"
+		}else if(c == 'Время'){
+			inp.type = 'time'
+		}else{ 
+			inp.type = 'number'
+		}
+	})`)
+}
+
+const newFilters = () => {
+	output = []
+	document.querySelectorAll(".condition").forEach(el =>{
+		c = el.querySelector(".column").value
+		o = el.querySelector(".operator").value
+		v = el.querySelector("input").value
+
+		if(c == 'Дата'){
+			v = `"${v.split("-").join("/")}"`
+			x = eval(`((o) => (o["${c}"]+"").split("/").reverse().join("/") ${o} ${v})`)
+		}else{
+			v = `"${v}"`
+			x = eval(`(o) => (o["${c}"]+"") ${o} ${v}`)
+		}
+		if((v + "").length > 0)
+			output.push(x)
+	})
+	console.log(output)
+	return output
+}
+
+const deleteElement = (qS) =>{
+	el = document.querySelector(qS)
+	el.parentNode.removeChild(el)
+} 
+
+
+changeListener(0)

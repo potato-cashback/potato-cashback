@@ -119,6 +119,10 @@ input:checked + .slider:before {
 	box-shadow: 0 0 2px #9b9b9b;
 }
 
+#adv_set input{
+	width:8.5rem;
+	box-sizing: border-box;
+}
 
 /* --------------------- */
 

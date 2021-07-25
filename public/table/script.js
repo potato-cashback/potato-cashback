@@ -9,14 +9,13 @@ const compare = (a, b) =>{
 	return a["Время"].localeCompare(b["Время"]) * (-checkbox)
 }
 
-
 const makeTable = (data) =>{
 	let output = ""
 
 	output += ("<table border==\"1\"><tr>");
 	for (key in data[0]) {
 		if(key != "Телефон")
-			output += ('<td>' + key + '</td>');
+			output += (`<td class="${key}">${key}</td>`);
 	}
 	output += ("</tr>");
 
@@ -25,17 +24,17 @@ const makeTable = (data) =>{
 		output += ('<tr>');
 		for (key in data[i]) {
 			if(key == "Сумма" || key == "Кешбэк"){
-				output += `<td>${data[i][key].toLocaleString('ru')}</td>`;
+				output += `<td class="${key}">${data[i][key].toLocaleString('ru')}</td>`;
 			}else if(key == "Имя" && i != data.length-2 && i!=data.length-1){
 				output += `
-				<td class="name">
+				<td class="name Имя">
 					${data[i][key]}
 					<div class="phone">
 						${data[i]["Телефон"]}
 					</div>
 				</td>`;
 			}else if(key != "Телефон"){
-				output += `<td>${data[i][key]}</td>`;
+				output += `<td class="${key}">${data[i][key]}</td>`;
 			}
 		}
 		output += ('</tr>');
@@ -116,20 +115,6 @@ document.querySelector("#sort")
 const tableFilterise = (newActiveFilters) =>{
 	activeFilters = newActiveFilters || activeFilters;
 	document.querySelector("center").innerHTML = makeTable(filter(clone, activeFilters))
-}
-
-const newFilters = () => {
-	output = []
-	document.querySelectorAll(".condition").forEach(el =>{
-		c = el.querySelector(".column").value
-		o = el.querySelector(".operator").value
-		v = el.querySelector("input").value
-	
-		x = eval(`(o) => o["${c}"] ${o} ${v}`)
-		console.log(x)
-		output.push(x)
-	})
-	return output
 }
 
 var activeFilters = [];

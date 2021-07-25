@@ -12,6 +12,10 @@ td{
 	text-align:center;
 }
 
+.Дата{
+	display:none;
+}
+
 /* ------------------------------ Table Name ------------------------------*/
 
 .name{
@@ -47,7 +51,7 @@ td{
 	line-height:1.5rem;
 }
 #sort::before{
-	background-image: url('https://img.icons8.com/fluent-systems-regular/96/000000/sort-numeric-up.png');
+	background-image: url('https://img.icons8.com/fluent-systems-regular/96/000000/generic-sorting-2.png');
     display: inline-block;
 	height: 1.5rem;
 	width: 1.5rem;
@@ -60,5 +64,5 @@ input:checked#sort{
 	background-color: #00000000;
 }
 input:checked#sort::before{
-	background-image: url('https://img.icons8.com/fluent-systems-regular/96/000000/sort-numeric-up-reversed.png');
+	background-image: url('https://img.icons8.com/fluent-systems-regular/96/000000/sort-amount-up-reversed.png');
 }
