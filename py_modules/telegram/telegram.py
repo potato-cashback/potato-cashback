@@ -556,8 +556,10 @@ def process_register_step_get_name(message):
 def register_last_step_phone(message):
 	userId = message.chat.id
 	if message.contact is not None:
-		print(message.contact)
-		users.update_one({'_id': userId}, {'$set': {'phone': '+'+message.contact.phone_number}})
+		phone = message.contact.phone_number
+		phone = f'+{phone}' if phone[0] != '+' else phone
+
+		users.update_one({'_id': userId}, {'$set': {'phone': phone}})
 
 		user = users.find_one({'_id': userId})
 
