@@ -65,7 +65,7 @@ def process_cashback(phone, sum):
 
 	user = users.find_one({'phone': phone})
 	# Check if unregistered
-	if user == None:
+	if user is None:
 		users.insert_one({
 			'phone': phone,
 			'balance': 0,
