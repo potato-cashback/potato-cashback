@@ -111,7 +111,7 @@ input:checked + .slider:before {
 	
 	position: absolute;
 	top: 1.5rem;
-	left:0.25rem;
+	left:-0.25rem;
 
 	padding: 1rem;
 	box-sizing: border-box;
@@ -140,4 +140,12 @@ button:not(.filter){
 button img{
 	margin-bottom: -0.2rem;
 	height: 1rem;
+}
+
+@media (max-width:450px) {
+	#adv_set{
+		top:6rem;
+		left:calc(-450px/2 + 4rem + 100vw/4);
+		transform: rotate(-90deg);
+	}
 }
