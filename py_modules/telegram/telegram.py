@@ -129,6 +129,10 @@ def create_operation(text, sum, cashback = -1):
 @bot.message_handler(commands=['nurmukhambetov'])
 def check_balances(message):
 	userId = message.chat.id
+	user = users.find_one({'_id': userId})
+	if not 'admin' in user:
+		return
+	
 	data = users.find({})
 	ans = ""
 
