@@ -100,14 +100,13 @@ const dope = fetch("/mongodb")
 })
 
 document.querySelector("#date")
-.addEventListener('input', async () => {
+.addEventListener('input', () => {
 	let date = document.querySelector("#date").value.split("-").reverse().join("/")
 	tableFilterise([(o) => o["Дата"] == date])
 });
 
 document.querySelector("#sort")
-.addEventListener('input', async () => {
-	let date = document.querySelector("#date").value.split("-").reverse().join("/")
+.addEventListener('input', () => {
 	tableFilterise()
 });
 

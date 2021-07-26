@@ -88,7 +88,7 @@ input:checked + .slider:before {
     line-height: 1.5rem;
 }
 
-#advanced span::before{
+#adv_filter_button::before{
     margin-left: 0.25rem;
 	background-image: url('https://img.icons8.com/fluent-systems-regular/48/000000/filter.png');
     display: inline-block;
@@ -100,11 +100,15 @@ input:checked + .slider:before {
 	filter: invert(var(--filter)) sepia() saturate(1000%) hue-rotate(100deg) brightness(0.95);
 }
 
+#advanced:hover #adv_set{
+	display: block;
+}
+
 #adv_set{
 	display: none;
 
 	width:90vw;
-	max-width: 400px;
+	max-width: 450px;
 
 	position: absolute;
 	top: 1.5rem;
