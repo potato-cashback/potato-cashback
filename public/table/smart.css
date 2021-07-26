@@ -129,7 +129,7 @@ input:checked + .slider:before {
 
 /* --------------------- */
 
-button:not(.filter){
+button:not(#ready){
 	-webkit-appearance: none; 
 	border: white;
 	box-sizing: border-box; 
