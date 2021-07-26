@@ -22,9 +22,13 @@ bot = telebot.TeleBot(TOKEN)
 def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_args = {}):
 	if function_name != "": 
 		users.update_one({'_id': userId}, {'$set': {'function_name': function_name, 'use_function': (function_name != '#')}})
-	if set_args != {}: users.update_one({'_id': userId}, {'$set': set_args})
-	if push_args != {}: users.update_one({'_id': userId}, {'$push': push_args})
-	if pull_args != {}: users.update_one({'_id': userId}, {'$pull': pull_args})
+
+	_update = {}
+	if set_args != {}: _update['$set'] = set_args
+	if push_args != {}: _update['$push'] = push_args
+	if pull_args != {}: _update['$pull'] = pull_args
+	users.update_one({'_id': userId}, _update)
+
 	return
 
 @app.route('/bot/'+TOKEN, methods=['POST'])
@@ -34,7 +38,6 @@ def getMessage():
 	
 	# TECHNICAL STOP FOR DEBUGS AND CODE FIXES
 	if TECHNICAL_STOP:
-		print(update)
 		try:
 			userId = update.message.chat.id
 		except:
@@ -62,7 +65,7 @@ def process_cashback(phone, sum):
 
 	user = users.find_one({'phone': phone})
 	# Check if unregistered
-	if user == None:
+	if user is None:
 		users.insert_one({
 			'phone': phone,
 			'balance': 0,
@@ -219,18 +222,24 @@ def extract(message):
 		clen[1] = max(clen[1], len(str(abs(value))))
 
 	msg = '<code>'+'ДАТА'.center(clen[0]+ 1)+'|'+'СУММА'.center(clen[1] + 4)+'|'+' ОПЕРАЦИИ'+'\n'
-
+	
+	sum_value = 0
 	for x in user['operations']:
 		value = x['cashback']
 		if value == -1: value = x['sum']
 		sub = clen[1] - len(str(abs(value)))
 		new_date = re.sub(r'2021','21', x['date'])
 		msg = msg + '{} | {}{}{}₸ | {}\n'.format(new_date, sub*' ', sign(value), abs(value), x['details'])
-	msg = msg + '\nОстаток: {}₸</code>'.format(user['balance'])
+		sum_value += abs(value)
+	
+	msg = msg + '\nОстаток: {}₸</code>'.format(sum_value)
 
 	currentInlineState = [Keyformat()]
 	keyboard = create_keyboard(tree.extract.buttons, currentInlineState)
 	bot.send_message(userId, msg, reply_markup=keyboard, parse_mode='html')
+
+	# Check if sum of all operations is equal to users balance
+	assert sum_value == user['balance']
 # <+=============================================================================================+>
 
 
