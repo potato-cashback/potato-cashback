@@ -107,9 +107,8 @@ input:checked + .slider:before {
 #adv_set{
 	display: none;
 
-	width:90vw;
-	max-width: 450px;
-
+	width: 450px;
+	
 	position: absolute;
 	top: 1.5rem;
 	left:0.25rem;
