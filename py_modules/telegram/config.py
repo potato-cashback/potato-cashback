@@ -7,7 +7,7 @@ URL_bot = URL_ser + '/bot/'
 URI = 'mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 # SYSTEM INFO
-TECHNICAL_STOP = False
+TECHNICAL_STOP = True
 groupChatId = 1654644284
 bot_nickname = "KZcashback_bot"
 
