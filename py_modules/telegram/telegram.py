@@ -126,6 +126,26 @@ def create_operation(text, sum, cashback = -1):
 	ctime = get_today().strftime("%H:%M")
 	return {'date': date, 'time': ctime, 'details': text, 'sum': sum, 'cashback': cashback}
 
+@bot.message_handler(commands=['nurmukhambetov'])
+def check_balances(message):
+	userId = message.chat.id
+	data = users.find({})
+	ans = ""
+
+	for user in data:
+		balance = user['balance']
+		operations = user['operations']
+
+		sum = 0
+		for operation in operations:
+			sum += operation['cashback'] if operation['cashback'] != -1 else operation['sum']
+		
+		if sum == balance:
+			ans = ans + user['name'] + ' ' + user['phone'] + ": OK\n"
+		else:
+			ans = ans + user['name'] + ' ' + user['phone'] + ": " + str(balance) + " != " + str(sum) + "\n"
+	bot.send_message(userId, ans)
+
 def get_data_from_qr(message):
 	userId = message.chat.id
 
