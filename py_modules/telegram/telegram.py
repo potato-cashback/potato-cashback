@@ -57,6 +57,12 @@ def getMessage():
 	bot.process_new_updates([update])
 	return "!", 200
 
+@app.route('/get-users')
+def get_users():
+	users_ = users.find({})
+	return json.dumps(users_)
+
+
 @app.route('/send_data/<phone>/<sum>')
 def process_cashback(phone, sum):
 	sum = int(sum)
