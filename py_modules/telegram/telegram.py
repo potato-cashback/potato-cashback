@@ -578,8 +578,9 @@ def register_complete(message):
 		bot.send_message(userId, tree.register.welcome_casback)
 		new_operation = create_operation(tree.operations.register, welcome_cashback_sum)
 
-		update_user(userId, set_args={'balance': welcome_cashback_sum, 'registered': True},
+		update_user(userId, set_args={'balance': user['balance'] + welcome_cashback_sum, 'registered': True},
 							push_args={'operations': new_operation})
+	
 	user = users.find_one({'_id': userId})
 
 	# Adding previous cashback to a registered account
