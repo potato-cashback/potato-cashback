@@ -123,7 +123,7 @@ input:checked + .slider:before {
 }
 
 #adv_set input{
-	width:8.5rem;
+	width:6.5rem;
 	box-sizing: border-box;
 }
 
