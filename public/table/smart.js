@@ -1,3 +1,6 @@
+let root = document.querySelector(":root");
+root.style.setProperty("--page-vw", window.screen.availWidth);
+
 var c1 = 0
 
 document.querySelector("#smart")
@@ -18,6 +21,24 @@ document.querySelector("#smart")
 
     c1 = !c1
 });
+
+var c2 = 0
+
+const hide = () => {
+	if(!c2){
+		document.querySelector("#adv_set").style.display = "block"
+	}else {
+		updateTableAccordingToFilters()
+		document.querySelector("#adv_set").style.display = "none"
+	}
+
+    c2 = !c2
+}
+
+document.querySelector("#adv_filter_button").addEventListener('click', () => {
+	hide()
+});
+document.querySelector("#ready").addEventListener('click', () => {hide()});
 
 const filter = (data, filters) => {
 	let cash_sum = 0;
@@ -117,8 +138,8 @@ const updateTableAccordingToFilters = () => {
 	return newFilters
 }
 
-document.querySelector("#adv_set").querySelectorAll("input").forEach(el => el.addEventListener("change", 
-	() =>{
-		updateTableAccordingToFilters()
-	})
-)
+// document.querySelector("#adv_set").querySelectorAll("input").forEach(el => el.addEventListener("change", 
+// 	() =>{
+// 		updateTableAccordingToFilters()
+// 	})
+// )

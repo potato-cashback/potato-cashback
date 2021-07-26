@@ -100,9 +100,9 @@ input:checked + .slider:before {
 	filter: invert(var(--filter)) sepia() saturate(1000%) hue-rotate(100deg) brightness(0.95);
 }
 
-#advanced:hover #adv_set{
+/* #advanced:hover #adv_set{
 	display: block;
-}
+} */
 
 #adv_set{
 	display: none;
