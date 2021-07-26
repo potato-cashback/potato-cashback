@@ -107,13 +107,13 @@ input:checked + .slider:before {
 #adv_set{
 	display: none;
 
-	width: 330px;
+	width: 300px;
 	
 	position: absolute;
 	top: 1.5rem;
-	left:-0.25rem;
+	left:0;
 
-	padding: 1rem;
+	padding: 1rem 2.5px;
 	box-sizing: border-box;
 
 	background-color: white;
