@@ -142,10 +142,10 @@ button img{
 	height: 1rem;
 }
 
-@media (max-width:450px) {
+/* @media (max-width:450px) {
 	#adv_set{
 		top:6rem;
 		left:calc(-450px/2 + 4rem + 100vw/4);
 		transform: rotate(-90deg);
 	}
-}
+} */
