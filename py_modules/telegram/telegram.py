@@ -23,12 +23,9 @@ def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_
 	if function_name != "": 
 		users.update_one({'_id': userId}, {'$set': {'function_name': function_name, 'use_function': (function_name != '#')}})
 
-	_update = {}
-	if set_args != {}: _update['$set'] = set_args
-	if push_args != {}: _update['$push'] = push_args
-	if pull_args != {}: _update['$pull'] = pull_args
-	users.update_one({'_id': userId}, _update)
-
+	if set_args != {}: users.update_one({'_id': userId}, {'$set': set_args})
+	if push_args != {}: users.update_one({'_id': userId}, {'$push': push_args})
+	if pull_args != {}: users.update_one({'_id': userId}, {'$pull': pull_args})
 	return
 
 @app.route('/bot/'+TOKEN, methods=['POST'])
