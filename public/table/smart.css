@@ -107,7 +107,7 @@ input:checked + .slider:before {
 #adv_set{
 	display: none;
 
-	width: 450px;
+	width: 350px;
 	
 	position: absolute;
 	top: 1.5rem;
@@ -149,3 +149,8 @@ button img{
 		transform: rotate(-90deg);
 	}
 } */
+
+.option td .switch-wrapper{
+	margin:auto;
+	margin-right:0.5rem;
+}

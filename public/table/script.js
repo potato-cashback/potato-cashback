@@ -1,7 +1,9 @@
 let t = new Date()
 let maxT = t.getFullYear() + "-" + (""+(t.getMonth()+ 1)).padStart(2, '0') + "-" + (""+t.getDate()).padStart(2, '0')
-document.querySelector("#date").max = maxT
-document.querySelector("#date").value = maxT
+document.querySelectorAll("input[type='date']").forEach(el => {
+	el.max = maxT
+	el.value = maxT
+})
 
 
 const compare = (a, b) =>{
@@ -73,8 +75,21 @@ const dope = fetch("/mongodb")
 		})   
 	})
 
+	
 	clone = JSON.parse(JSON.stringify(output))
+	
+	minT = "2021-07-20"
+	
+	clone.forEach(op => {
+		q = op["Дата"].split("/").reverse().join("-")
+		if(minT >= q)
+			minT = q
+	})
 
+	document.querySelectorAll("input[type='date']").forEach(el => {
+		el.min = minT
+	})
+	
 	let date = document.querySelector("#date").value.split("-").reverse().join("/")
 	tableFilterise([(o) => o["Дата"] == date])
 
