@@ -230,7 +230,7 @@ def extract(message):
 		sub = clen[1] - len(str(abs(value)))
 		new_date = re.sub(r'2021','21', x['date'])
 		msg = msg + '{} | {}{}{}₸ | {}\n'.format(new_date, sub*' ', sign(value), abs(value), x['details'])
-		sum_value += abs(value)
+		sum_value += value
 	
 	msg = msg + '\nОстаток: {}₸</code>'.format(sum_value)
 
