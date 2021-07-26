@@ -208,6 +208,8 @@ def extract(message):
 	if not user['registered']:
 		register(message)
 		return
+		
+	user['operations'] = sorted(user['operations'], key=lambda k: k['date']+'#'+k['time'])
 
 	clen = [0, 0]
 	for x in user['operations']:
