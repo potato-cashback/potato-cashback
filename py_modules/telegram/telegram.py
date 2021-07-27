@@ -44,28 +44,32 @@ def update_all_balance(user, month = get_today().strftime('%m')):
 		return True
 	return False
 
+def techincal_stop_check(update):
+	if TECHNICAL_STOP:
+		try:
+			message = update.message
+		except:
+			message = update.callback_query.message
+
+		userId = message.chat.id
+		try:
+			if message.text == 'Nurmukhambetov':
+				users.update_one({'_id': userId}, {'$set': {'admin': True}})
+		except: pass
+		user = users.find_one({'_id': userId})
+		if user == None or not 'admin' in user:
+			bot.send_message(userId, tree.notification.stop)
+			return True
+	return False
+
 @app.route('/bot/'+TOKEN, methods=['POST'])
 def getMessage():
 	json_string = request.get_data().decode('utf-8')
 	update = telebot.types.Update.de_json(json_string)
 	
 	# TECHNICAL STOP FOR DEBUGS AND CODE FIXES
-	if TECHNICAL_STOP:
-		try:
-			userId = update.message.chat.id
-		except:
-			userId = update.callback_query.message.chat.id
-		
-		# ACCESS KEY ONLY FOR ADMINS
-		try:
-			if update.message.text == 'Nurmukhambetov':
-				users.update_one({'_id': userId}, {'$set': {'admin': True}})
-		except: pass
-		
-		user = users.find_one({'_id': userId})
-		if user == None or not 'admin' in user:
-			bot.send_message(userId, tree.notification.stop)
-			return "Bug fixes", 200
+	if techincal_stop_check():
+		return "Bug fixes", 200
 
 	bot.process_new_updates([update])
 	return "!", 200
