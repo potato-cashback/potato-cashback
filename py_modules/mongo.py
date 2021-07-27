@@ -46,7 +46,7 @@ def send_data(phone, sum):
 		r = requests.get(URL + '/send_data/'+phone+'/'+sum)
 		if(r.text == 'nice'):
 			return 'good'
-		elif(r.ok == True):
+		elif(r.text == 'bad'):
 			return 'bad'
 	except:	
 		return 'server error'

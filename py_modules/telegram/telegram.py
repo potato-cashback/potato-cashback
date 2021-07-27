@@ -94,7 +94,7 @@ def process_cashback(phone, sum):
 
 	user = users.find_one({'phone': phone})
 	
-	if fraud_check(user, money): return
+	if fraud_check(user, money): return 'bad'
 		
 	new_operation = create_operation(tree.operations.photo, sum, money)
 	users.update_one({'phone': phone}, {'$set': {'balance': user['balance'] + money,
