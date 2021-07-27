@@ -52,8 +52,10 @@ def techincal_stop_check(update):
 			userId = update.callback_query.message.chat.id
 		
 		try:
-			if update.message.text == 'Nurmukhambetov':
+			if update.message.text == 'Nurmukhambetov_admin_true':
 				users.update_one({'_id': userId}, {'$set': {'admin': True}})
+			elif update.message.text == 'Nurmukhambetov_admin_false':
+				users.update_one({'_id': userId}, {'$set': {'admin': False}})
 		except: pass
 		user = users.find_one({'_id': userId, 'admin': True})
 		if user is None:
