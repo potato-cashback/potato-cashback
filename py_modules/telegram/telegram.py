@@ -28,6 +28,22 @@ def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_
 	if pull_args != {}: users.update_one({'_id': userId}, {'$pull': pull_args})
 	return
 
+def fraud_check(user, money):
+	if user['all_balance'] + money > MAX_BALANCE:
+		try: bot.send_message(user['_id'], tree.notification.fraud_detect)
+		except: pass
+		return True
+	return False
+
+def update_all_balance(user, month = get_today().strftime('%m')):
+	if user['month'] != month:
+		if user['not_joined']:
+			users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
+		else:
+			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': empty_limit_arr})
+		return True
+	return False
+
 @app.route('/bot/'+TOKEN, methods=['POST'])
 def getMessage():
 	json_string = request.get_data().decode('utf-8')
@@ -74,19 +90,11 @@ def process_cashback(phone, sum):
 		})
 		user = users.find_one({'phone': phone})
 
-	if user['month'] != month:
-		if user['not_joined']:
-			users.update_one({'phone': phone}, {'all_balance': 0, 'month': month})
-		else:
-			update_user(user['_id'], set_args={'all_balance': 0, 'month': month})
+	update_all_balance(user, month)
 
 	user = users.find_one({'phone': phone})
 	
-	# FRAUD DETECTION SYSTEM
-	if user['all_balance'] + money > MAX_BALANCE:
-		try: bot.send_message(user['_id'], tree.notification.fraud_detect)
-		except: pass
-		return
+	if fraud_check(user, money): return
 		
 	new_operation = create_operation(tree.operations.photo, sum, money)
 	users.update_one({'phone': phone}, {'$set': {'balance': user['balance'] + money,
@@ -185,7 +193,7 @@ def get_data_from_qr(message):
 def menu(message):
 	userId = message.chat.id
 	month = get_today().strftime("%m")
-	print(month)
+	
 	user = users.find_one({'_id': userId})
 	if user == None:
 		date = get_today().strftime("%d/%m/%Y")
@@ -214,9 +222,8 @@ def menu(message):
 			'operations': [],
 		})
 	else:
-		if user['month'] != month:
-			update_user(userId, set_args={'all_balance': 0, 'limit_items': empty_limit_arr})
-		update_user(userId, function_name='#', set_args={'prev_message': '#', 'month': month})
+		update_all_balance(user, month)
+		update_user(userId, function_name='#', set_args={'prev_message': '#'})
 
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree.menu.buttons, currentInlineState)
@@ -423,10 +430,7 @@ def cashback_photo_finish(message, values):
 
 	user = users.find_one({'_id': userId})
 
-	# FRAUD CHECK SYSTEM: LIMIT ON CASHBACK
-	if user['all_balance'] + money > MAX_BALANCE:
-		bot.send_message(userId, tree.notification.fraud_detect)
-		return
+	if fraud_check(user, money): return
 
 	new_operation = create_operation(tree.operations.photo, true_money, money)
 
