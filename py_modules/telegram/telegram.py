@@ -47,18 +47,16 @@ def update_all_balance(user, month = get_today().strftime('%m')):
 def techincal_stop_check(update):
 	if TECHNICAL_STOP:
 		try:
-			message = update.message
+			userId = update.message.chat.id
 		except:
-			message = update.callback_query.message
-		print(message)
-
-		userId = message.chat.id
+			userId = update.callback_query.message.chat.id
+		
 		try:
-			if message.text == 'Nurmukhambetov':
+			if update.message.text == 'Nurmukhambetov':
 				users.update_one({'_id': userId}, {'$set': {'admin': True}})
 		except: pass
-		user = users.find_one({'_id': userId})
-		if user == None or not 'admin' in user:
+		user = users.find_one({'_id': userId, 'admin': True})
+		if user is None:
 			bot.send_message(userId, tree.notification.stop)
 			return True
 	return False
