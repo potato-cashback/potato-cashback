@@ -68,7 +68,7 @@ def getMessage():
 	update = telebot.types.Update.de_json(json_string)
 	
 	# TECHNICAL STOP FOR DEBUGS AND CODE FIXES
-	if techincal_stop_check():
+	if techincal_stop_check(update):
 		return "Bug fixes", 200
 
 	bot.process_new_updates([update])
