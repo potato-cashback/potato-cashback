@@ -76,9 +76,7 @@ def get_today():
 
 
 def sign(x):
-    if x - abs(x) == 0:
-        return '+'
-    return '-'
+    return str(x) if x < 0 else '+'+str(x)
 
 def in_array(arr, x):
     for y in arr:

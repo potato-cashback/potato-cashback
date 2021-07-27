@@ -162,6 +162,7 @@ def check_balances(message):
 			ans = ans + user['name'] + ' ' + user['phone'] + ": " + str(balance) + " != " + str(sum) + "\n"
 	bot.send_message(userId, ans)
 
+
 def get_data_from_qr(message):
 	userId = message.chat.id
 
@@ -180,8 +181,7 @@ def get_data_from_qr(message):
 		response = urllib.request.urlopen(URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
 		status = Map(json.loads(response))
 		print(status)
-	except Exception as e:
-		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
+	except:
 		update_user(userId, 'cashback_photo_QR')
 		bot.send_message(userId, tree.cashback_photo.qr_not_found)
 		return
@@ -243,35 +243,31 @@ def extract(message):
 	if not user['registered']:
 		register(message)
 		return
-		
-	user['operations'] = sorted(user['operations'], key=lambda k: k['date']+'#'+k['time'])
 
-	clen = [0, 0]
-	for x in user['operations']:
-		clen[0] = max(clen[0], len(x['date']) - 2)
-		value = x['cashback']
-		if value == -1: value = x['sum']
-		clen[1] = max(clen[1], len(str(abs(value))))
+	operations = sorted(user['operations'], key=lambda k: k['date']+'#'+k['time'])
+	queries = [{'date': re.sub(r'2021','21', o['date']), 
+				'details': o['details'],
+				'value': sign(o['cashback'] if o['cashback'] != -1 else o['sum'])} for o in operations]
+	mx_lens = {
+		'date': max(len(q['date']) for q in queries),
+		'value': max(len(q['value']) for q in queries),
+		'details': max(len(q['details']) for q in queries)
+	}
 
-	msg = '<code>'+'ДАТА'.center(clen[0]+ 1)+'|'+'СУММА'.center(clen[1] + 4)+'|'+' ОПЕРАЦИИ'+'\n'
-	
+	msg = 'ДАТА'.center(mx_lens['date'] + 1)+'|'+'СУММА'.center(mx_lens['value'] + 3)+'|'+'ОПЕРАЦИИ'.center(mx_lens['details'] + 1)+'\n'
 	sum_value = 0
-	for x in user['operations']:
-		value = x['cashback']
-		if value == -1: value = x['sum']
-		sub = clen[1] - len(str(abs(value)))
-		new_date = re.sub(r'2021','21', x['date'])
-		msg = msg + '{} | {}{}{}₸ | {}\n'.format(new_date, sub*' ', sign(value), abs(value), x['details'])
-		sum_value += value
-	
-	msg = msg + '\nОстаток: {}₸</code>'.format(sum_value)
+	for q in queries:
+		spaces = (mx_lens['value'] - len(q['value']))*' '
+		new_msg = '{} | {}{}₸ | {}\n'.format(q['date'], spaces, q['value'], q['details'])
+		msg = msg + new_msg
+		sum_value = sum_value + int(q['value'])
+	msg = msg + '\nОстаток: {}₸'.format(sum_value)
+
+	msg = '<code>'+msg+'</code>'
 
 	currentInlineState = [Keyformat()]
 	keyboard = create_keyboard(tree.extract.buttons, currentInlineState)
 	bot.send_message(userId, msg, reply_markup=keyboard, parse_mode='html')
-
-	# Check if sum of all operations is equal to users balance
-	assert sum_value == user['balance']
 # <+=============================================================================================+>
 
 
