@@ -463,7 +463,7 @@ def share(message):
 	keyboard = create_keyboard(tree.share.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId,
 				   photo=tree.share.image,
-				   caption=tree.share.text,
+				   caption=tree.share.text.format(friend_money),
 				   reply_markup=keyboard)
 
 def get_nicknames(message):
@@ -617,7 +617,7 @@ def register_complete(message):
 	user = users.find_one({'_id': userId})
 
 	if not user['registered']:
-		bot.send_message(userId, tree.register.welcome_casback)
+		bot.send_message(userId, tree.register.welcome_casback.format(welcome_cashback_sum))
 		new_operation = create_operation(tree.operations.register, welcome_cashback_sum)
 
 		update_user(userId, set_args={'balance': user['balance'] + welcome_cashback_sum, 'registered': True},

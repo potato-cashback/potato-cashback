@@ -78,7 +78,7 @@ a{
 }
 
 
-#sum, #username, #password, #phone{
+#sum, #username, #password, #phone, .setting {
 	width:100vw;
 	height: 4rem;
 	font-size: 2rem;
@@ -95,6 +95,16 @@ a{
 	padding: 1rem;
 	margin: 0;
 }
-#sum::after{
+#sum::after, .cashback::after{
 	content:" ₸";
+}
+
+.setting {
+	min-height: 1.9rem;
+	font-size: 0.9rem;
+	line-height: 0.9rem;
+	padding: 0.5rem;
+
+	text-align: left;
+	height: auto;
 }

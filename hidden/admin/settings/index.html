@@ -21,13 +21,36 @@
 			<summary class="noselect">
 				<h2>Telegram</h2>
 			</summary>
-			botkey 
-			<div contenteditable=true id="username" placeholder="Username"></div>
-			botkey 
-			<div contenteditable=true id="username" placeholder="Username"></div>
-			
+			<br>
+			<h3>Stop bot <input id="stop" type="checkbox"></h3>
+			<br>
+			<h3>Background bot manager ID</h3>
+			<div contenteditable=true class="setting" id="groupChatId" placeholder="groupChatId">1654644284</div>
+			<br>
+			<h3>Bot token</h3> 
+			<div contenteditable=true class="setting" id="bot-token" placeholder="TOKEN">1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA</div>
+			<br>
+			<h3>MongoDB URI</h3>
+			<div contenteditable=true class="setting" id="mongo-uri" placeholder="URI">mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority</div>		
 		</details>
-		
+		<br>
+		<details>
+			<summary class="noselect">
+				<h2>Cashback</h2>
+			</summary>
+			<br>
+			<h3>Cashback for friends</h3>
+			<div contenteditable=true class="setting cashback" id="cashback-friends" placeholder="cashback">20</div>
+			<br>
+			<h3>Welcome cashback</h3>
+			<div contenteditable=true class="setting cashback" id="welcome-cashback" placeholder="cashback">200</div>
+			<br>
+			<h3>Max limit cashback</h3>
+			<div contenteditable=true class="setting cashback" id="max-limit-cashback" placeholder="cashback">20000</div>
+		</details>
+
+		<br>
+		<input type="submit" value="Сохранить" onclick="save();" id="submit">
 	</main>
 </body>
 
@@ -47,6 +70,12 @@
 	summary::marker{
 		font-size: 1.5rem;
 	}
+
+	h3 {
+		margin: 0;
+		padding: 0;
+	}
+
 </style>
 
 </html>
