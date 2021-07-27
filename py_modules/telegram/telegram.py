@@ -50,6 +50,7 @@ def techincal_stop_check(update):
 			message = update.message
 		except:
 			message = update.callback_query.message
+		print(message)
 
 		userId = message.chat.id
 		try:
