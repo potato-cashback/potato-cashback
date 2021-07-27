@@ -430,7 +430,10 @@ def cashback_photo_finish(message, values):
 
 	user = users.find_one({'_id': userId})
 
-	if fraud_check(user, money): return
+	if fraud_check(user, money): 
+		urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
+		menu(message)
+		return
 
 	new_operation = create_operation(tree.operations.photo, true_money, money)
 
