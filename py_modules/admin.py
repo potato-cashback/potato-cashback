@@ -12,10 +12,13 @@ def send_file10():
 def send_file11(path):
 	return send_from_directory('./hidden/login/', path)
 
-@app.route('/admin/<u>/<p>/<path>')
+@app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
 	if(u == username and p == password):
-		return send_from_directory('./hidden/admin/', path + '/index.html')
+		if(not "." in path):
+			return send_from_directory('./hidden/admin/', path + '/index.html')
+		else:
+			return send_from_directory('./hidden/admin/', path)
 	else:
 		return '<script>window.location.href = "/"</script>'
 

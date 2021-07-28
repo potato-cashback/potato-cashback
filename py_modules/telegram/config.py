@@ -9,7 +9,7 @@ URI = 'mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDa
 # SYSTEM INFO
 TECHNICAL_STOP = False
 groupChatId = 1654644284
-bot_nickname = "KZcashback_bot"
+# bot_nickname = "KZcashback_bot" not used
 
 # INFO ON CASHBACK
 friend_money = 20
