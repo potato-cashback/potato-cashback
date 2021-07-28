@@ -3,17 +3,16 @@ from py_modules.mongo import users
 
 import re
 import os
-
 import telebot
-
 import urllib.request
 
-from py_modules.telegram.config import *
-from py_modules.telegram.functions import *
 from flask import request
 from PIL import Image
 
 bot = telebot.TeleBot(TOKEN)
+
+from py_modules.telegram.config import *
+from py_modules.telegram.functions import *
 
 @app.route('/bot/'+TOKEN, methods=['POST'])
 def getMessage():
