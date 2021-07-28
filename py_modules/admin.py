@@ -1,10 +1,10 @@
 from config import username, password
 
 from flask import current_app as app
-from flask import send_from_directory, Response
+from flask import send_from_directory, Response, request
 
 from py_modules.mongo import users
-
+import json
 
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
@@ -29,6 +29,37 @@ def clean(u, p):
 			return 'wrong username or password'
 	except:	
 		return 'server error'
+
+@app.route('/admin/<u>/<p>/saveJSON', methods=['GET'])
+def saveJson(u, p):
+	try: assert username == u and password == p
+	except: return 'server error', 404
+
+	data = json.loads(request.args.get('data'))
+	path = './hidden/settings.json'
+
+	updateJsonFile(path, data)
+
+	return 'saved', 200
+
+def updateJsonFile(path, new_data):
+	try:
+		# Get data from JSON file
+		jsonFile = open(path, "r", encoding='utf-8')
+		data = json.load(jsonFile)
+		jsonFile.close()
+
+		for key in new_data:
+			data[key] = new_data[key]
+
+		## Save our changes to JSON file
+		jsonFile = open(path, "w+", encoding='utf-8')
+		jsonFile.write(json.dumps(data, ensure_ascii=False))
+		jsonFile.close()
+		return 'good'
+	except Exception as e:
+		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
+		return False
 
 import io
 import random

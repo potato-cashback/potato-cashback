@@ -10,11 +10,15 @@ let limit_cashback = document.querySelector('#max-limit-cashback')
 
 let save = document.querySelector('#submit')
 
-const saveJson = () => {
-    console.log(create_json())
+const saveJson = async function() {
+    let data = create_json();
+    let url = 'saveJSON?data=' + encodeURIComponent(JSON.stringify(data))
+    console.log(url)
+    let request = await fetch(url)
+    console.log(request)
 }
 
-function create_json() {    
+function create_json() {
     return {
         "TOKEN": token.innerText,
         "URI": uri.innerText,
