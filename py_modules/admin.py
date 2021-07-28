@@ -5,12 +5,6 @@ from flask import send_from_directory, Response
 
 from py_modules.mongo import users
 
-@app.route('/login')
-def send_file10():
-	return send_from_directory('./hidden/login/', 'index.html')
-@app.route('/login/<path:path>')
-def send_file11(path):
-	return send_from_directory('./hidden/login/', path)
 
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
