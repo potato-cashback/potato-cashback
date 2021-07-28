@@ -8,39 +8,38 @@ import json
 
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
-	if(u == username and p == password):
-		if(not "." in path):
-			return send_from_directory('./hidden/admin/', path + '/index.html')
-		else:
-			return send_from_directory('./hidden/admin/', path)
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+
+	if(not "." in path):
+		return send_from_directory('./hidden/admin/', path + '/index.html')
 	else:
-		return '<script>window.location.href = "/"</script>'
+		return send_from_directory('./hidden/admin/', path)
 
 
 @app.route('/admin/<u>/<p>/clean')
 def clean(u, p):
-	try:
-		if (username == u and password == p):
-			user_0 = users.delete_one({'phone': '+0'})
-			user_1 = users.delete_one({'phone': '+1'})
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
 
-			return 'cleaned'
-		else:
-			return 'wrong username or password'
+	try:
+		user_0 = users.delete_one({'phone': '+0'})
+		user_1 = users.delete_one({'phone': '+1'})
+		return 'cleaned'
 	except:	
 		return 'server error'
 
 @app.route('/admin/<u>/<p>/saveJSON', methods=['GET'])
 def saveJson(u, p):
 	try: assert username == u and password == p
-	except: return 'server error', 404
+	except: return 'wrong username or password'
 
 	data = json.loads(request.args.get('data'))
 	path = './hidden/settings.json'
 
 	updateJsonFile(path, data)
 
-	return 'saved', 200
+	return 'saved'
 
 def updateJsonFile(path, new_data):
 	try:
@@ -82,6 +81,9 @@ def plot(f):
 
 @app.route('/admin/<u>/<p>/analytic/plot_1.png')
 def plot_1(u, p):
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+
 	fig = Figure()
 	axis = fig.add_subplot(1, 1, 1)
 	axis.set_title('Распредиление Покупок')
@@ -94,6 +96,9 @@ def plot_1(u, p):
 
 @app.route('/admin/<u>/<p>/analytic/plot_2.png')
 def plot_2(u, p):
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+
 	fig = Figure()
 	axis = fig.add_subplot(1, 1, 1)
 	axis.set_title('Распредиление Покупок')
@@ -105,6 +110,9 @@ def plot_2(u, p):
 
 @app.route('/admin/<u>/<p>/analytic/plot_3.png')
 def plot_3(u, p):
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+
 	fig = Figure()
 	axis = fig.add_subplot(1, 1, 1)
 	axis.set_title('Распредиление Покупок')
