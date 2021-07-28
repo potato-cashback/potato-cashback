@@ -1,5 +1,5 @@
-from py_modules.telegram.telegram import bot
-from py_modules.telegram.config import *
+import py_modules.telegram.telegram as telegram
+import py_modules.telegram.config as config
 from py_modules.mongo import users
 
 import re
@@ -83,8 +83,8 @@ def cashback_logic(sum, cashback):
     return res
 
 def fraud_check(user, money):
-	if user['all_balance'] + money > MAX_BALANCE:
-		try: bot.send_message(user['_id'], tree.notification.fraud_detect)
+	if user['all_balance'] + money > config.MAX_BALANCE:
+		try: telegram.bot.send_message(user['_id'], config.tree.notification.fraud_detect)
 		except: pass
 		return True
 	return False
@@ -117,13 +117,13 @@ def update_all_balance(user, month = get_today().strftime('%m')):
 		if user['not_joined']:
 			users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
 		else:
-			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': empty_limit_arr})
+			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': config.empty_limit_arr})
 		return True
 	return False
 # <==========================================>
 
 def techincal_stop_check(update):
-	if TECHNICAL_STOP:
+	if config.TECHNICAL_STOP:
 		try:
 			userId = update.message.chat.id
 		except:
@@ -137,7 +137,7 @@ def techincal_stop_check(update):
 		except: pass
 		user = users.find_one({'_id': userId, 'admin': True})
 		if user is None:
-			bot.send_message(userId, tree.notification.stop)
+			telegram.bot.send_message(userId, config.tree.notification.stop)
 			return True
 	return False
 
@@ -146,8 +146,8 @@ def get_data_from_qr(message):
 	userId = message.chat.id
 
 	photo_id = message.photo[-1].file_id
-	file_photo = bot.get_file(photo_id)
-	downloaded_file_photo = bot.download_file(file_photo.file_path)
+	file_photo = telegram.bot.get_file(photo_id)
+	downloaded_file_photo = telegram.bot.download_file(file_photo.file_path)
 
 	img = Image.open(BytesIO(downloaded_file_photo))
 	decoded = decode(img)
@@ -156,7 +156,7 @@ def get_data_from_qr(message):
 	# ANTI-FRAUD SYSTEM
 	try:
 		data = Data(decoded[0].data)
-		response = urllib.request.urlopen(URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
+		response = urllib.request.urlopen(config.URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
 		status = Map(json.loads(response))
 		print(status)
 	except:
