@@ -6,7 +6,7 @@ URL_bot = URL_ser + '/bot/'
 URI = 'mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 # SYSTEM INFO
-TECHNICAL_STOP = True
+TECHNICAL_STOP = False
 groupChatId = 1654644284
 
 # INFO ON CASHBACK
