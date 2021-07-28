@@ -1,67 +1,19 @@
 from flask import current_app as app
 from py_modules.mongo import users
 
-from io import BytesIO
 import re
 import os
-import json
 
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 
-from pyzbar.pyzbar import decode
 import urllib.request
-from PIL import Image
 
 from py_modules.telegram.config import *
 from py_modules.telegram.functions import *
 from flask import request
+from PIL import Image
 
 bot = telebot.TeleBot(TOKEN)
-
-def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_args = {}):
-	if function_name != "": 
-		users.update_one({'_id': userId}, {'$set': {'function_name': function_name, 'use_function': (function_name != '#')}})
-
-	if set_args != {}: users.update_one({'_id': userId}, {'$set': set_args})
-	if push_args != {}: users.update_one({'_id': userId}, {'$push': push_args})
-	if pull_args != {}: users.update_one({'_id': userId}, {'$pull': pull_args})
-	return
-
-def fraud_check(user, money):
-	if user['all_balance'] + money > MAX_BALANCE:
-		try: bot.send_message(user['_id'], tree.notification.fraud_detect)
-		except: pass
-		return True
-	return False
-
-def update_all_balance(user, month = get_today().strftime('%m')):
-	if user['month'] != month:
-		if user['not_joined']:
-			users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
-		else:
-			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': empty_limit_arr})
-		return True
-	return False
-
-def techincal_stop_check(update):
-	if TECHNICAL_STOP:
-		try:
-			userId = update.message.chat.id
-		except:
-			userId = update.callback_query.message.chat.id
-		
-		try:
-			if update.message.text == 'Nurmukhambetov_admin_true':
-				users.update_one({'_id': userId}, {'$set': {'admin': True}})
-			elif update.message.text == 'Nurmukhambetov_admin_false':
-				users.update_one({'_id': userId}, {'$set': {'admin': False}})
-		except: pass
-		user = users.find_one({'_id': userId, 'admin': True})
-		if user is None:
-			bot.send_message(userId, tree.notification.stop)
-			return True
-	return False
 
 @app.route('/bot/'+TOKEN, methods=['POST'])
 def getMessage():
@@ -117,28 +69,6 @@ def webhook():
 	bot.set_webhook(url = URL_bot + TOKEN)
 	return '!', 200
 
-def create_keyboard(arr, vals):
-	keyboard = InlineKeyboardMarkup()
-	i = 0
-	for lst in arr:
-		buttons = []
-		for button in lst:
-			if vals[i].type == 'callback':
-				inlineValue = InlineKeyboardButton(button.text.format(*vals[i].texts),
-												   callback_data=button.callback.format(*vals[i].callbacks))
-			elif vals[i].type == 'url':
-				inlineValue = InlineKeyboardButton(button.text.format(*vals[i].texts),
-												   url=button.url.format(*vals[i].urls))
-			buttons.append(inlineValue)
-			i = i + 1
-		keyboard.row(*buttons)
-	return keyboard
-
-def create_operation(text, sum, cashback = -1):
-	date = get_today().strftime("%d/%m/%Y")
-	ctime = get_today().strftime("%H:%M")
-	return {'date': date, 'time': ctime, 'details': text, 'sum': sum, 'cashback': cashback}
-
 @bot.message_handler(commands=['nurmukhambetov'])
 def check_balances(message):
 	userId = message.chat.id
@@ -162,37 +92,6 @@ def check_balances(message):
 		else:
 			ans = ans + user['name'] + ' ' + user['phone'] + ": " + str(balance) + " != " + str(sum) + "\n"
 	bot.send_message(userId, ans)
-
-
-def get_data_from_qr(message):
-	userId = message.chat.id
-
-	photo_id = message.photo[-1].file_id
-	file_photo = bot.get_file(photo_id)
-	downloaded_file_photo = bot.download_file(file_photo.file_path)
-
-	img = Image.open(BytesIO(downloaded_file_photo))
-	decoded = decode(img)
-
-
-	print(decoded)
-	# ANTI-FRAUD SYSTEM
-	try:
-		data = Data(decoded[0].data)
-		response = urllib.request.urlopen(URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
-		status = Map(json.loads(response))
-		print(status)
-	except:
-		update_user(userId, 'cashback_photo_QR')
-		bot.send_message(userId, tree.cashback_photo.qr_not_found)
-		return
-	if status.status == 'not ok':
-		bot.send_message(userId, tree.cashback_photo.wrong_qr)
-		menu(message)
-		return
-
-	data.sum = int(data.sum)
-	return data
 
 @bot.message_handler(commands=['start'])
 def menu(message):
@@ -295,7 +194,7 @@ def list_gifts(message, value):
 
 	keyboard = create_keyboard(tree.list_gifts.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId, 
-				   photo=item.image, 
+				   photo=Image.open(item.image), 
 				   reply_markup=keyboard)
 def buy_gift(message, value):
 	userId = message.chat.id
@@ -313,7 +212,7 @@ def buy_gift(message, value):
 	currentInlineState = [Keyformat(callbacks=[toyId, sectionId]), Keyformat(callbacks=[sectionId])]
 	keyboard = create_keyboard(tree.buy_gift.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId, 
-				   photo=item.image, 
+				   photo=Image.open(item.image), 
 				   caption=tree.buy_gift.text.format(item.name, item.price, user['balance'], date, user['name'], user['phone']),
 				   reply_markup=keyboard)
 def user_buy(message, value):
@@ -356,7 +255,7 @@ def confirm_user(message, value):
 
 	keyboard = create_keyboard(tree.confirmation.buttons, currentInlineState)
 	bot.send_photo(chat_id=groupChatId, 
-				   photo=item.image,
+				   photo=Image.open(item.image),
 				   caption=tree.confirmation.text.format(item.tag, user['username'], user['balance'], user['name'], user['phone']), 
 				   reply_markup=keyboard,
 				   parse_mode='html')
@@ -382,7 +281,7 @@ def confirmed(message, value):
 		bot.send_message(userId, tree.notification.product_success)
 
 	bot.send_photo(chat_id=groupChatId,
-				   photo=item.image,
+				   photo=Image.open(item.image),
 				   caption=tree.notification.client_info.format(item.tag, user['username'], text, user['balance'], user['name'], user['phone']),
 				   parse_mode='html')
 # <+=============================================================================================+>
@@ -409,7 +308,14 @@ def cashback_photo_QR(message):
 		return
 
 	data = get_data_from_qr(message)
-	if data == None: return
+	if data == "not found":
+		update_user(userId, 'cashback_photo_QR')
+		bot.send_message(userId, tree.cashback_photo.qr_not_found)
+		return
+	elif data == "not ok":
+		bot.send_message(userId, tree.cashback_photo.wrong_qr)
+		menu(message)
+		return
 
 	currentInlineState = [Keyformat(callbacks=[data.date, data.sum]), 
 						  Keyformat(callbacks=[data.date]), 
@@ -451,7 +357,6 @@ def cashback_photo_cancel(message, values):
 	possibles.update(locals())
 	method = possibles.get(function_name)
 	method(message)
-
 # <+=============================================================================================+>
 
 
@@ -462,7 +367,7 @@ def share(message):
 	currentInlineState = [Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree.share.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId,
-				   photo=tree.share.image,
+				   photo=Image.open(tree.share.image),
 				   caption=tree.share.text.format(friend_money),
 				   reply_markup=keyboard)
 
@@ -506,7 +411,7 @@ def get_nicknames(message):
 	
 	if user['prev_message'] == '#':
 		msg = bot.send_photo(chat_id=userId,
-							 photo=tree.get_nicknames.image,
+							 photo=Image.open(tree.get_nicknames.image),
 							 caption=tree.get_nicknames.text + list_friends,
 							 reply_markup=keyboard,
 							 parse_mode='html')
@@ -517,9 +422,6 @@ def get_nicknames(message):
 								 caption=tree.get_nicknames.text + list_friends,
 								 reply_markup=keyboard,
 								 parse_mode='html')
-
-
-
 # <+=============================================================================================+>
 
 
@@ -530,7 +432,7 @@ def conditions(message):
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree.conditions.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId, 
-				   photo=tree.conditions.image, 
+				   photo=Image.open(tree.conditions.image), 
 				   caption=tree.conditions.text, 
 				   reply_markup=keyboard)
 
@@ -584,11 +486,7 @@ def process_register_step_get_name(message):
 	userId = message.chat.id
 	update_user(userId, 'register_last_step_phone', set_args={'name': message.text})
 
-	keyboard = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-	keyboard.one_time_keyboard = True
-
-	button_phone = KeyboardButton(text="Продолжить", request_contact=True)
-	keyboard.add(button_phone)
+	keyboard = create_reply_keyboard(tree.register.reply_buttons)
 	bot.send_message(userId, tree.register.get_telephone, reply_markup=keyboard, parse_mode='html')
 # PHONE
 def register_last_step_phone(message):
@@ -603,15 +501,15 @@ def register_last_step_phone(message):
 
 		date = get_today().strftime("%d/%m/%Y")
 
-		bot.send_message(userId, tree.register.check_info, reply_markup=ReplyKeyboardRemove())
+		bot.send_message(userId, tree.register.check_info)
+
 		keyboard = create_keyboard(tree.register.buttons, [Keyformat(), Keyformat()])
 		bot.send_message(userId, tree.profile.text.format(user['balance'], date, user['name'], user['phone']), reply_markup=keyboard)
 	else:
-		keyboard = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-		button_phone = KeyboardButton(text="Продолжить", request_contact=True)
-		keyboard.add(button_phone)
+		keyboard = create_reply_keyboard(tree.register.reply_buttons)
 		bot.send_message(userId, tree.register.get_telephone, reply_markup=keyboard, parse_mode='html')
 
+# COMPLETE
 def register_complete(message):
 	userId = message.chat.id
 	user = users.find_one({'_id': userId})
@@ -635,7 +533,6 @@ def register_complete(message):
 		for operation in prev_user_data['operations']:
 			update_user(userId, push_args={'operations': operation})
 
-		# Remove not_joined document
 		users.delete_one({'phone': user['phone'], 'not_joined': True})
 
 	# Sending cashback to those who written their phone number
@@ -651,12 +548,6 @@ def register_complete(message):
 
 	profile(message)
 # <+=============================================================================================+>
-def calc(query):
-	value = -1
-	if '?' in query:
-		value = re.search(r'\?.+', query)[0][1:].split(',')
-		query = re.search(r'^[^\?]+', query)[0]
-	return [query, value]
 
 @bot.message_handler(content_types = ['text', 'photo', 'contact'])
 def receiver(message):
@@ -681,10 +572,11 @@ def receiver(message):
 			print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
 			return
 	elif message.content_type == "photo":
-		cashback_photo_QR(message)
+		data = cashback_photo_QR(message)
+		if data == "not found" or data == "not ok":
+			bot.send_message(userId, TEMPLATE_MESSAGE)
 	else:
 		bot.send_message(userId, TEMPLATE_MESSAGE)
-
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):

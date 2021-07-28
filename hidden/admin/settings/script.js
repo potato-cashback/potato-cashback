@@ -11,7 +11,7 @@ let limit_cashback = document.querySelector('#max-limit-cashback')
 let save = document.querySelector('#submit')
 
 const saveJson = () => {
-    console.log(create_json());
+    console.log(create_json())
 }
 
 function create_json() {    

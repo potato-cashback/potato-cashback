@@ -1,8 +1,18 @@
+from py_modules.telegram.telegram import bot
+from py_modules.telegram.config import *
+from py_modules.mongo import users
+
 import re
 import json
+import urllib.request
 
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from datetime import datetime
 from pytz import timezone
+from io import BytesIO
+from pyzbar.pyzbar import decode
+from PIL import Image
+
 
 class Data(object):
     def __init__(self, j):
@@ -14,7 +24,6 @@ class Keyformat(object):
         self.texts = texts
         self.callbacks = callbacks
         self.urls = urls
-
 
 class Map(dict):
     def __init__(self, *args, **kwargs):
@@ -60,33 +69,128 @@ class Map(dict):
         super(Map, self).__delitem__(key)
         del self.__dict__[key]
 
-def getFromArrDict(arr, name, val):
-    for x in arr:
-        if x[name] == val:
-            return x
-    return None
-
-def previous(path):
-    return re.search(r'(.+\/)+', path)[0][:-1]
-
-
 def get_today():
     local_now = datetime.now(timezone('Asia/Almaty'))
     return local_now
 
-
 def sign(x):
     return str(x) if x < 0 else '+'+str(x)
-
-def in_array(arr, x):
-    for y in arr:
-        key = list(y.keys())[0]
-        if key == x:
-            return True
-    return False
 
 def cashback_logic(sum, cashback):
     res = 0
     if sum >= 5000: res = cashback[1]
     elif sum >= 3000: res = cashback[0]
     return res
+
+def fraud_check(user, money):
+	if user['all_balance'] + money > MAX_BALANCE:
+		try: bot.send_message(user['_id'], tree.notification.fraud_detect)
+		except: pass
+		return True
+	return False
+
+def create_operation(text, sum, cashback = -1):
+	date = get_today().strftime("%d/%m/%Y")
+	ctime = get_today().strftime("%H:%M")
+	return {'date': date, 'time': ctime, 'details': text, 'sum': sum, 'cashback': cashback}
+
+def calc(query):
+	value = -1
+	if '?' in query:
+		value = re.search(r'\?.+', query)[0][1:].split(',')
+		query = re.search(r'^[^\?]+', query)[0]
+	return [query, value]
+
+# MONGODB UPDATES
+# <==========================================>
+def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_args = {}):
+	if function_name != "": 
+		users.update_one({'_id': userId}, {'$set': {'function_name': function_name, 'use_function': (function_name != '#')}})
+
+	if set_args != {}: users.update_one({'_id': userId}, {'$set': set_args})
+	if push_args != {}: users.update_one({'_id': userId}, {'$push': push_args})
+	if pull_args != {}: users.update_one({'_id': userId}, {'$pull': pull_args})
+	return
+
+def update_all_balance(user, month = get_today().strftime('%m')):
+	if user['month'] != month:
+		if user['not_joined']:
+			users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
+		else:
+			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': empty_limit_arr})
+		return True
+	return False
+# <==========================================>
+
+def techincal_stop_check(update):
+	if TECHNICAL_STOP:
+		try:
+			userId = update.message.chat.id
+		except:
+			userId = update.callback_query.message.chat.id
+		
+		try:
+			if update.message.text == 'Nurmukhambetov_admin_true':
+				users.update_one({'_id': userId}, {'$set': {'admin': True}})
+			elif update.message.text == 'Nurmukhambetov_admin_false':
+				users.update_one({'_id': userId}, {'$set': {'admin': False}})
+		except: pass
+		user = users.find_one({'_id': userId, 'admin': True})
+		if user is None:
+			bot.send_message(userId, tree.notification.stop)
+			return True
+	return False
+
+
+def get_data_from_qr(message):
+	userId = message.chat.id
+
+	photo_id = message.photo[-1].file_id
+	file_photo = bot.get_file(photo_id)
+	downloaded_file_photo = bot.download_file(file_photo.file_path)
+
+	img = Image.open(BytesIO(downloaded_file_photo))
+	decoded = decode(img)
+
+	print(decoded)
+	# ANTI-FRAUD SYSTEM
+	try:
+		data = Data(decoded[0].data)
+		response = urllib.request.urlopen(URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
+		status = Map(json.loads(response))
+		print(status)
+	except:
+		return 'not found'
+	if status.status == 'not ok':
+		return 'not ok'
+
+	data.sum = int(data.sum)
+	return data
+
+def create_keyboard(arr, vals):
+	keyboard = InlineKeyboardMarkup()
+	i = 0
+	for lst in arr:
+		buttons = []
+		for button in lst:
+			if vals[i].type == 'callback':
+				inlineValue = InlineKeyboardButton(button.text.format(*vals[i].texts),
+												   callback_data=button.callback.format(*vals[i].callbacks))
+			elif vals[i].type == 'url':
+				inlineValue = InlineKeyboardButton(button.text.format(*vals[i].texts),
+												   url=button.url.format(*vals[i].urls))
+			buttons.append(inlineValue)
+			i = i + 1
+		keyboard.row(*buttons)
+	return keyboard
+
+def create_reply_keyboard(arr):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.one_time_keyboard = True
+
+    for lst in arr:
+        buttons = []
+        for button in lst:
+            buttons.append(KeyboardButton(text=button.text, request_contact=button.request_contact))
+        keyboard.row(*buttons)
+    return keyboard
