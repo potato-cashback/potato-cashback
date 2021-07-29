@@ -45,6 +45,9 @@ def send_data(phone, sum):
 	try:
 		r = requests.get(URL + '/send_data/'+phone+'/'+sum)
 		if(r.text == 'nice'):
+			try: requests.get('https://whatsapp-web-potato.herokuapp.com/'+phone+'/'+sum)
+			except: print("WA message not sent")
+			
 			return 'good'
 		elif(r.text == 'bad'):
 			return 'bad'
