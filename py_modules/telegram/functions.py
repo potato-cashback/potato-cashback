@@ -1,5 +1,5 @@
 import py_modules.telegram.telegram as telegram
-import py_modules.telegram.config as config
+from py_modules.telegram.classes import *
 from py_modules.mongo import users
 
 import re
@@ -12,62 +12,6 @@ from pytz import timezone
 from io import BytesIO
 from pyzbar.pyzbar import decode
 from PIL import Image
-
-
-class Data(object):
-    def __init__(self, j):
-        self.__dict__ = json.loads(j)
-
-class Keyformat(object):
-    def __init__(self, type='callback', texts=[], callbacks=[], urls=[]):
-        self.type = type
-        self.texts = texts
-        self.callbacks = callbacks
-        self.urls = urls
-
-class Map(dict):
-    def __init__(self, *args, **kwargs):
-        super(Map, self).__init__(*args, **kwargs)
-        for arg in args:
-            if isinstance(arg, dict):
-                for k, v in arg.items():
-                    if isinstance(v, dict):
-                        v = Map(v)
-                    if isinstance(v, list):
-                        self.__convert(v)
-                    self[k] = v
-
-        if kwargs:
-            for k, v in kwargs.items():
-                if isinstance(v, dict):
-                    v = Map(v)
-                elif isinstance(v, list):
-                    self.__convert(v)
-                self[k] = v
-
-    def __convert(self, v):
-        for elem in range(0, len(v)):
-            if isinstance(v[elem], dict):
-                v[elem] = Map(v[elem])
-            elif isinstance(v[elem], list):
-                self.__convert(v[elem])
-
-    def __getattr__(self, attr):
-        return self.get(attr)
-
-    def __setattr__(self, key, value):
-        self.__setitem__(key, value)
-
-    def __setitem__(self, key, value):
-        super(Map, self).__setitem__(key, value)
-        self.__dict__.update({key: value})
-
-    def __delattr__(self, item):
-        self.__delitem__(item)
-
-    def __delitem__(self, key):
-        super(Map, self).__delitem__(key)
-        del self.__dict__[key]
 
 def get_today():
     local_now = datetime.now(timezone('Asia/Almaty'))
@@ -83,8 +27,9 @@ def cashback_logic(sum, cashback):
     return res
 
 def fraud_check(user, money):
-	if user['all_balance'] + money > config.MAX_BALANCE:
-		try: telegram.bot.send_message(user['_id'], config.tree.notification.fraud_detect)
+	[tree, MAX_BALANCE] = telegram.get("tree", "MAX_BALANCE")
+	if user['all_balance'] + money > MAX_BALANCE:
+		try: telegram.bot.send_message(user['_id'], tree.notification.fraud_detect)
 		except: pass
 		return True
 	return False
@@ -113,17 +58,19 @@ def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_
 	return
 
 def update_all_balance(user, month = get_today().strftime('%m')):
+	[items] = telegram.get("items")
 	if user['month'] != month:
 		if user['not_joined']:
 			users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
 		else:
-			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': config.empty_limit_arr})
+			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': [[0] * len(x) for x in items]})
 		return True
 	return False
 # <==========================================>
 
 def techincal_stop_check(update):
-	if config.TECHNICAL_STOP:
+	[tree, TECHNICAL_STOP] = telegram.get("tree", "TECHNICAL_STOP")
+	if TECHNICAL_STOP:
 		try:
 			userId = update.message.chat.id
 		except:
@@ -137,13 +84,14 @@ def techincal_stop_check(update):
 		except: pass
 		user = users.find_one({'_id': userId, 'admin': True})
 		if user is None:
-			telegram.bot.send_message(userId, config.tree.notification.stop)
+			telegram.bot.send_message(userId, tree.notification.stop)
 			return True
 	return False
 
 
 def get_data_from_qr(message):
 	userId = message.chat.id
+	[URL_ser] = telegram.get("URL_ser")
 
 	photo_id = message.photo[-1].file_id
 	file_photo = telegram.bot.get_file(photo_id)
@@ -156,7 +104,7 @@ def get_data_from_qr(message):
 	# ANTI-FRAUD SYSTEM
 	try:
 		data = Data(decoded[0].data)
-		response = urllib.request.urlopen(config.URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
+		response = urllib.request.urlopen(URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
 		status = Map(json.loads(response))
 		print(status)
 	except:

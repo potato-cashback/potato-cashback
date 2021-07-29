@@ -4,14 +4,14 @@
     "URL_ser": "https://potato-cashback.herokuapp.com",
     "URL_bot": "/bot/",
     "TECHNICAL_STOP": true,
-    "groupChatId": "1654644284",
-    "friend_money": "20",
-    "welcome_cashback_sum": "200",
+    "groupChatId": 1654644284,
+    "friend_money": 20,
+    "welcome_cashback_sum": 200,
     "cashback": [
         0.06,
         0.11
     ],
-    "MAX_BALANCE": "20000",
+    "MAX_BALANCE": 20000,
     "items": [
         [
             {
@@ -301,6 +301,14 @@
                     {
                         "text": "Нет 🚫",
                         "callback": "register"
+                    }
+                ]
+            ],
+            "reply_buttons": [
+                [
+                    {
+                        "text": "Продолжить",
+                        "request_contact": true
                     }
                 ]
             ]
