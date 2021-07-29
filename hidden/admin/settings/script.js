@@ -26,7 +26,7 @@ const inputs = ["stop", "groupChatId", "token", ...]
 
 for(input in inputs){
     eval(`
-        let ${input} = document.querySelector("${input}").${type(input)}
+        let ${input} = document.querySelector("${input}".split("_").join("-")).${type(input)}
     `)
 
     только тут прикол то что если написать type(input) в конце то values будут те которые в данный момент. эту фигню всю можно запихнуть в create_json() ну или убрать type здесь.
