@@ -303,6 +303,14 @@
                         "callback": "register"
                     }
                 ]
+            ],
+            "reply_buttons": [
+                [
+                    {
+                        "text": "Продолжить",
+                        "request_contact": true
+                    }
+                ]
             ]
         },
         "faq": {
