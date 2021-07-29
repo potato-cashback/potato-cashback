@@ -52,6 +52,6 @@
 	background-color: white;
 	border-bottom: 1px solid #9b9b9b;
 }
-#phone:focus ~ .recommendations .recommendation:not(:empty), .recommendation:active{
+#phone:focus ~ .recommendations .recommendation:not(:empty), .recommendations:active .recommendation:not(:empty){
 	display: block;
 }

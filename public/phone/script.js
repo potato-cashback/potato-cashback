@@ -236,7 +236,6 @@ const formatPhoneNumber = (str) => {
 
 ph.addEventListener("keyup", (e) => {
 	currentInput = ph.value.split(" ")[0];
-	console.log(currentInput)
 	recs = phonesRecommender(currentInput)
 
 	if(currentInput.length < 16 && currentInput.length > 4)
