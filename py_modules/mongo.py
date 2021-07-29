@@ -45,8 +45,7 @@ def send_data(phone, sum):
 	try:
 		r = requests.get(URL + '/send_data/'+phone+'/'+sum)
 		if(r.text == 'nice'):
-			user = users.find_one({'phone': phone})
-			print(user)
+			user = users.find_one({'phone': phone, "not_joined":True})
 			if(user["not_joined"]):
 				send_to_whatsapp(phone, sum)
 			return 'good'
