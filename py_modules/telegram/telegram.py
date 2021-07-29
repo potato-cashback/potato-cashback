@@ -195,7 +195,7 @@ def list_gifts(message, value):
 	[tree, items] = get("tree", "items")
 
 	[toyId, sectionId] = [int(x) for x in value]
-	item = items[sectionId][toyId]
+	item = Map(items[sectionId][toyId])
 
 	currentInlineState = [
 		Keyformat(texts=[item.price], callbacks=[toyId, sectionId]),
@@ -220,7 +220,7 @@ def buy_gift(message, value):
 		return
 
 	[toyId, sectionId] = [int(x) for x in value]
-	item = items[sectionId][toyId]
+	item = Map(items[sectionId][toyId])
 
 	date = get_today().strftime("%d/%m/%Y")
 
@@ -234,7 +234,7 @@ def user_buy(message, value):
 	userId = message.chat.id
 	[tree, items] = get("tree", "items")
 	[toyId, sectionId] = [int(x) for x in value]
-	item = items[sectionId][toyId]
+	item = Map(items[sectionId][toyId])
 
 	user = users.find_one({'_id': userId})
 
@@ -263,7 +263,7 @@ def confirm_user(message, value):
 	userId = message.chat.id
 	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
 	[toyId, sectionId] = [int(x) for x in value]
-	item = items[sectionId][toyId]
+	item = Map(items[sectionId][toyId])
 
 	user = users.find_one({'_id': userId})
 
@@ -281,7 +281,7 @@ def confirmed(message, value):
 	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
 	[userId, toyId, sectionId] = [int(x) for x in value[1:]]
 
-	item = items[sectionId][toyId]
+	item = Map(items[sectionId][toyId])
 
 	user = users.find_one({'_id': userId})
 	if option == 'no':
