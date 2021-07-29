@@ -1,4 +1,3 @@
-# from py_modules.telegram.config import TEMPLATE_MESSAGE
 from flask import current_app as app
 from py_modules.mongo import users
 
@@ -10,14 +9,14 @@ import urllib.request
 
 from flask import request
 from PIL import Image
-# from py_modules.telegram.config import *
+from py_modules.telegram.classes import *
 
 def get(*args):
 	path = './hidden/settings.json'
 	jsonFile = open(path, "r", encoding='utf-8')
 	data = json.load(jsonFile)
 	jsonFile.close()
-	return [data[k] for k in list(args)]
+	return [Map(data[k]) if type(data[k]).__name__ == 'dict' else data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
 
