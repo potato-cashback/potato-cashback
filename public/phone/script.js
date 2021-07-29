@@ -195,3 +195,69 @@ const error = (e1, e2, e3) =>{
 		window.location.href = "/phone"
 	}, 3000)
 }
+
+var phoneBook = []
+
+fetch("/mongodb/phones")
+.then(r => r.text())
+.then(r => eval(r))
+.then(r => {
+	r = r.map(phone => {
+		return formatPhoneNumber(phone)
+	})
+	r = r.filter(phone => {
+		return phone != null
+	});
+
+	phoneBook = r
+})
+
+const phonesRecommender = (key) => {
+	return phoneBook.filter(phone =>{
+		return phone.indexOf(key) + 1
+	})
+}
+
+const formatPhoneNumber = (str) => {
+	//Filter only numbers from the input
+	let cleaned = ('' + str).replace(/\D/g, '');
+	//Check if the input is of correct
+	let match = cleaned.match(/^(7|)?(\d{3})(\d{3})(\d{2})(\d{2})$/);
+
+	if (match) {
+	  //Remove the matched extension code
+	  //Change this to format for any country code.
+	  let intlCode = (match[1] ? '+7' : '')
+	  return [intlCode, '(', match[2], ')', match[3], '–', match[4], '–', match[5]].join('')
+	}
+	
+	return null;
+}
+
+ph.addEventListener("keyup", (e) => {
+	currentInput = ph.value.split(" ")[0];
+	console.log(currentInput)
+	recs = phonesRecommender(currentInput)
+
+	if(currentInput.length < 16 && currentInput.length > 4)
+		document.querySelectorAll(".recommendation")
+		.forEach((rec, i) => {
+			rec.innerText = recs[i] || ""
+		})
+	else{
+		document.querySelectorAll(".recommendation")
+		.forEach(rec => {
+			rec.innerText = ""
+		})
+	}
+})
+
+document.querySelectorAll(".recommendation")
+.forEach(rec => {
+	rec.addEventListener("click", () => {
+		ph.value = rec.innerText
+
+		e = new Event("keyup")
+		ph.dispatchEvent(e)
+	})
+})

@@ -50,3 +50,11 @@ def send_data(phone, sum):
 			return 'bad'
 	except:	
 		return 'server error'
+
+@app.route('/mongodb/phones')
+def send_phones():
+	try:
+		phones = users.find().distinct('phone')
+		return str(phones)
+	except:	
+		return 'server error'

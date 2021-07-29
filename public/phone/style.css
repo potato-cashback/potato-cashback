@@ -32,3 +32,26 @@
 	box-sizing: border-box;
 	display:none;
 }
+
+/* ------------------------------ Phone Recommendations ------------------------------*/
+
+.recommendations{
+	position: absolute;
+	width:100vw;
+	height: 1rem;
+	bottom: -1rem;
+}
+.recommendation{
+	display: none;
+
+	height: 3.5rem;
+	padding: 1.25rem 1rem;
+
+	box-sizing: border-box;
+
+	background-color: white;
+	border-bottom: 1px solid #9b9b9b;
+}
+#phone:focus ~ .recommendations .recommendation:not(:empty), .recommendation:active{
+	display: block;
+}
