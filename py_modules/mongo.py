@@ -45,14 +45,19 @@ def send_data(phone, sum):
 	try:
 		r = requests.get(URL + '/send_data/'+phone+'/'+sum)
 		if(r.text == 'nice'):
-			try: requests.get('https://whatsapp-web-potato.herokuapp.com/'+phone+'/'+sum)
-			except: print("WA message not sent")
-			
+			user = users.find_one({'phone': phone})
+			print(user)
+			if(user["not_joined"]):
+				send_to_whatsapp(phone, sum)
 			return 'good'
 		elif(r.text == 'bad'):
 			return 'bad'
 	except:	
 		return 'server error'
+
+def send_to_whatsapp(phone, sum):
+	try: requests.get('https://whatsapp-web-potato.herokuapp.com/'+phone+'/'+sum)
+	except: print("WA message not sent")
 
 @app.route('/mongodb/phones')
 def send_phones():
