@@ -1,4 +1,4 @@
-from py_modules.telegram.config import MAX_BALANCE
+# from py_modules.telegram.config import MAX_BALANCE
 import py_modules.telegram.telegram as telegram
 # import py_modules.telegram.config as config
 from py_modules.mongo import users
