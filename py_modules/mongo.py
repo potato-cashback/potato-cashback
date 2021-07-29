@@ -17,7 +17,7 @@ try:
 	@app.route('/mongodb/phone/<phone>')
 	def phone_name(phone):
 		user = users.find_one({'phone': phone})
-		if user != None:
+		if user != None and "not_joined" not in user:
 			return user['name']
 		else:
 			return ""
@@ -55,7 +55,7 @@ def send_data(phone, sum):
 		return 'server error'
 
 def send_to_whatsapp(phone, sum):
-	try: requests.get('https://whatsapp-web-potato.herokuapp.com/'+phone+'/'+sum)
+	try: requests.get('https://whatsapp-web-potato.herokuapp.com/'+phone+'/'+sum, timeout=4)
 	except: print("WA message not sent")
 
 @app.route('/mongodb/phones')
