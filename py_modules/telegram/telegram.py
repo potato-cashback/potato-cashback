@@ -1,3 +1,4 @@
+from py_modules.telegram.config import TEMPLATE_MESSAGE
 from flask import current_app as app
 from py_modules.mongo import users
 
@@ -8,13 +9,20 @@ import urllib.request
 
 from flask import request
 from PIL import Image
-from py_modules.telegram.config import *
+# from py_modules.telegram.config import *
 
-bot = telebot.TeleBot(TOKEN)
+def get(*args):
+	path = './hidden/settings.json'
+	jsonFile = open(path, "r", encoding='utf-8')
+	data = json.load(jsonFile)
+	jsonFile.close()
+	return [data[k] for k in list(args)]
+
+bot = telebot.TeleBot(get("TOKEN")[0])
 
 from py_modules.telegram.functions import *
 
-@app.route('/bot/'+TOKEN, methods=['POST'])
+@app.route('/bot/'+get("TOKEN")[0], methods=['POST'])
 def getMessage():
 	json_string = request.get_data().decode('utf-8')
 	update = telebot.types.Update.de_json(json_string)
@@ -29,6 +37,7 @@ def getMessage():
 @app.route('/send_data/<phone>/<sum>')
 def process_cashback(phone, sum):
 	sum = int(sum)
+	[tree, cashback] = get("tree", "cashback")
 	money = int(sum * cashback_logic(sum, cashback))
 	month = get_today().strftime('%m')
 
@@ -65,7 +74,7 @@ def process_cashback(phone, sum):
 @app.route('/bot/')
 def webhook():
 	bot.remove_webhook()
-	bot.set_webhook(url = URL_bot + TOKEN)
+	bot.set_webhook(url = ''.join(get("URL_bot", "TOKEN")))
 	return '!', 200
 
 @bot.message_handler(commands=['nurmukhambetov'])
@@ -96,7 +105,8 @@ def check_balances(message):
 def menu(message):
 	userId = message.chat.id
 	month = get_today().strftime("%m")
-	
+	[tree, items] = get("tree", "items")
+
 	user = users.find_one({'_id': userId})
 	if user == None:
 		date = get_today().strftime("%d/%m/%Y")
@@ -115,7 +125,7 @@ def menu(message):
 			'name': '',
 			'phone': '', 
 			'friends': {},
-			'limit_items': empty_limit_arr,
+			'limit_items': [[0] * len(x) for x in items],
 
 			'function_name': '#',
 			'use_function': False,
@@ -164,6 +174,7 @@ def extract(message):
 
 	msg = '<code>'+msg+'</code>'
 
+	[tree] = get("tree")
 	currentInlineState = [Keyformat()]
 	keyboard = create_keyboard(tree.extract.buttons, currentInlineState)
 	bot.send_message(userId, msg, reply_markup=keyboard, parse_mode='html')
@@ -174,12 +185,15 @@ def extract(message):
 # <+=============================================================================================+>
 def list_sections(message):
 	userId = message.chat.id
+	[tree] = get("tree")
 
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree.list_sections.buttons, currentInlineState)
 	bot.send_message(userId, tree.list_sections.text, reply_markup=keyboard)
 def list_gifts(message, value):
 	userId = message.chat.id
+	[tree, items] = get("tree", "items")
+
 	[toyId, sectionId] = [int(x) for x in value]
 	item = items[sectionId][toyId]
 
@@ -197,7 +211,9 @@ def list_gifts(message, value):
 				   reply_markup=keyboard)
 def buy_gift(message, value):
 	userId = message.chat.id
+	[tree, items] = get("tree", "items")
 	user = users.find_one({'_id': userId})
+
 	if not user['registered']:
 		bot.send_message(userId, tree.notification.not_registered)
 		menu(message)
@@ -216,6 +232,7 @@ def buy_gift(message, value):
 				   reply_markup=keyboard)
 def user_buy(message, value):
 	userId = message.chat.id
+	[tree, items] = get("tree", "items")
 	[toyId, sectionId] = [int(x) for x in value]
 	item = items[sectionId][toyId]
 
@@ -244,6 +261,7 @@ def user_buy(message, value):
 	bot.send_message(userId, tree.user_buy.text, reply_markup=keyboard)
 def confirm_user(message, value):
 	userId = message.chat.id
+	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
 	[toyId, sectionId] = [int(x) for x in value]
 	item = items[sectionId][toyId]
 
@@ -260,6 +278,7 @@ def confirm_user(message, value):
 				   parse_mode='html')
 def confirmed(message, value):
 	option = value[0]
+	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
 	[userId, toyId, sectionId] = [int(x) for x in value[1:]]
 
 	item = items[sectionId][toyId]
@@ -290,6 +309,7 @@ def confirmed(message, value):
 @bot.message_handler(commands=['qr'])
 def cashback_photo(message):
 	userId = message.chat.id
+	[tree] = get("tree")
 	user = users.find_one({'_id': userId})
 
 	if not user['registered']:
@@ -301,6 +321,7 @@ def cashback_photo(message):
 	bot.send_message(userId, tree.cashback_photo.text)
 def cashback_photo_QR(message):
 	userId = message.chat.id
+	[tree, cashback] = get("tree", "cashback")
 	if message.content_type != 'photo':
 		update_user(userId, 'cashback_photo_QR')
 		bot.send_message(userId, tree.cashback_photo.wrong_format)
@@ -327,7 +348,7 @@ def cashback_photo_QR(message):
 	bot.send_message(userId, tree.cashback_photo.result.format(date, data.sum, available_cashback*100, int(data.sum * available_cashback)), reply_markup=keyboard)
 def cashback_photo_finish(message, values):
 	userId = message.chat.id
-
+	[tree, cashback, URL_ser] = get("tree", "cashback", "URL_ser")
 	[url, true_money] = values
 	true_money = int(true_money)
 	money = int(true_money * cashback_logic(true_money, cashback))
@@ -348,6 +369,7 @@ def cashback_photo_finish(message, values):
 						push_args={'operations': new_operation})
 	bot.send_message(userId, tree.notification.balance_increase.format(money))
 def cashback_photo_cancel(message, values):
+	[URL_ser] = get("URL_ser")
 	[function_name, url] = values
 
 	urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
@@ -362,6 +384,8 @@ def cashback_photo_cancel(message, values):
 # SHARE
 # <+=============================================================================================+>
 def share(message):
+	[tree, friend_money] = get("tree", "friend_money")
+
 	userId = message.chat.id
 	currentInlineState = [Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree.share.buttons, currentInlineState)
@@ -372,6 +396,8 @@ def share(message):
 
 def get_nicknames(message):
 	userId = message.chat.id
+	[tree] = get("tree")
+
 	update_user(userId, 'get_nicknames')
 
 	user = users.find_one({'_id': userId})
@@ -428,6 +454,7 @@ def get_nicknames(message):
 # <+=============================================================================================+>
 def conditions(message):
 	userId = message.chat.id
+	[tree] = get("tree")
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree.conditions.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId, 
@@ -442,6 +469,7 @@ def conditions(message):
 # <+=============================================================================================+>
 def list_partners(message):
 	userId = message.chat.id
+	[tree] = get("tree")
 	currentInlineState = [Keyformat()]
 	keyboard = create_keyboard(tree.list_partners.buttons, currentInlineState)
 	bot.send_message(userId, tree.list_partners.text, reply_markup=keyboard)
@@ -451,12 +479,14 @@ def list_partners(message):
 # <+=============================================================================================+>
 def faq(message):
 	userId = message.chat.id
+	[tree] = get("tree")
 	currentInlineState = [Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree.faq.buttons, currentInlineState)
 	bot.send_message(userId, tree.faq.text, reply_markup=keyboard, parse_mode='html')
 
 def ask_question(message):
 	userId = message.chat.id
+	[tree] = get("tree")
 	currentInlineState = [Keyformat()]
 	keyboard = create_keyboard(tree.ask_question.buttons, currentInlineState)
 	bot.send_message(userId, tree.ask_question.text, reply_markup=keyboard)
@@ -466,6 +496,7 @@ def ask_question(message):
 # <+=============================================================================================+>
 def profile(message): 
 	userId = message.chat.id
+	[tree] = get("tree")
 	user = users.find_one({'_id': userId})
 	if not user['registered']:
 		register(message)
@@ -478,11 +509,13 @@ def profile(message):
 	bot.send_message(userId, tree.profile.text.format(user['balance'], string_date, user['name'], user['phone']), reply_markup=keyboard)
 def register(message):
 	userId = message.chat.id
+	[tree] = get("tree")
 	update_user(userId, 'process_register_step_get_name')
 	bot.send_message(userId, tree.register.choose_name)
 # NAME
 def process_register_step_get_name(message):
 	userId = message.chat.id
+	[tree] = get("tree")
 	update_user(userId, 'register_last_step_phone', set_args={'name': message.text})
 
 	keyboard = create_reply_keyboard(tree.register.reply_buttons)
@@ -490,6 +523,7 @@ def process_register_step_get_name(message):
 # PHONE
 def register_last_step_phone(message):
 	userId = message.chat.id
+	[tree] = get("tree")
 	if message.contact is not None:
 		phone = message.contact.phone_number
 		phone = f'+{phone}' if phone[0] != '+' else phone
@@ -511,6 +545,7 @@ def register_last_step_phone(message):
 # COMPLETE
 def register_complete(message):
 	userId = message.chat.id
+	[tree, welcome_cashback_sum, friend_money] = get("tree", "welcome_cashback_sum", "friend_money")
 	user = users.find_one({'_id': userId})
 
 	if not user['registered']:
@@ -571,10 +606,12 @@ def receiver(message):
 			print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
 			return
 	elif message.content_type == "photo":
+		[TEMPLATE_MESSAGE] = get("TEMPLATE_MESSAGE")
 		data = cashback_photo_QR(message)
 		if data == "not found" or data == "not ok":
 			bot.send_message(userId, TEMPLATE_MESSAGE)
 	else:
+		[TEMPLATE_MESSAGE] = get("TEMPLATE_MESSAGE")
 		bot.send_message(userId, TEMPLATE_MESSAGE)
 
 @bot.callback_query_handler(func=lambda call: True)

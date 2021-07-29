@@ -1,5 +1,6 @@
+from py_modules.telegram.config import MAX_BALANCE
 import py_modules.telegram.telegram as telegram
-import py_modules.telegram.config as config
+# import py_modules.telegram.config as config
 from py_modules.mongo import users
 
 import re
@@ -83,8 +84,9 @@ def cashback_logic(sum, cashback):
     return res
 
 def fraud_check(user, money):
-	if user['all_balance'] + money > config.MAX_BALANCE:
-		try: telegram.bot.send_message(user['_id'], config.tree.notification.fraud_detect)
+	[tree, MAX_BALANCE] = telegram.get("tree", "MAX_BALANCE")
+	if user['all_balance'] + money > MAX_BALANCE:
+		try: telegram.bot.send_message(user['_id'], tree.notification.fraud_detect)
 		except: pass
 		return True
 	return False
@@ -113,17 +115,19 @@ def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_
 	return
 
 def update_all_balance(user, month = get_today().strftime('%m')):
+	[items] = telegram.get("items")
 	if user['month'] != month:
 		if user['not_joined']:
 			users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
 		else:
-			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': config.empty_limit_arr})
+			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': [[0] * len(x) for x in items]})
 		return True
 	return False
 # <==========================================>
 
 def techincal_stop_check(update):
-	if config.TECHNICAL_STOP:
+	[tree, TECHNICAL_STOP] = telegram.get("tree", "TECHNICAL_STOP")
+	if TECHNICAL_STOP:
 		try:
 			userId = update.message.chat.id
 		except:
@@ -137,13 +141,14 @@ def techincal_stop_check(update):
 		except: pass
 		user = users.find_one({'_id': userId, 'admin': True})
 		if user is None:
-			telegram.bot.send_message(userId, config.tree.notification.stop)
+			telegram.bot.send_message(userId, tree.notification.stop)
 			return True
 	return False
 
 
 def get_data_from_qr(message):
 	userId = message.chat.id
+	[URL_ser] = telegram.get("URL_ser")
 
 	photo_id = message.photo[-1].file_id
 	file_photo = telegram.bot.get_file(photo_id)
@@ -156,7 +161,7 @@ def get_data_from_qr(message):
 	# ANTI-FRAUD SYSTEM
 	try:
 		data = Data(decoded[0].data)
-		response = urllib.request.urlopen(config.URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
+		response = urllib.request.urlopen(URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
 		status = Map(json.loads(response))
 		print(status)
 	except:
