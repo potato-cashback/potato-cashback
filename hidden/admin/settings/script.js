@@ -10,6 +10,30 @@ let limit_cashback = document.querySelector('#max-limit-cashback')
 
 let save = document.querySelector('#submit')
 
+/*
+можно заменить на 
+
+const type = (i) => {
+    switch(i.tagName){
+        case 'input':
+            return (i.type == "checkbox")? 'checked' : 'value';
+        case 'div':
+            return 'innerText';
+    }
+}
+
+const inputs = ["stop", "groupChatId", "token", ...]
+
+for(input in inputs){
+    eval(`
+        let ${input} = document.querySelector("${input}").${type(input)}
+    `)
+
+    только тут прикол то что если написать type(input) в конце то values будут те которые в данный момент. эту фигню всю можно запихнуть в create_json() ну или убрать type здесь.
+}
+
+*/
+
 const saveJson = async function() {
     let data = create_json();
     let url = 'saveJSON?data=' + encodeURIComponent(JSON.stringify(data))
