@@ -74,7 +74,9 @@ def process_cashback(phone, sum):
 @app.route('/bot/')
 def webhook():
 	bot.remove_webhook()
-	bot.set_webhook(url = ''.join(get("URL_bot", "TOKEN")))
+	[URL_bot, TOKEN] = get("URL_bot", "TOKEN")
+	print(URL_bot, TOKEN)
+	bot.set_webhook(url = URL_bot+TOKEN)
 	return '!', 200
 
 @bot.message_handler(commands=['nurmukhambetov'])
