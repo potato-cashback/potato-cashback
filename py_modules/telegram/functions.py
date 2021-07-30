@@ -29,7 +29,7 @@ def cashback_logic(sum, cashback):
 def fraud_check(user, money):
 	[tree, MAX_BALANCE] = telegram.get("tree", "MAX_BALANCE")
 	if user['all_balance'] + money > MAX_BALANCE:
-		try: telegram.bot.send_message(user['_id'], tree.notification.fraud_detect)
+		try: telegram.bot.send_message(user['_id'], tree['notification']['fraud_detect'])
 		except: pass
 		return True
 	return False
@@ -87,7 +87,7 @@ def techincal_stop_check(update):
 		except: pass
 		user = users.find_one({'_id': userId, 'admin': True})
 		if user is None:
-			telegram.bot.send_message(userId, tree.notification.stop)
+			telegram.bot.send_message(userId, tree['notification']['stop'])
 			return True
 	return False
 
@@ -123,12 +123,12 @@ def create_keyboard(arr, vals):
 	for lst in arr:
 		buttons = []
 		for button in lst:
-			if vals[i].type == 'callback':
-				inlineValue = InlineKeyboardButton(button.text.format(*vals[i].texts),
-												   callback_data=button.callback.format(*vals[i].callbacks))
-			elif vals[i].type == 'url':
-				inlineValue = InlineKeyboardButton(button.text.format(*vals[i].texts),
-												   url=button.url.format(*vals[i].urls))
+			if vals[i]['type'] == 'callback':
+				inlineValue = InlineKeyboardButton(button['text'].format(*vals[i]['texts']),
+												   callback_data=button['callback'].format(*vals[i]['callbacks']))
+			elif vals[i]['type'] == 'url':
+				inlineValue = InlineKeyboardButton(button['text'].format(*vals[i]['texts']),
+												   url=button['url'].format(*vals[i]['urls']))
 			buttons.append(inlineValue)
 			i = i + 1
 		keyboard.row(*buttons)
@@ -141,6 +141,6 @@ def create_reply_keyboard(arr):
     for lst in arr:
         buttons = []
         for button in lst:
-            buttons.append(KeyboardButton(text=button.text, request_contact=button.request_contact))
+            buttons.append(KeyboardButton(text=button['text'], request_contact=button['request_contact']))
         keyboard.row(*buttons)
     return keyboard

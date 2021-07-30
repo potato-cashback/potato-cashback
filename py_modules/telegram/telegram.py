@@ -16,7 +16,7 @@ def get(*args):
 	jsonFile = open(path, "r", encoding='utf-8')
 	data = json.load(jsonFile)
 	jsonFile.close()
-	return [Map(data[k]) if type(data[k]).__name__ == 'dict' else data[k] for k in list(args)]
+	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
 URL_ser = 'https://test-potato-cashback.herokuapp.com'
