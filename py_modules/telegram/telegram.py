@@ -21,6 +21,7 @@ def get(*args):
 bot = telebot.TeleBot(get("TOKEN")[0])
 URL_ser = 'https://potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
+URL_image = './py_modules/telegram/images/'
 
 from py_modules.telegram.functions import *
 
@@ -210,7 +211,7 @@ def list_gifts(message, value):
 
 	keyboard = create_keyboard(tree.list_gifts.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId, 
-				   photo=Image.open(item.image), 
+				   photo=Image.open(URL_image + item.image), 
 				   reply_markup=keyboard)
 def buy_gift(message, value):
 	userId = message.chat.id
@@ -230,7 +231,7 @@ def buy_gift(message, value):
 	currentInlineState = [Keyformat(callbacks=[toyId, sectionId]), Keyformat(callbacks=[sectionId])]
 	keyboard = create_keyboard(tree.buy_gift.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId, 
-				   photo=Image.open(item.image), 
+				   photo=Image.open(URL_image + item.image), 
 				   caption=tree.buy_gift.text.format(item.name, item.price, user['balance'], date, user['name'], user['phone']),
 				   reply_markup=keyboard)
 def user_buy(message, value):
@@ -275,7 +276,7 @@ def confirm_user(message, value):
 
 	keyboard = create_keyboard(tree.confirmation.buttons, currentInlineState)
 	bot.send_photo(chat_id=groupChatId, 
-				   photo=Image.open(item.image),
+				   photo=Image.open(URL_image + item.image),
 				   caption=tree.confirmation.text.format(item.tag, user['username'], user['balance'], user['name'], user['phone']), 
 				   reply_markup=keyboard,
 				   parse_mode='html')
@@ -302,7 +303,7 @@ def confirmed(message, value):
 		bot.send_message(userId, tree.notification.product_success)
 
 	bot.send_photo(chat_id=groupChatId,
-				   photo=Image.open(item.image),
+				   photo=Image.open(URL_image + item.image),
 				   caption=tree.notification.client_info.format(item.tag, user['username'], text, user['balance'], user['name'], user['phone']),
 				   parse_mode='html')
 # <+=============================================================================================+>
@@ -392,7 +393,7 @@ def share(message):
 	currentInlineState = [Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree.share.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId,
-				   photo=Image.open(tree.share.image),
+				   photo=Image.open(URL_image + tree.share.image),
 				   caption=tree.share.text.format(friend_money),
 				   reply_markup=keyboard)
 
@@ -438,7 +439,7 @@ def get_nicknames(message):
 	
 	if user['prev_message'] == '#':
 		msg = bot.send_photo(chat_id=userId,
-							 photo=Image.open(tree.get_nicknames.image),
+							 photo=Image.open(URL_image + tree.get_nicknames.image),
 							 caption=tree.get_nicknames.text + list_friends,
 							 reply_markup=keyboard,
 							 parse_mode='html')
@@ -460,7 +461,7 @@ def conditions(message):
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree.conditions.buttons, currentInlineState)
 	bot.send_photo(chat_id=userId, 
-				   photo=Image.open(tree.conditions.image), 
+				   photo=Image.open(URL_image + tree.conditions.image), 
 				   caption=tree.conditions.text, 
 				   reply_markup=keyboard)
 
