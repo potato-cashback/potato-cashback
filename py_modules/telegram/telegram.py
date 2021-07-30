@@ -19,6 +19,8 @@ def get(*args):
 	return [Map(data[k]) if type(data[k]).__name__ == 'dict' else data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
+URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_bot = URL_ser + '/bot/'
 
 from py_modules.telegram.functions import *
 
@@ -74,9 +76,8 @@ def process_cashback(phone, sum):
 @app.route('/bot/')
 def webhook():
 	bot.remove_webhook()
-	[URL_ser, URL_bot, TOKEN] = get("URL_ser", "URL_bot", "TOKEN")
-	url = URL_ser + URL_bot + TOKEN
-	bot.set_webhook(url = url)
+	[TOKEN] = get("TOKEN")
+	bot.set_webhook(url = URL_bot + TOKEN)
 	return '!', 200
 
 @bot.message_handler(commands=['nurmukhambetov'])
