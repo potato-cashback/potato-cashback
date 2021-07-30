@@ -107,11 +107,11 @@ def get_data_from_qr(message):
 	try:
 		data = Data(decoded[0].data)
 		response = urllib.request.urlopen(telegram.URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
-		status = Map(json.loads(response))
+		status = json.loads(response)
 		print(status)
 	except:
 		return 'not found'
-	if status.status == 'not ok':
+	if status['status'] == 'not ok':
 		return 'not ok'
 
 	data.sum = int(data.sum)

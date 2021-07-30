@@ -19,7 +19,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://test-potato-cashback.herokuapp.com'
+URL_ser = 'https://potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -107,51 +107,44 @@ def check_balances(message):
 
 @bot.message_handler(commands=['start'])
 def menu(message):
-	try:
-		userId = message.chat.id
-		month = get_today().strftime("%m")
-		[tree, items] = get("tree", "items")
+	userId = message.chat.id
+	month = get_today().strftime("%m")
+	[tree, items] = get("tree", "items")
 
-		print(type(tree))
-		print(tree['menu']['text'])
+	user = users.find_one({'_id': userId})
+	if user == None:
+		date = get_today().strftime("%d/%m/%Y")
+		ctime = get_today().strftime("%H:%M")
+		nickname = message.chat.username
 
-		user = users.find_one({'_id': userId})
-		if user == None:
-			date = get_today().strftime("%d/%m/%Y")
-			ctime = get_today().strftime("%H:%M")
-			nickname = message.chat.username
+		users.insert_one({
+			'_id': userId,
+			'username': nickname,
+			'register_date': date,
+			'register_time': ctime,
+			'balance': 0,
+			'all_balance': 0,
+			'registered': False,
 
-			users.insert_one({
-				'_id': userId,
-				'username': nickname,
-				'register_date': date,
-				'register_time': ctime,
-				'balance': 0,
-				'all_balance': 0,
-				'registered': False,
+			'name': '',
+			'phone': '', 
+			'friends': {},
+			'limit_items': [[0] * len(x) for x in items],
 
-				'name': '',
-				'phone': '', 
-				'friends': {},
-				'limit_items': [[0] * len(x) for x in items],
+			'function_name': '#',
+			'use_function': False,
+			'prev_message': '#',
+			'month': month,
 
-				'function_name': '#',
-				'use_function': False,
-				'prev_message': '#',
-				'month': month,
+			'operations': [],
+		})
+	else:
+		update_all_balance(user, month)
+		update_user(userId, function_name='#', set_args={'prev_message': '#'})
 
-				'operations': [],
-			})
-		else:
-			update_all_balance(user, month)
-			update_user(userId, function_name='#', set_args={'prev_message': '#'})
-
-		currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
-		keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
-		bot.send_message(userId, tree['menu']['text'], reply_markup=keyboard)
-	except Exception as e:
-		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
-
+	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
+	keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
+	bot.send_message(userId, tree['menu']['text'], reply_markup=keyboard)
 
 # EXTRACT LIST SYSTEM
 # <+=============================================================================================+>
@@ -292,7 +285,7 @@ def confirmed(message, value):
 	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
 	[userId, toyId, sectionId] = [int(x) for x in value[1:]]
 
-	item = Map(items[sectionId][toyId])
+	item = items[sectionId][toyId]
 
 	user = users.find_one({'_id': userId})
 	if option == 'no':
