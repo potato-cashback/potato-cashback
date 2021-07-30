@@ -47,10 +47,10 @@ function create_json() {
         "TOKEN": token.innerText,
         "URI": uri.innerText,
         "TECHNICAL_STOP": stop.checked,
-        "groupChatId": groupChatId.innerText,
+        "groupChatId": parseInt(groupChatId.innerText),
 
-        "friend_money": cashback_friends.innerText,
-        "welcome_cashback_sum": welcome_cashbask.innerText,
-        "MAX_BALANCE": limit_cashback.innerText,
+        "friend_money": parseInt(cashback_friends.innerText),
+        "welcome_cashback_sum": parseInt(welcome_cashbask.innerText),
+        "MAX_BALANCE": parseInt(limit_cashback.innerText),
     }
 }
