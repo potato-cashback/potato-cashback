@@ -18,5 +18,5 @@ def check_whatsapp():
     except:
         requests.get("https://api.telegram.org/bot1102080505:AAGsEigzYhCOrrllbOrk42hJYpKAVlbrA0E/sendMessage?chat_id=256721170&text=whatsappfailed")
 
-check_whatsapp()
-set_interval(check_whatsapp, 10 * 60)
+# check_whatsapp()
+# set_interval(check_whatsapp, 10 * 60)
