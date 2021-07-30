@@ -73,8 +73,11 @@ def techincal_stop_check(update):
 	if TECHNICAL_STOP:
 		try:
 			userId = update.message.chat.id
-		except:
-			userId = update.callback_query.message.chat.id
+		except: 
+			try:
+				userId = update.callback_query.message.chat.id
+			except:
+				return False
 		
 		try:
 			if update.message.text == 'Nurmukhambetov_admin_true':
@@ -91,7 +94,6 @@ def techincal_stop_check(update):
 
 def get_data_from_qr(message):
 	userId = message.chat.id
-	[URL_ser] = telegram.get("URL_ser")
 
 	photo_id = message.photo[-1].file_id
 	file_photo = telegram.bot.get_file(photo_id)
@@ -104,7 +106,7 @@ def get_data_from_qr(message):
 	# ANTI-FRAUD SYSTEM
 	try:
 		data = Data(decoded[0].data)
-		response = urllib.request.urlopen(URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
+		response = urllib.request.urlopen(telegram.URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
 		status = Map(json.loads(response))
 		print(status)
 	except:
