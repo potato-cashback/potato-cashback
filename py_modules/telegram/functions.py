@@ -73,8 +73,11 @@ def techincal_stop_check(update):
 	if TECHNICAL_STOP:
 		try:
 			userId = update.message.chat.id
-		except:
-			userId = update.callback_query.message.chat.id
+		except: 
+			try:
+				userId = update.callback_query.message.chat.id
+			except:
+				return False
 		
 		try:
 			if update.message.text == 'Nurmukhambetov_admin_true':
