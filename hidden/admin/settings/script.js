@@ -8,19 +8,6 @@ let cashback_friends = document.querySelector('#cashback-friends')
 let welcome_cashbask = document.querySelector('#welcome-cashback')
 let limit_cashback = document.querySelector('#max-limit-cashback')
 
-// Show the latest value's
-(async function() {
-    var data = await get_json()
-
-    token.innerText = data["TOKEN"]
-    stop_bot.checked = data["TECHNICAL_STOP"]
-    groupChatId.innerText = data["groupChatId"]
-    cashback_friends.innerText = data["friend_money"]
-    welcome_cashbask.innerText = data["welcome_cashback_sum"]
-    limit_cashback.innerText = data["MAX_BALANCE"]
-})()
-
-
 const saveJson = async function() {
     let data = create_json();
     let url = 'saveJSON?data=' + encodeURIComponent(JSON.stringify(data))
@@ -64,3 +51,17 @@ function create_json() {
         "MAX_BALANCE": parseInt(limit_cashback.innerText),
     }
 }
+
+
+// Show the latest value's
+(async function() {
+    var data = await get_json()
+
+    token.innerText = data["TOKEN"]
+    uri.innerText = data["URI"]
+    stop_bot.checked = data["TECHNICAL_STOP"]
+    groupChatId.innerText = data["groupChatId"]
+    cashback_friends.innerText = data["friend_money"]
+    welcome_cashbask.innerText = data["welcome_cashback_sum"]
+    limit_cashback.innerText = data["MAX_BALANCE"]
+})()
