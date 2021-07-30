@@ -111,6 +111,10 @@ def menu(message):
 	month = get_today().strftime("%m")
 	[tree, items] = get("tree", "items")
 
+	print(type(tree))
+	print(tree['menu']['text']])
+	print(tree.menu.text)
+
 	user = users.find_one({'_id': userId})
 	if user == None:
 		date = get_today().strftime("%d/%m/%Y")
