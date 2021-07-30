@@ -351,7 +351,7 @@ def cashback_photo_QR(message):
 	bot.send_message(userId, tree.cashback_photo.result.format(date, data.sum, available_cashback*100, int(data.sum * available_cashback)), reply_markup=keyboard)
 def cashback_photo_finish(message, values):
 	userId = message.chat.id
-	[tree, cashback, URL_ser] = get("tree", "cashback", "URL_ser")
+	[tree, cashback] = get("tree", "cashback")
 	[url, true_money] = values
 	true_money = int(true_money)
 	money = int(true_money * cashback_logic(true_money, cashback))
@@ -372,7 +372,6 @@ def cashback_photo_finish(message, values):
 						push_args={'operations': new_operation})
 	bot.send_message(userId, tree.notification.balance_increase.format(money))
 def cashback_photo_cancel(message, values):
-	[URL_ser] = get("URL_ser")
 	[function_name, url] = values
 
 	urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
