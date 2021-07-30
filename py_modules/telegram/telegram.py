@@ -112,7 +112,7 @@ def menu(message):
 	[tree, items] = get("tree", "items")
 
 	print(type(tree))
-	print(tree['menu']['text']])
+	print(tree['menu']['text'])
 	print(tree.menu.text)
 
 	user = users.find_one({'_id': userId})
