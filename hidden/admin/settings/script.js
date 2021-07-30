@@ -52,6 +52,24 @@ function create_json() {
     }
 }
 
+let current_section = 0
+let current_item_index = 0
+let section_names = ['household', 'toys']
+async function items() {
+    var data = await get_json()
+    try {
+        var item = data['items'][current_section][current_item_index]
+
+        document.querySelector('#item-img').src = 'image/' + item['image']
+        document.querySelector('#item-name').innerText = item['name']
+        document.querySelector('#item-price').innerText = item['price']
+        document.querySelector('#item-limit').innerText = item['limit']
+    } 
+    catch (e) {
+        alert('No next item');
+        return;
+    }
+}
 
 // Show the latest value's
 (async function() {
@@ -64,4 +82,11 @@ function create_json() {
     cashback_friends.innerText = data["friend_money"]
     welcome_cashbask.innerText = data["welcome_cashback_sum"]
     limit_cashback.innerText = data["MAX_BALANCE"]
+
+    items();
 })()
+
+async function nextItem(move) {
+    current_item_index += move
+    items();
+}

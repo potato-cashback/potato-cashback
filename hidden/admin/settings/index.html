@@ -48,7 +48,31 @@
 			<h3>Max limit cashback</h3>
 			<div contenteditable=true class="setting cashback" id="max-limit-cashback" placeholder="cashback"></div>
 		</details>
+		<br>
+		<details>
+			<summary class="noselect">
+				<h2>Items</h2>
+			</summary>
 
+	
+			<div id="item-container">
+				<button class="button-item" onclick="nextItem(-1);">
+					Left
+				</button>
+				<div class="item">
+					<img id="item-img" src=""/>
+					<h3>Name</h3>
+					<div contenteditable=true class="setting" id="item-name" placeholder="item"></div>
+					<h3>Price</h3> 
+					<div contenteditable=true class="setting cashback" id="item-price" placeholder="item"></div>
+					<h3>Limit</h3>
+					<div contenteditable=true class="setting" id="item-limit" placeholder="item"></div>
+				</div>
+				<button class="button-item" onclick="nextItem(1);">
+					Right
+				</button>
+			</div>
+		</details>
 		<br>
 		<input type="submit" value="Сохранить" onclick="saveJson();" id="submit">
 	</main>
@@ -76,6 +100,26 @@
 	h3 {
 		margin: 0;
 		padding: 0;
+	}
+
+	#item-container {
+		width: 100vw;
+		max-width: max-content;	
+		/* margin: 0 auto; */
+
+		display: flex;
+		flex-direction: row;
+	}
+	.item {
+		width: 60%;
+	}
+	#item-img {
+		width: 100%;
+	}
+	.button-item {
+		width: 20%;
+		background: white;
+		border: 1px solid #9b9b9b;
 	}
 
 </style>

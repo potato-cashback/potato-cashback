@@ -76,6 +76,14 @@ def updateJsonFile(path, new_data):
 		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
 		return False
 
+
+@app.route('/admin/<u>/<p>/image/<path:path>')
+def imageItem(u, p, path):
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+	return send_from_directory("./py_modules/telegram/images/", path)
+
+
 import io
 import random
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
