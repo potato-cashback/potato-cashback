@@ -41,6 +41,22 @@ def saveJson(u, p):
 
 	return 'saved'
 
+@app.route('/admin/<u>/<p>/getJSON')
+def getJson(u, p):
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+
+	try:
+		path = './hidden/settings.json'
+		jsonFile = open(path, "r", encoding='utf-8')
+		data = json.load(jsonFile)
+		jsonFile.close()
+
+		return json.dumps(data, ensure_ascii=False)
+	except:
+		return 'server error', 404
+
+
 def updateJsonFile(path, new_data):
 	try:
 		# Get data from JSON file
