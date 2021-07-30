@@ -76,7 +76,6 @@ def webhook():
 	bot.remove_webhook()
 	[URL_ser, URL_bot, TOKEN] = get("URL_ser", "URL_bot", "TOKEN")
 	url = URL_ser + URL_bot + TOKEN
-	print(url)
 	bot.set_webhook(url = url)
 	return '!', 200
 

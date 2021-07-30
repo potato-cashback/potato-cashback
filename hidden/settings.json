@@ -1,7 +1,7 @@
 {
-    "TOKEN": "1272925344:AAGArvS0kwYUB8W0wL3EufrsGn8kNRGar9w",
+    "TOKEN": "1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA",
     "URI": "mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    "URL_ser": "https://test-potato-cashback.herokuapp.com",
+    "URL_ser": "https://potato-cashback.herokuapp.com",
     "URL_bot": "/bot/",
     "TECHNICAL_STOP": true,
     "groupChatId": 1654644284,
