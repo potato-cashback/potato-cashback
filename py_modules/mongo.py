@@ -55,7 +55,7 @@ def send_data(phone, sum):
 		return 'server error'
 
 def send_to_whatsapp(phone, sum):
-	try: requests.get('https://whatsapp-web-potato.herokuapp.com/'+phone+'/'+sum, timeout=4)
+	try: requests.get('https://whatsapp-web-potato.herokuapp.com/'+phone+'/'+sum, timeout=3)
 	except: print("WA message not sent")
 
 @app.route('/mongodb/phones')
