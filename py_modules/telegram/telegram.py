@@ -75,7 +75,7 @@ def process_cashback(phone, sum):
 def webhook():
 	bot.remove_webhook()
 	[URL_bot, TOKEN] = get("URL_bot", "TOKEN")
-	print(URL_bot, TOKEN)
+	print(URL_bot, TOKEN, "HERE")
 	bot.set_webhook(url = URL_bot+TOKEN)
 	return '!', 200
 
