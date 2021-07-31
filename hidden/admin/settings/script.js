@@ -8,9 +8,10 @@ let cashback_friends = document.querySelector('#cashback-friends')
 let welcome_cashbask = document.querySelector('#welcome-cashback')
 let limit_cashback = document.querySelector('#max-limit-cashback')
 
+let change = {};
+
 const saveJson = async function() {
-    let data = create_json();
-    let url = 'saveJSON?data=' + encodeURIComponent(JSON.stringify(data))
+    let url = 'saveJSON?data=' + encodeURIComponent(JSON.stringify(change))
     console.log(url)
     let request = await fetch(url)
     if (request.ok) {
@@ -39,31 +40,70 @@ async function get_json() {
     return data
 }
 
-function create_json() {
-    return {
-        "TOKEN": token.innerText,
-        "URI": uri.innerText,
-        "TECHNICAL_STOP": stop_bot.checked,
-        "groupChatId": parseInt(groupChatId.innerText),
+function onChange(e) {
+    let tag = e.target
 
-        "friend_money": parseInt(cashback_friends.innerText),
-        "welcome_cashback_sum": parseInt(welcome_cashbask.innerText),
-        "MAX_BALANCE": parseInt(limit_cashback.innerText),
+    key = tag.getAttribute('json-key')
+    
+    let value
+    switch (tag.tagName) {
+        case "INPUT": {
+            value = tag.checked
+            break;
+        }
+        case "DIV": {
+            value = +tag.innerText || tag.innerText
+            break;
+        }
     }
+    change[key] = value
 }
 
-let current_section = 0
-let current_item_index = 0
-let section_names = ['household', 'toys']
-async function items() {
-    var data = await get_json()
+let sectionId = 0
+let itemId = 0
+let sectionName = ['Товары для дома', 'Игршуки']
+function setting_items(data) {
     try {
-        var item = data['items'][current_section][current_item_index]
+        var list = document.querySelector('.sections')
+        data['items'].forEach((section, i) => {
+            var imagesHTML = ''
+            section.forEach((item, j) => {
+                let imageHTML = `
+                <li class="section${i} item ${(i == 0 && j == 0)?"current":""}">
+                    <img id="item-img" src="${'image/' + item['image']}"/>
+                    <h3>Имя</h3>
+                    <div contenteditable=true class="setting" id="item-name" json-key="items.${i}.${j}.name" oninput="onChange(event)">${item['name']}</div>
+                    <h3>Цена</h3> 
+                    <div contenteditable=true class="setting cashback" id="item-price" json-key="items.${i}.${j}.price" oninput="onChange(event)">${item['price']}</div>
+                    <h3>Лимит</h3>
+                    <div contenteditable=true class="setting" id="item-limit" json-key="items.${i}.${j}.limit" oninput="onChange(event)">${item['limit']}</div>
+                </li>`
+                imagesHTML = imagesHTML + imageHTML
+            })
 
-        document.querySelector('#item-img').src = 'image/' + item['image']
-        document.querySelector('#item-name').innerText = item['name']
-        document.querySelector('#item-price').innerText = item['price']
-        document.querySelector('#item-limit').innerText = item['limit']
+            let sectionHTML = 
+            `<li class="section ${(i == 0)?"current":""}">
+            <button class="button-item" onclick="nextSection(-1);">
+                <img src="https://img.icons8.com/fluency-systems-regular/14/000000/back.png"/>
+            </button>
+            <div class="section-name">${sectionName[i]}</div>
+            <button class="button-item" onclick="nextSection(+1);">
+            <img src="https://img.icons8.com/fluency-systems-regular/14/000000/forward--v1.png"/>
+            </button>
+            
+            <button class="button-item" onclick="nextItem(-1);">
+                <img src="https://img.icons8.com/fluency-systems-regular/14/000000/back.png"/>
+            </button>
+            <ul class="items">
+                ${imagesHTML}
+            </ul>
+            <button class="button-item" onclick="nextItem(+1);">
+                <img src="https://img.icons8.com/fluency-systems-regular/14/000000/forward--v1.png"/>
+            </button>
+            </li>`
+
+            list.innerHTML = list.innerHTML + sectionHTML
+        })
     } 
     catch (e) {
         alert('No next item');
@@ -83,10 +123,33 @@ async function items() {
     welcome_cashbask.innerText = data["welcome_cashback_sum"]
     limit_cashback.innerText = data["MAX_BALANCE"]
 
-    items();
+    setting_items(data);
 })()
 
-async function nextItem(move) {
-    current_item_index += move
-    items();
+function nextItem(move) {
+    let list_items = document.querySelectorAll(`.section${sectionId}.item`)
+    if (itemId + move == list_items.length || itemId + move < 0) {
+        alert("No more items")  
+        return;
+    }
+    list_items[itemId].classList.remove("current")
+    itemId += move
+    list_items[itemId].classList.add("current")
+}
+function nextSection(move) {
+    let list_sections = document.querySelectorAll('.section')
+
+    if (sectionId + move == list_sections.length || sectionId + move < 0) {
+        alert("No more sections")   
+        return;
+    }
+    
+    list_sections[sectionId].classList.remove("current")
+    document.querySelectorAll(`.section${sectionId}.item`)[itemId].classList.remove("current")
+
+    sectionId += move
+    itemId = 0
+
+    list_sections[sectionId].classList.add("current")
+    document.querySelectorAll(`.section${sectionId}.item`)[itemId].classList.add("current")
 }

@@ -56,6 +56,22 @@ def getJson(u, p):
 	except:
 		return 'server error', 404
 
+def recursedict(d, keylist, value):
+    print(keylist)
+    key = keylist.pop(0)
+    try: key = int(key)
+    except: pass
+
+    print(keylist)
+    if len(keylist): # True if there are more levels to go down
+        recursedict(d[key],keylist,value)
+        # recurse
+    else:
+        d[key] = value
+        return
+def setdeepdict(d, attributestr, value): # double entery intentional
+    keys = attributestr.split('.')
+    recursedict(d, keys, value)
 
 def updateJsonFile(path, new_data):
 	try:
@@ -65,7 +81,7 @@ def updateJsonFile(path, new_data):
 		jsonFile.close()
 
 		for key in new_data:
-			data[key] = new_data[key]
+			setdeepdict(data, key, new_data[key])
 
 		## Save our changes to JSON file
 		jsonFile = open(path, "w+", encoding='utf-8')

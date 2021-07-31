@@ -19,59 +19,41 @@
 		<br>
 		<details>
 			<summary class="noselect">
-				<h2>Telegram</h2>
+				<h2>Телеграмм</h2>
 			</summary>
 			<br>
-			<h3>Stop bot <input id="stop_bot" type="checkbox"></h3>
+			<h3>Остановить бота <input id="stop_bot" type="checkbox" json-key="TECHNICAL_STOP" onclick="onChange(event)"></h3>
 			<br>
-			<h3>Background bot manager ID</h3>
-			<div contenteditable=true class="setting" id="groupChatId" placeholder="groupChatId"></div>
+			<h3>ID фонового бота</h3>
+			<div contenteditable=true class="setting" id="groupChatId" json-key="groupchatId" oninput="onChange(event)"></div>
 			<br>
-			<h3>Bot token</h3> 
-			<div contenteditable=true class="setting" id="bot-token" placeholder="TOKEN"></div>
+			<h3>Токен</h3> 
+			<div contenteditable=true class="setting" id="bot-token" json-key="TOKEN" oninput="onChange(event)"></div>
 			<br>
 			<h3>MongoDB URI</h3>
-			<div contenteditable=true class="setting" id="mongo-uri" placeholder="URI"></div>		
+			<div contenteditable=true class="setting" id="mongo-uri" json-key="URI" oninput="onChange(event)"></div>		
 		</details>
 		<br>
 		<details>
 			<summary class="noselect">
-				<h2>Cashback</h2>
+				<h2>Кешбэк</h2>
 			</summary>
 			<br>
-			<h3>Cashback for friends</h3>
-			<div contenteditable=true class="setting cashback" id="cashback-friends" placeholder="cashback"></div>
+			<h3>Кешбэк на друга</h3>
+			<div contenteditable=true class="setting cashback" id="cashback-friends" json-key="friend_money" oninput="onChange(event)"></div>
 			<br>
-			<h3>Welcome cashback</h3>
-			<div contenteditable=true class="setting cashback" id="welcome-cashback" placeholder="cashback"></div>
+			<h3>Welcome кешбэк</h3>
+			<div contenteditable=true class="setting cashback" id="welcome-cashback" json-key="welcome_cashback_sum" oninput="onChange(event)"></div>
 			<br>
-			<h3>Max limit cashback</h3>
-			<div contenteditable=true class="setting cashback" id="max-limit-cashback" placeholder="cashback"></div>
+			<h3>Лимит по кешбэку</h3>
+			<div contenteditable=true class="setting cashback" id="max-limit-cashback" json-key="MAX_BALANCE" oninput="onChange(event)"></div>
 		</details>
 		<br>
 		<details>
 			<summary class="noselect">
-				<h2>Items</h2>
+				<h2>Товары</h2>
 			</summary>
-
-	
-			<div id="item-container">
-				<button class="button-item" onclick="nextItem(-1);">
-					Left
-				</button>
-				<div class="item">
-					<img id="item-img" src=""/>
-					<h3>Name</h3>
-					<div contenteditable=true class="setting" id="item-name" placeholder="item"></div>
-					<h3>Price</h3> 
-					<div contenteditable=true class="setting cashback" id="item-price" placeholder="item"></div>
-					<h3>Limit</h3>
-					<div contenteditable=true class="setting" id="item-limit" placeholder="item"></div>
-				</div>
-				<button class="button-item" onclick="nextItem(1);">
-					Right
-				</button>
-			</div>
+			<ul class="sections"></ul>
 		</details>
 		<br>
 		<input type="submit" value="Сохранить" onclick="saveJson();" id="submit">
@@ -97,31 +79,38 @@
 		font-size: 1.5rem;
 	}
 
-	h3 {
+	h3, ul {
 		margin: 0;
 		padding: 0;
 	}
 
-	#item-container {
+	.section {
 		width: 100vw;
-		max-width: max-content;	
-		/* margin: 0 auto; */
-
-		display: flex;
-		flex-direction: row;
+		max-width: 35rem;
+		grid-template-columns: 20% 60% 20%;
+		display: none;
+		margin: 0 auto;
+	}
+	.section-name {
+		padding: 0.5rem 0;
+		text-align: center;
+		border-top: 1px solid #9b9b9b;
+		border-bottom: 1px solid #9b9b9b;
 	}
 	.item {
-		width: 60%;
+		width: auto;
+		display: none;
 	}
 	#item-img {
 		width: 100%;
 	}
 	.button-item {
-		width: 20%;
 		background: white;
 		border: 1px solid #9b9b9b;
 	}
-
+	.current {
+		display: grid;
+	}
 </style>
 
 </html>
