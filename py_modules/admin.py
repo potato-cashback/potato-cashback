@@ -64,10 +64,6 @@ def recursedict(d, keylist, value):
 
 	print(keylist)
 	if len(keylist): # True if there are more levels to go down
-		try: type(d[key]) is dict
-		except: 
-			
-
 		recursedict(d[key],keylist,value)
 		# recurse
 	else:
