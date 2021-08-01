@@ -60,12 +60,9 @@ def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_
 def update_all_balance(user, month = get_today().strftime('%m')):
 	[items] = telegram.get("items")
 	if user['month'] != month:
-		try:
-			if user['not_joined']:
-				users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
-			else:
-				update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': [[0] * len(x) for x in items]})
-		except:
+		if 'not_joined' in user:
+			users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
+		else:
 			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': [[0] * len(x) for x in items]})
 		return True
 	return False
