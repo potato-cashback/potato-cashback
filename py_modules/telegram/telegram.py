@@ -19,7 +19,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://test-potato-cashback.herokuapp.com'
+URL_ser = 'https://potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -144,7 +144,7 @@ def menu(message):
 		else:
 			update_all_balance(user, month)
 			update_user(userId, function_name='#', set_args={'prev_message': '#'})
-	
+
 		currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
 		keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
 		bot.send_message(userId, tree['menu']['text'], reply_markup=keyboard)
