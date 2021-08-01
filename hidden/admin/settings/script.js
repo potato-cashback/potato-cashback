@@ -153,7 +153,7 @@ function settingCashbackProcents(data) {
         let empty_procent = list_percents[list_percents.length - 1]
 
         empty_procent.querySelector('.cashback').innerText = c['on']
-        empty_procent.querySelector('.percent').innerText = c['percent'] * 100
+        empty_procent.querySelector('.percent').innerText = c['percent']
     }
 }
 
