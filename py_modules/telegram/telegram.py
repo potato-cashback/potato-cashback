@@ -5,6 +5,7 @@ import re
 import os
 import json
 import telebot
+from telebot.types import ReplyKeyboardRemove
 import urllib.request
 
 from flask import request
@@ -542,7 +543,7 @@ def register_last_step_phone(message):
 
 		date = get_today().strftime("%d/%m/%Y")
 
-		bot.send_message(userId, tree['register']['check_info'])
+		bot.send_message(userId, tree['register']['check_info'], reply_markup=ReplyKeyboardRemove())
 
 		keyboard = create_keyboard(tree['register']['buttons'], [Keyformat(), Keyformat()])
 		bot.send_message(userId, tree['profile']['text'].format(user['balance'], date, user['name'], user['phone']), reply_markup=keyboard)
