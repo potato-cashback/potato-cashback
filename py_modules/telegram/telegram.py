@@ -107,6 +107,8 @@ def check_balances(message):
 
 @bot.message_handler(commands=['start'])
 def menu(message):
+	print(message)
+
 	userId = message.chat.id
 	month = get_today().strftime("%m")
 	[tree, items] = get("tree", "items")

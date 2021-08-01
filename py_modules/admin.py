@@ -57,18 +57,23 @@ def getJson(u, p):
 		return 'server error', 404
 
 def recursedict(d, keylist, value):
-    print(keylist)
-    key = keylist.pop(0)
-    try: key = int(key)
-    except: pass
+	print(keylist)
+	key = keylist.pop(0)
+	try: key = int(key)
+	except: pass
 
-    print(keylist)
-    if len(keylist): # True if there are more levels to go down
-        recursedict(d[key],keylist,value)
-        # recurse
-    else:
-        d[key] = value
-        return
+	print(keylist)
+	if len(keylist): # True if there are more levels to go down
+		try: type(d[key]) is dict
+		except: 
+			
+
+		recursedict(d[key],keylist,value)
+		# recurse
+	else:
+		d[key] = value
+		return
+
 def setdeepdict(d, attributestr, value): # double entery intentional
     keys = attributestr.split('.')
     recursedict(d, keys, value)
