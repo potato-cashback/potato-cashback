@@ -65,6 +65,7 @@ def update_all_balance(user, month = get_today().strftime('%m')):
 		else:
 			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': [[0] * len(x) for x in items]})
 		return True
+		
 	return False
 # <==========================================>
 
