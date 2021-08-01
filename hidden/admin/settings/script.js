@@ -32,48 +32,48 @@ function onChange(e) {
     change[key] = value
 }
 
-function buttonItem(itemId, last) {
-    if (itemId == 0)
-        return [`<button class="button-item left" onclick="addItem(-1);">
-                    <img src="https://img.icons8.com/fluency-systems-regular/14/000000/plus-math.png"/>
-                </button>`,
-                `<button class="button-item right" onclick="nextItem(+1);">
-                    <img src="https://img.icons8.com/fluency-systems-regular/14/000000/forward--v1.png"/>
-                </button>`]
-    else if (itemId == last - 1)
-        return [`<button class="button-item left" onclick="nextItem(-1);">
-                    <img src="https://img.icons8.com/fluency-systems-regular/14/000000/back.png"/>
-                </button>`,
-                `<button class="button-item right" onclick="addItem(+1);">
-                    <img src="https://img.icons8.com/fluency-systems-regular/14/000000/plus-math.png"/>
-                </button>`]
-    else 
-        return [`<button class="button-item left" onclick="nextItem(-1);">
-                    <img src="https://img.icons8.com/fluency-systems-regular/14/000000/back.png"/>
-                </button>`,
-                `<button class="button-item right" onclick="nextItem(+1);">
-                    <img src="https://img.icons8.com/fluency-systems-regular/14/000000/forward--v1.png"/>
-                </button>`]
-}
+// function buttonItem(itemId, last) {
+//     if (itemId == 0)
+//         return [`<button class="button-item left" onclick="addItem(-1);">
+//                     <img src="https://img.icons8.com/fluency-systems-regular/14/000000/plus-math.png"/>
+//                 </button>`,
+//                 `<button class="button-item right" onclick="nextItem(+1);">
+//                     <img src="https://img.icons8.com/fluency-systems-regular/14/000000/forward--v1.png"/>
+//                 </button>`]
+//     else if (itemId == last - 1)
+//         return [`<button class="button-item left" onclick="nextItem(-1);">
+//                     <img src="https://img.icons8.com/fluency-systems-regular/14/000000/back.png"/>
+//                 </button>`,
+//                 `<button class="button-item right" onclick="addItem(+1);">
+//                     <img src="https://img.icons8.com/fluency-systems-regular/14/000000/plus-math.png"/>
+//                 </button>`]
+//     else 
+//         return [`<button class="button-item left" onclick="nextItem(-1);">
+//                     <img src="https://img.icons8.com/fluency-systems-regular/14/000000/back.png"/>
+//                 </button>`,
+//                 `<button class="button-item right" onclick="nextItem(+1);">
+//                     <img src="https://img.icons8.com/fluency-systems-regular/14/000000/forward--v1.png"/>
+//                 </button>`]
+// }
 
-function addItem(move) {
-    let list_items = document.querySelector(`.section.current .items`)
+// function addItem(move) {
+//     let list_items = document.querySelector(`.section.current .items`)
 
-    new_item = `
-    <li class="item current">
-        <img class="item-img" src=""/>
-        <h3>Имя</h3>
-        <div contenteditable=true class="setting item-name" json-key="items.${sectionId}.${itemId+move}.name" oninput="onChange(event)"></div>
-        <h3>Цена</h3> 
-        <div contenteditable=true class="setting cashback item-price" json-key="items.${sectionId}.${itemId+move}.price" oninput="onChange(event)"></div>
-        <h3>Лимит</h3>
-        <div contenteditable=true class="setting item-limit" json-key="items.${sectionId}.${itemId+move}.limit" oninput="onChange(event)"></div>
-        <h3>Изображения</h3>
-    </li>
-    `
-    list_items.innerHTML = list_items.innerHTML + new_item
-    nextItem(move)
-}
+//     new_item = `
+//     <li class="item current">
+//         <img class="item-img" src=""/>
+//         <h3>Имя</h3>
+//         <div contenteditable=true class="setting item-name" json-key="items.${sectionId}.${itemId+move}.name" oninput="onChange(event)"></div>
+//         <h3>Цена</h3> 
+//         <div contenteditable=true class="setting cashback item-price" json-key="items.${sectionId}.${itemId+move}.price" oninput="onChange(event)"></div>
+//         <h3>Лимит</h3>
+//         <div contenteditable=true class="setting item-limit" json-key="items.${sectionId}.${itemId+move}.limit" oninput="onChange(event)"></div>
+//         <h3>Изображения</h3>
+//     </li>
+//     `
+//     list_items.innerHTML = list_items.innerHTML + new_item
+//     nextItem(move)
+// }
 
 function nextItem(move) {
     let list_items = document.querySelectorAll(`.section.current .item`)
@@ -132,7 +132,24 @@ function settingItems(data) {
         list.innerHTML = list.innerHTML + sectionHTML
     })
 
-    nextItem(0)
+    // nextItem(0)
+}
+
+function settingCashbackProcents(data) {
+    return;
+    // data['cashback']
+}
+
+function addProcents() {
+    let list_procents = document.querySelector('#cashback-percent')
+
+    let new_procent = `
+        <li style="display: flex;">
+            <div contenteditable=true class="setting cashback" json-key="cashback"></div>
+            <div contenteditable=true class="setting percent" style="margin-left: 1rem;" json-key="cashback"></div>
+        </li>`
+
+    list_procents.innerHTML = list_procents.innerHTML + new_procent
 }
 
 // Show the latest value's
@@ -148,6 +165,7 @@ async function setValues() {
     limit_cashback.innerText = data["MAX_BALANCE"]
 
     settingItems(data);
+    settingCashbackProcents(data)
 }
 setValues()
 
