@@ -10,36 +10,6 @@ let limit_cashback = document.querySelector('#max-limit-cashback')
 
 let change = {};
 
-const saveJson = async function() {
-    let url = 'saveJSON?data=' + encodeURIComponent(JSON.stringify(change))
-    console.log(url)
-    let request = await fetch(url)
-    if (request.ok) {
-        alert("Saved!");
-    }
-}
-
-async function get_json() {
-    let request = await fetch('getJSON')
-    let data;
-    if (request.ok) {
-        data = JSON.parse(await request.text())
-    } else {
-        alert("Couldn't retrive JSON, setting default values")
-        data = {
-            "TOKEN": "1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA",
-            "URI": "mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-            "TECHNICAL_STOP": false,
-            "groupChatId": 1654644284,
-    
-            "friend_money": 20,
-            "welcome_cashback_sum": 200,
-            "MAX_BALANCE": 20000,
-        }
-    }
-    return data
-}
-
 function onChange(e) {
     let tag = e.target
 
@@ -65,18 +35,19 @@ let sectionName = ['Товары для дома', 'Игршуки']
 function setting_items(data) {
     try {
         var list = document.querySelector('.sections')
+        list.innerHTML = '';
         data['items'].forEach((section, i) => {
             var imagesHTML = ''
             section.forEach((item, j) => {
                 let imageHTML = `
                 <li class="section${i} item ${(i == 0 && j == 0)?"current":""}">
-                    <img id="item-img" src="${'image/' + item['image']}"/>
+                    <img class="item-img" src="${'image/' + item['image']}" alt="${item['name']}"/>
                     <h3>Имя</h3>
-                    <div contenteditable=true class="setting" id="item-name" json-key="items.${i}.${j}.name" oninput="onChange(event)">${item['name']}</div>
+                    <div contenteditable=true class="setting item-name" json-key="items.${i}.${j}.name" oninput="onChange(event)">${item['name']}</div>
                     <h3>Цена</h3> 
-                    <div contenteditable=true class="setting cashback" id="item-price" json-key="items.${i}.${j}.price" oninput="onChange(event)">${item['price']}</div>
+                    <div contenteditable=true class="setting cashback item-price" json-key="items.${i}.${j}.price" oninput="onChange(event)">${item['price']}</div>
                     <h3>Лимит</h3>
-                    <div contenteditable=true class="setting" id="item-limit" json-key="items.${i}.${j}.limit" oninput="onChange(event)">${item['limit']}</div>
+                    <div contenteditable=true class="setting item-limit" json-key="items.${i}.${j}.limit" oninput="onChange(event)">${item['limit']}</div>
                 </li>`
                 imagesHTML = imagesHTML + imageHTML
             })
@@ -112,8 +83,8 @@ function setting_items(data) {
 }
 
 // Show the latest value's
-(async function() {
-    var data = await get_json()
+async function setValues() {
+    var data = await getJson()
 
     token.innerText = data["TOKEN"]
     uri.innerText = data["URI"]
@@ -124,7 +95,8 @@ function setting_items(data) {
     limit_cashback.innerText = data["MAX_BALANCE"]
 
     setting_items(data);
-})()
+}
+setValues()
 
 function nextItem(move) {
     let list_items = document.querySelectorAll(`.section${sectionId}.item`)
@@ -152,4 +124,56 @@ function nextSection(move) {
 
     list_sections[sectionId].classList.add("current")
     document.querySelectorAll(`.section${sectionId}.item`)[itemId].classList.add("current")
+}
+
+const saveJson = function() {
+    popup("Вы уверены что хотите <strong>сохранить</strong> изменение?", async () => {
+        removePopup()
+        let url = 'saveJSON?data=' + encodeURIComponent(JSON.stringify(change))
+        console.log(url)
+        let request = await fetch(url)
+        if (request.ok) {
+            alert("Saved!");
+        }        
+    })
+}
+
+async function getJson() {
+    let request = await fetch('getJSON')
+    let data;
+    if (request.ok) {
+        data = JSON.parse(await request.text())
+    } else {
+        alert("Couldn't retrive JSON, setting default values")
+        data = {
+            "TOKEN": "1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA",
+            "URI": "mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+            "TECHNICAL_STOP": false,
+            "groupChatId": 1654644284,
+    
+            "friend_money": 20,
+            "welcome_cashback_sum": 200,
+            "MAX_BALANCE": 20000,
+        }
+    }
+    return data
+}
+
+function removePopup() {
+    document.querySelector('#popup-container').style.visibility = 'hidden'
+}
+function popup(message, ok) {
+    let container = document.querySelector('#popup-container')
+    container.style.visibility = 'visible'
+
+    container.querySelector('.message').innerHTML = message
+
+    container.querySelector('button.ok').addEventListener('click', ok)
+}
+
+const cancelJson = function() {
+    popup("Вы уверены что хотите <strong>отменить</strong> изменение?", async () => {
+        await setValues()
+        removePopup()
+    })
 }
