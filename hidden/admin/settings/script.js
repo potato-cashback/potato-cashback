@@ -131,25 +131,30 @@ function settingItems(data) {
 
         list.innerHTML = list.innerHTML + sectionHTML
     })
-
-    // nextItem(0)
-}
-
-function settingCashbackProcents(data) {
-    return;
-    // data['cashback']
 }
 
 function addProcents() {
-    let list_procents = document.querySelector('#cashback-percent')
+    let list_percents = document.querySelector('#cashback-percent')
 
+    let id = list_percents.querySelectorAll('li').length - 1
     let new_procent = `
         <li style="display: flex;">
-            <div contenteditable=true class="setting cashback" json-key="cashback"></div>
-            <div contenteditable=true class="setting percent" style="margin-left: 1rem;" json-key="cashback"></div>
+            <div contenteditable=true class="setting cashback" json-key="cashback.${id}.on" oninput="onChange(event)"></div>
+            <div contenteditable=true class="setting percent" style="margin-left: 1rem;" json-key="cashback.${id}.percent" oninput="onChange(event)"></div>
         </li>`
 
-    list_procents.innerHTML = list_procents.innerHTML + new_procent
+    list_percents.innerHTML = list_percents.innerHTML + new_procent
+}
+
+function settingCashbackProcents(data) {
+    for (const c of data['cashback']) {
+        addProcents()
+        let list_percents = document.querySelectorAll('#cashback-percent li')
+        let empty_procent = list_percents[list_percents.length - 1]
+
+        empty_procent.querySelector('.cashback').innerText = c['on']
+        empty_procent.querySelector('.percent').innerText = c['percent'] * 100
+    }
 }
 
 // Show the latest value's

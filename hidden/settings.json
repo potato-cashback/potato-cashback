@@ -8,11 +8,11 @@
     "cashback": [
         {
             "on": 3000,
-            "procent": 0.06
+            "percent": 6
         },
         {
             "on": 5000,
-            "procent": 0.11
+            "percent": 11
         }
     ],
     "MAX_BALANCE": 20000,

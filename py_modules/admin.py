@@ -56,22 +56,36 @@ def getJson(u, p):
 	except:
 		return 'server error', 404
 
+def fillDict(d, key, nextKey):
+    if type(d).__name__ == 'list':
+        print("hello")
+        while key >= len(d):
+            d.append([] if type(nextKey).__name__ == 'int' else {})
+        print(d)
+    elif not key in d:
+        d[key] = [] if type(nextKey).__name__ == 'int' else {}
+        
 def recursedict(d, keylist, value):
-	print(keylist)
-	key = keylist.pop(0)
-	try: key = int(key)
-	except: pass
+    key = keylist.pop(0)
+    print(key)
+    if len(keylist): # True if there are more levels to go down
+        try: nextKey = keylist[0]
+        except: nextKey = None
+        
+        fillDict(d, key, nextKey)
 
-	print(keylist)
-	if len(keylist): # True if there are more levels to go down
-		recursedict(d[key],keylist,value)
-		# recurse
-	else:
-		d[key] = value
-		return
+        recursedict(d[key],keylist,value)
+        # recurse
+    else:
+        fillDict(d, key, 0)
+        d[key] = value
+    return
 
 def setdeepdict(d, attributestr, value): # double entery intentional
     keys = attributestr.split('.')
+    for i in range(len(keys)):
+        try: keys[i] = int(keys[i])
+        except: pass
     recursedict(d, keys, value)
 
 def updateJsonFile(path, new_data):

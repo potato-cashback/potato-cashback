@@ -25,9 +25,9 @@ def cashback_logic(sum, cashback):
 	for i in range(len(cashback)):
 		if i+1 == len(cashback):
 			if cashback[i]['on'] <= sum:
-				return cashback[i]['on']
+				return cashback[i]['on'] / 100
 		elif cashback[i]['on'] <= sum and sum < cashback[i+1]['on']:
-			return cashback[i]['procent']
+			return cashback[i]['percent'] / 100
 	return 'error'
 
 def fraud_check(user, money):
