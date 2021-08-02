@@ -21,10 +21,14 @@ def sign(x):
     return str(x) if x < 0 else '+'+str(x)
 
 def cashback_logic(sum, cashback):
-    res = 0
-    if sum >= 5000: res = cashback[1]
-    elif sum >= 3000: res = cashback[0]
-    return res
+	cashback = sorted(cashback, key=lambda k: k['on'])
+	for i in range(len(cashback)):
+		if i+1 == len(cashback):
+			if cashback[i]['on'] <= sum:
+				return cashback[i]['on'] / 100
+		elif cashback[i]['on'] <= sum and sum < cashback[i+1]['on']:
+			return cashback[i]['percent'] / 100
+	return 'error'
 
 def fraud_check(user, money):
 	[tree, MAX_BALANCE] = telegram.get("tree", "MAX_BALANCE")

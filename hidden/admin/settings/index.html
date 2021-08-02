@@ -63,6 +63,23 @@
 		<br>
 		<details open>
 			<summary class="noselect">
+				<h2>Кэшбек проценты</h2>
+			</summary>
+			<br>
+			<ul id="cashback-percent">
+				<li style="display: flex;">
+					<h3 style="width: 100vw; text-align: center;">Промежуток</h3>
+					<h3 style="width: 100vw; text-align: center; margin-left: 1rem;">Процент кешбэка</h3>
+				</li>
+
+			</ul>
+			<button class="button" onclick="addProcents();">
+				<img src="https://img.icons8.com/fluency-systems-regular/14/000000/plus-math.png"/>
+			</button>
+		</details>
+		<br>
+		<details>
+			<summary class="noselect">
 				<h2>Товары</h2>
 			</summary>
 			<button onclick="openMenu()">Добавить Товар</button>
@@ -217,6 +234,20 @@
 	}
 	#popup .message {
 		padding: 0.5rem 0 2rem 0;
+	}
+
+	.percent::after {
+		content:" %";
+	}
+	#cashback-percent .cashback, #cashback-percent .percent {
+		border: 1px solid #9b9b9b;
+	}
+	.button {
+		width: 100vw;
+		background: white;
+		border: 1px solid #9b9b9b;
+		padding: 0.5rem;
+		margin-top: 1rem;
 	}
 </style>
 

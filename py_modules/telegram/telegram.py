@@ -28,14 +28,18 @@ from py_modules.telegram.functions import *
 
 @app.route('/bot/'+get("TOKEN")[0], methods=['POST'])
 def getMessage():
-	json_string = request.get_data().decode('utf-8')
-	update = telebot.types.Update.de_json(json_string)
-	
-	# TECHNICAL STOP FOR DEBUGS AND CODE FIXES
-	if techincal_stop_check(update):
-		return "Bug fixes", 200
-
-	bot.process_new_updates([update])
+	try:
+		json_string = request.get_data().decode('utf-8')
+		update = telebot.types.Update.de_json(json_string)
+		
+		# TECHNICAL STOP FOR DEBUGS AND CODE FIXES
+		if techincal_stop_check(update):
+			return "Bug fixes", 200
+		
+		bot.process_new_updates([update])
+	except Exception as e:
+		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
+		return
 	return "!", 200
 
 @app.route('/send_data/<phone>/<sum>')
@@ -109,49 +113,45 @@ def check_balances(message):
 @bot.message_handler(commands=['start'])
 def menu(message):
 	print(message)
+	userId = message.chat.id
+	month = get_today().strftime("%m")
+	[tree, items] = get("tree", "items")
 
-	try:
-		userId = message.chat.id
-		month = get_today().strftime("%m")
-		[tree, items] = get("tree", "items")
+	user = users.find_one({'_id': userId})
+	if user == None:
+		date = get_today().strftime("%d/%m/%Y")
+		ctime = get_today().strftime("%H:%M")
+		nickname = message.chat.username
 
-		user = users.find_one({'_id': userId})
-		if user == None:
-			date = get_today().strftime("%d/%m/%Y")
-			ctime = get_today().strftime("%H:%M")
-			nickname = message.chat.username
+		users.insert_one({
+			'_id': userId,
+			'username': nickname,
+			'register_date': date,
+			'register_time': ctime,
+			'balance': 0,
+			'all_balance': 0,
+			'registered': False,
 
-			users.insert_one({
-				'_id': userId,
-				'username': nickname,
-				'register_date': date,
-				'register_time': ctime,
-				'balance': 0,
-				'all_balance': 0,
-				'registered': False,
+			'name': '',
+			'phone': '', 
+			'friends': {},
+			'limit_items': [[0] * len(x) for x in items],
 
-				'name': '',
-				'phone': '', 
-				'friends': {},
-				'limit_items': [[0] * len(x) for x in items],
+			'function_name': '#',
+			'use_function': False,
+			'prev_message': '#',
+			'month': month,
 
-				'function_name': '#',
-				'use_function': False,
-				'prev_message': '#',
-				'month': month,
+			'operations': [],
+		})
+	else:
+		update_all_balance(user, month)
+		update_user(userId, function_name='#', set_args={'prev_message': '#'})
 
-				'operations': [],
-			})
-		else:
-			update_all_balance(user, month)
-			update_user(userId, function_name='#', set_args={'prev_message': '#'})
+	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
+	keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
+	bot.send_message(userId, tree['menu']['text'], reply_markup=keyboard)
 
-		currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
-		keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
-		bot.send_message(userId, tree['menu']['text'], reply_markup=keyboard)
-	except Exception as e:
-		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
-		return
 # EXTRACT LIST SYSTEM
 # <+=============================================================================================+>
 @bot.message_handler(commands=['extract'])
