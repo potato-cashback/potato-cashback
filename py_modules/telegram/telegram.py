@@ -193,14 +193,14 @@ def extract(message):
 
 # GIFT MANANGMENT
 # <+=============================================================================================+>
-def list_sections(message):
+def sections(message):
 	userId = message.chat.id
 	[tree] = get("tree")
 
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['list_sections']['buttons'], currentInlineState)
-	bot.send_message(userId, tree['list_sections']['text'], reply_markup=keyboard)
-def list_gifts(message, value):
+	keyboard = create_keyboard(tree['sections']['buttons'], currentInlineState)
+	bot.send_message(userId, tree['sections']['text'], reply_markup=keyboard)
+def display_items(message, value):
 	userId = message.chat.id
 	[tree, items] = get("tree", "items")
 
@@ -215,11 +215,11 @@ def list_gifts(message, value):
 		Keyformat(texts=[toyId + 1, len(items[sectionId])], callbacks=[toyId, sectionId]),
 		Keyformat()]
 
-	keyboard = create_keyboard(tree['list_gifts']['buttons'], currentInlineState)
+	keyboard = create_keyboard(tree['display_items']['buttons'], currentInlineState)
 	bot.send_photo(chat_id=userId, 
 				   photo=Image.open(URL_image + item['image']), 
 				   reply_markup=keyboard)
-def buy_gift(message, value):
+def item_info(message, value):
 	userId = message.chat.id
 	[tree, items] = get("tree", "items")
 	user = users.find_one({'_id': userId})
@@ -235,12 +235,12 @@ def buy_gift(message, value):
 	date = get_today().strftime("%d/%m/%Y")
 
 	currentInlineState = [Keyformat(callbacks=[toyId, sectionId]), Keyformat(callbacks=[sectionId])]
-	keyboard = create_keyboard(tree['buy_gift']['buttons'], currentInlineState)
+	keyboard = create_keyboard(tree['item_info']['buttons'], currentInlineState)
 	bot.send_photo(chat_id=userId, 
 				   photo=Image.open(URL_image + item['image']), 
-				   caption=tree['buy_gift']['text'].format(item['name'], item['price'], user['balance'], date, user['name'], user['phone']),
+				   caption=tree['item_info']['text'].format(item['name'], item['price'], user['balance'], date, user['name'], user['phone']),
 				   reply_markup=keyboard)
-def user_buy(message, value):
+def buy_item(message, value):
 	userId = message.chat.id
 	[tree, items] = get("tree", "items")
 	[toyId, sectionId] = [int(x) for x in value]
@@ -250,13 +250,13 @@ def user_buy(message, value):
 
 	# Check if user can buy current item
 	if user['balance'] < item['price']:
-		bot.send_message(userId, tree['user_buy']['not_enough'])
-		list_gifts(message, value)
+		bot.send_message(userId, tree['buy_item']['not_enough'])
+		display_items(message, value)
 		return
 	# Check if user not reached limit yet for an item
 	if user['limit_items'][sectionId][toyId] + 1 > item['limit']:
-		bot.send_message(userId, tree['user_buy']['limit_exceeded'])
-		list_gifts(message, value)
+		bot.send_message(userId, tree['buy_item']['limit_exceeded'])
+		display_items(message, value)
 		return
 
 	new_operation = create_operation(item['name'], -item['price'])
@@ -264,12 +264,12 @@ def user_buy(message, value):
 								  f'limit_items.{sectionId}.{toyId}': user['limit_items'][sectionId][toyId] + 1},
 						push_args={'operations': new_operation})
 
-	confirm_user(message, value)
+	confirm_purchase(message, value)
 
 	currentInlineState = [Keyformat()]
-	keyboard = create_keyboard(tree['user_buy']['buttons'], currentInlineState)
-	bot.send_message(userId, tree['user_buy']['text'], reply_markup=keyboard)
-def confirm_user(message, value):
+	keyboard = create_keyboard(tree['buy_item']['buttons'], currentInlineState)
+	bot.send_message(userId, tree['buy_item']['text'], reply_markup=keyboard)
+def confirm_purchase(message, value):
 	userId = message.chat.id
 	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
 	[toyId, sectionId] = [int(x) for x in value]
@@ -286,7 +286,7 @@ def confirm_user(message, value):
 				   caption=tree['confirmation']['text'].format(item['tag'], user['username'], user['balance'], user['name'], user['phone']), 
 				   reply_markup=keyboard,
 				   parse_mode='html')
-def confirmed(message, value):
+def purchase_status(message, value):
 	option = value[0]
 	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
 	[userId, toyId, sectionId] = [int(x) for x in value[1:]]

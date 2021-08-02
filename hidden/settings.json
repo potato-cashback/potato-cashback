@@ -181,7 +181,7 @@
                 [
                     {
                         "text": "МАГАЗИН 🛍",
-                        "callback": "list_sections"
+                        "callback": "sections"
                     }
                 ]
             ]
@@ -358,7 +358,7 @@
                 [
                     {
                         "text": "МАГАЗИН 🛍",
-                        "callback": "list_sections"
+                        "callback": "sections"
                     }
                 ],
                 [
@@ -386,19 +386,19 @@
                 ]
             ]
         },
-        "list_sections": {
+        "sections": {
             "text": "Выберите категорию товаров",
             "buttons": [
                 [
                     {
                         "text": "Игрушки",
-                        "callback": "list_gifts?0,1"
+                        "callback": "display_items?0,1"
                     }
                 ],
                 [
                     {
                         "text": "Товары для дома",
-                        "callback": "list_gifts?0,0"
+                        "callback": "display_items?0,0"
                     }
                 ],
                 [
@@ -409,60 +409,60 @@
                 ]
             ]
         },
-        "list_gifts": {
+        "display_items": {
             "buttons": [
                 [
                     {
                         "text": "Цена: {}₸",
-                        "callback": "list_gifts?{},{}"
+                        "callback": "display_items?{},{}"
                     }
                 ],
                 [
                     {
                         "text": "<<",
-                        "callback": "list_gifts?{},{}"
+                        "callback": "display_items?{},{}"
                     },
                     {
                         "text": "Хочу это!",
-                        "callback": "buy_gift?{},{}"
+                        "callback": "item_info?{},{}"
                     },
                     {
                         "text": ">>",
-                        "callback": "list_gifts?{},{}"
+                        "callback": "display_items?{},{}"
                     }
                 ],
                 [
                     {
                         "text": "{} из {}",
-                        "callback": "list_gifts?{},{}"
+                        "callback": "display_items?{},{}"
                     }
                 ],
                 [
                     {
                         "text": "Назад 🏘",
-                        "callback": "list_sections"
+                        "callback": "sections"
                     }
                 ]
             ]
         },
-        "buy_gift": {
+        "item_info": {
             "text": "КУПИТЬ {} ЗА {}₸?\n\nОстаток: {}₸\nДата: {}\nИмя: {}\nТелефон: {}",
             "buttons": [
                 [
                     {
                         "text": "Хочу это!",
-                        "callback": "user_buy?{},{}"
+                        "callback": "buy_item?{},{}"
                     }
                 ],
                 [
                     {
                         "text": "Назад 🏘",
-                        "callback": "list_gifts?0,{}"
+                        "callback": "display_items?0,{}"
                     }
                 ]
             ]
         },
-        "user_buy": {
+        "buy_item": {
             "not_enough": "Упс ☹️, у вас не хватает баланса для покупки...",
             "limit_exceeded": "Извините, но покупка этого товара сейчас недоступна.",
             "text": "Отличный выбор 🤩! Наш оператор свяжется с вами 📞 для уточнения деталей",
@@ -481,11 +481,11 @@
                 [
                     {
                         "text": "Одобрить ✅",
-                        "callback": "confirmed?yes,{},{},{}"
+                        "callback": "purchase_status?yes,{},{},{}"
                     },
                     {
                         "text": "Отвергнуть ❌",
-                        "callback": "confirmed?no,{},{},{}"
+                        "callback": "purchase_status?no,{},{},{}"
                     }
                 ]
             ]
