@@ -1,5 +1,5 @@
 {
-    "TOKEN": "1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA",
+    "TOKEN": "1272925344:AAGArvS0kwYUB8W0wL3EufrsGn8kNRGar9w",
     "URI": "mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     "TECHNICAL_STOP": false,
     "groupChatId": 1654644284,
@@ -175,7 +175,7 @@
                 [
                     {
                         "text": "Скинуть QR чека 📋",
-                        "callback": "cashback_photo"
+                        "callback": "start_qr"
                     }
                 ],
                 [
@@ -186,7 +186,7 @@
                 ]
             ]
         },
-        "cashback_photo": {
+        "qr": {
             "wrong_format": "Неправильный формат ввода",
             "qr_not_found": "QR не найден. Попробуйте снова",
             "wrong_qr": "QR недействителен",
@@ -196,19 +196,19 @@
                 [
                     {
                         "text": "Подтвердить ✅",
-                        "callback": "cashback_photo_finish?{},{}"
+                        "callback": "qr_finish?{},{}"
                     }
                 ],
                 [
                     {
                         "text": "Сделать новое фото QR",
-                        "callback": "cashback_photo_cancel?cashback_photo,{}"
+                        "callback": "qr_cancel?start_qr,{}"
                     }
                 ],
                 [
                     {
                         "text": "Назад в меню 🏘",
-                        "callback": "cashback_photo_cancel?menu,{}"
+                        "callback": "qr_cancel?menu,{}"
                     }
                 ]
             ]

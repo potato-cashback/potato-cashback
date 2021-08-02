@@ -20,7 +20,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -332,7 +332,7 @@ def purchase_status(message, value):
 # QR MANAGEMENT
 # <+=============================================================================================+>
 @bot.message_handler(commands=['qr'])
-def cashback_photo(message):
+def start_qr(message):
 	userId = message.chat.id
 	[tree] = get("tree")
 	user = users.find_one({'_id': userId})
@@ -342,23 +342,23 @@ def cashback_photo(message):
 		menu(message)
 		return
 
-	update_user(userId, 'cashback_photo_QR')
-	bot.send_message(userId, tree['cashback_photo']['text'])
-def cashback_photo_QR(message):
+	update_user(userId, 'get_qr')
+	bot.send_message(userId, tree['qr']['text'])
+def get_qr(message):
 	userId = message.chat.id
 	[tree, cashback] = get("tree", "cashback")
 	if message.content_type != 'photo':
-		update_user(userId, 'cashback_photo_QR')
-		bot.send_message(userId, tree['cashback_photo']['wrong_format'])
+		update_user(userId, 'get_qr')
+		bot.send_message(userId, tree['qr']['wrong_format'])
 		return
 
 	data = get_data_from_qr(message)
 	if data == "not found":
-		update_user(userId, 'cashback_photo_QR')
-		bot.send_message(userId, tree['cashback_photo']['qr_not_found'])
+		update_user(userId, 'get_qr')
+		bot.send_message(userId, tree['qr']['qr_not_found'])
 		return
 	elif data == "not ok":
-		bot.send_message(userId, tree['cashback_photo']['wrong_qr'])
+		bot.send_message(userId, tree['qr']['wrong_qr'])
 		menu(message)
 		return
 
@@ -369,31 +369,30 @@ def cashback_photo_QR(message):
 	available_cashback = cashback_logic(data.sum, cashback)
 	date = get_today().strftime("%d/%m/%Y")
 
-	keyboard = create_keyboard(tree['cashback_photo']['buttons'], currentInlineState)
-	bot.send_message(userId, tree['cashback_photo']['result'].format(date, data.sum, available_cashback*100, int(data.sum * available_cashback)), reply_markup=keyboard)
-def cashback_photo_finish(message, values):
+	keyboard = create_keyboard(tree['qr']['buttons'], currentInlineState)
+	bot.send_message(userId, tree['qr']['result'].format(date, data.sum, available_cashback*100, int(data.sum * available_cashback)), reply_markup=keyboard)
+def qr_finish(message, values):
 	userId = message.chat.id
 	[tree, cashback] = get("tree", "cashback")
-	[url, true_money] = values
-	true_money = int(true_money)
-	money = int(true_money * cashback_logic(true_money, cashback))
+	[url, sum] = values
+	cashback_sum = int(sum * cashback_logic(sum, cashback))
 
 	urllib.request.urlopen(URL_ser+'/api/response/'+url)
 
 	user = users.find_one({'_id': userId})
 
-	if fraud_check(user, money): 
+	if fraud_check(user, cashback_sum): 
 		urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
 		menu(message)
 		return
 
-	new_operation = create_operation(tree['operations']['photo'], true_money, money)
-
-	update_user(userId, set_args={'balance': user['balance'] + money, 
-								  'all_balance': user['all_balance'] + money},
+	new_operation = create_operation(tree['operations']['photo'], sum, cashback_sum)
+	update_user(userId, set_args={'balance': user['balance'] + cashback_sum, 
+								  'all_balance': user['all_balance'] + cashback_sum},
 						push_args={'operations': new_operation})
-	bot.send_message(userId, tree['notification']['balance_increase'].format(money))
-def cashback_photo_cancel(message, values):
+
+	bot.send_message(userId, tree['notification']['balance_increase'].format(cashback_sum))
+def qr_cancel(message, values):
 	[function_name, url] = values
 
 	urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
@@ -630,7 +629,7 @@ def receiver(message):
 			return
 	elif message.content_type == "photo":
 		[TEMPLATE_MESSAGE] = get("TEMPLATE_MESSAGE")
-		data = cashback_photo_QR(message)
+		data = get_qr(message)
 		if data == "not found" or data == "not ok":
 			bot.send_message(userId, TEMPLATE_MESSAGE)
 	else:
