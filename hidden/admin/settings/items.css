@@ -1,0 +1,80 @@
+.rowName{
+    font-weight: bold;
+}
+
+#carousel{
+    min-height: 400px;
+}
+
+#carousel div.wrapper{
+    margin: auto;
+}
+
+
+
+#carouselLeft, #carouselRight, #items{
+    display: inline-block;
+}
+
+#carouselLeft img, #carouselRight img{
+    margin-bottom: -150px;
+    width:5vw;
+    max-width:2rem;
+}
+
+#items{
+    width:80vw;
+    max-width: 400px;
+
+    top:0;
+}
+
+.item{
+    display: none;
+
+    background-color:white;
+    border:1px solid black;
+    border-radius: 10px;
+
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.item.current{
+    display: block;
+}
+
+.item .image img{
+    width: calc(80vw - 30px);
+    max-width: 370px;
+}
+
+#menu{
+    display: none;
+
+    z-index: 1000;
+    position: absolute;
+    width:100vw;
+    height:100vh;
+    background-color:white;
+}
+
+#menu table{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#closeMenu{
+    float:right;
+}
+
+#menu #inputImage{
+    width:90vw;
+    max-width: 400px;
+}
+
+#menu input[type="file"]{
+    width:8rem;
+}
