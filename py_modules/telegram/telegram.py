@@ -95,6 +95,8 @@ def check_balances(message):
 	
 	data = users.find({})
 	ans = ""
+	for user in data:
+		print(user)
 
 	for user in data:
 		balance = user['balance']
