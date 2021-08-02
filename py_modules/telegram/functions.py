@@ -25,7 +25,7 @@ def cashback_logic(sum, cashback):
 	for i in range(len(cashback)):
 		if i+1 == len(cashback):
 			if cashback[i]['on'] <= sum:
-				return cashback[i]['on'] / 100
+				return cashback[i]['percent'] / 100
 		elif cashback[i]['on'] <= sum and sum < cashback[i+1]['on']:
 			return cashback[i]['percent'] / 100
 	return 'error'
