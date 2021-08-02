@@ -61,7 +61,7 @@
 			<div contenteditable=true class="setting cashback" id="max-limit-cashback" json-key="MAX_BALANCE" oninput="onChange(event)"></div>
 		</details>
 		<br>
-		<details open>
+		<details>
 			<summary class="noselect">
 				<h2>Кэшбек проценты</h2>
 			</summary>
@@ -78,11 +78,13 @@
 			</button>
 		</details>
 		<br>
-		<details>
+		<details open>
 			<summary class="noselect">
 				<h2>Товары</h2>
 			</summary>
-			<button onclick="openMenu()">Добавить Товар</button>
+			<button onclick="openAddMenu()">Добавить Товар</button>
+			<br>
+			<br>
 			<div id="carousel">
 				<center>
 					<div id="carouselLeft" onclick="scrollMove('left')">
@@ -101,14 +103,14 @@
 		<br>
 		<input type="submit" value="Отмена" onclick="cancelJson();" id="cancel">
 	</main>
-	<div id="menu">
-		<button onclick="closeMenu()" id="closeMenu">
+	<div id="addMenu">
+		<button onclick="closeAddMenu()" id="closeAddMenu">
 			<img src="https://img.icons8.com/ios-glyphs/30/000000/macos-close.png"/>
 		</button>
 		<table>
 			<tr>
 				<td colspan="2">
-					<img id="inputImage">
+					<img id="inputAddImage">
 				</td>
 			</tr>
 			<tr class="image">
@@ -143,12 +145,59 @@
 			</tr>
 			<tr class="upload">
 				<td colspan="2">
-					<button onclick="menuAddButton()">Добавить</button>
+					<button onclick="addMenuButton()">Добавить</button>
 				</td>
 			</tr>
 		</table>
 	</div>
 
+	<div id="editMenu">
+		<button onclick="closeEditMenu()" id="closeEditMenu">
+			<img src="https://img.icons8.com/ios-glyphs/30/000000/macos-close.png"/>
+		</button>
+		<table>
+			<tr>
+				<td colspan="2">
+					<img id="inputEditImage">
+				</td>
+			</tr>
+			<tr class="image">
+				<td class="rowName">Картинка:</td>
+				<td>
+					<input type="file" name="image" accept="image/jpeg, image/png, image/jpg">
+				</td>
+			</tr>
+			<tr class="name">
+				<td class="rowName">Название:</td>
+				<td>
+					<input type="text" name="name">
+				</td>
+			</tr>
+			<tr class="price">
+				<td class="rowName">Цена:</td>
+				<td>
+					<input type="number" name="price">
+				</td>
+			</tr>
+			<tr class="limit">
+				<td class="rowName">Лимит Покупок:</td>
+				<td>
+					<input type="number" name="limit">
+				</td>
+			</tr>
+			<tr class="tag">
+				<td class="rowName">Тег в Базе:</td>
+				<td>
+					<input type="text" name="tag">
+				</td>
+			</tr>
+			<tr class="upload">
+				<td colspan="2">
+					<button onclick="editMenuButton()">Сохранить</button>
+				</td>
+			</tr>
+		</table>
+	</div>
 
 	<script src="settings/script.js"></script>
 	<script src="settings/items.js"></script>
