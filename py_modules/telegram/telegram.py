@@ -81,6 +81,7 @@ def process_cashback(phone, sum):
 
 @app.route('/bot/')
 def webhook():
+	print("hello!!")
 	bot.remove_webhook()
 	[TOKEN] = get("TOKEN")
 	bot.set_webhook(url = URL_bot + TOKEN)
