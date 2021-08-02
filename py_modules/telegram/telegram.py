@@ -366,9 +366,7 @@ def get_qr(message):
 						  Keyformat(callbacks=[data.date]), 
 						  Keyformat(callbacks=[data.date])]
 	
-	print(cashback)
 	available_cashback = cashback_logic(data.sum, cashback)
-	print(available_cashback)
 	date = get_today().strftime("%d/%m/%Y")
 
 	keyboard = create_keyboard(tree['qr']['buttons'], currentInlineState)
@@ -644,6 +642,8 @@ def callback_query(call):
 
 	userId = call.message.chat.id
 	[query, value] = calc(call.data)
+
+	print(query, value)
 
 	possibles = globals().copy()
 	possibles.update(locals())
