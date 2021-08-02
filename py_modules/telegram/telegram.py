@@ -95,12 +95,10 @@ def check_balances(message):
 		return
 	
 	[items] = get("items")
-	data = users.find({})
+	# data = users.find({})
 	ans = {sectionName:{itemTag:0 for itemTag in items[sectionName]} for sectionName in items}
 	print(ans)
-	for u in data:
-		print(u)
-	# users.update_one({}, {'$set': {'limit_items': ans}})
+	users.update_one({}, {'$set': {'limit_items': ans}})
 
 	# for user in data:
 	# 	balance = user['balance']
