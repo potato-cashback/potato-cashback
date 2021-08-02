@@ -93,10 +93,11 @@ def check_balances(message):
 	if not 'admin' in user:
 		return
 	
+	[items] = get("items")
 	data = users.find({})
-	ans = ""
-	for user in data:
-		print(user)
+	ans = {sectionName:{itemTag:0 for itemTag in items[sectionName]} for sectionName in items}
+	print(ans)
+	# users.update_one({}, {'limit_items': ans})
 
 	for user in data:
 		balance = user['balance']
