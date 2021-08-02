@@ -47,6 +47,9 @@ def calc(query):
 	value = -1
 	if '?' in query:
 		value = re.search(r'\?.+', query)[0][1:].split(',')
+		for i in range(len(value)):
+			try: value[i] = int(value[i])
+			except: pass
 		query = re.search(r'^[^\?]+', query)[0]
 	return [query, value]
 
@@ -67,7 +70,9 @@ def update_all_balance(user, month = get_today().strftime('%m')):
 		if 'not_joined' in user:
 			users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
 		else:
-			update_user(user['_id'], set_args={'all_balance': 0, 'month': month, 'limit_items': [[0] * len(x) for x in items]})
+			update_user(user['_id'], set_args={'all_balance': 0, 
+											   'month': month, 
+											   'limit_items': {sectionName:{itemTag:0 for itemTag in items[sectionName]} for sectionName in items},})
 		return True
 		
 	return False

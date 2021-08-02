@@ -1,5 +1,5 @@
 {
-    "TOKEN": "1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA",
+    "TOKEN": "1272925344:AAGArvS0kwYUB8W0wL3EufrsGn8kNRGar9w",
     "URI": "mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     "TECHNICAL_STOP": false,
     "groupChatId": 1654644284,
@@ -392,13 +392,13 @@
                 [
                     {
                         "text": "Игрушки",
-                        "callback": "display_items?0,1"
+                        "callback": "display_items?household,0"
                     }
                 ],
                 [
                     {
                         "text": "Товары для дома",
-                        "callback": "display_items?0,0"
+                        "callback": "display_items?toys,0"
                     }
                 ],
                 [
@@ -457,7 +457,7 @@
                 [
                     {
                         "text": "Назад 🏘",
-                        "callback": "display_items?0,{}"
+                        "callback": "display_items?{},0"
                     }
                 ]
             ]
@@ -481,11 +481,11 @@
                 [
                     {
                         "text": "Одобрить ✅",
-                        "callback": "purchase_status?yes,{},{},{}"
+                        "callback": "purchase_status?Одобрит✅,{},{},{}"
                     },
                     {
                         "text": "Отвергнуть ❌",
-                        "callback": "purchase_status?no,{},{},{}"
+                        "callback": "purchase_status?Отвергнут❌,{},{},{}"
                     }
                 ]
             ]

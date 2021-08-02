@@ -20,7 +20,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -135,7 +135,7 @@ def menu(message):
 			'name': '',
 			'phone': '', 
 			'friends': {},
-			'limit_items': [[0] * len(x) for x in items],
+			'limit_items': {sectionName:{itemTag:0 for itemTag in items[sectionName]} for sectionName in items},
 
 			'function_name': '#',
 			'use_function': False,
@@ -204,15 +204,17 @@ def display_items(message, value):
 	userId = message.chat.id
 	[tree, items] = get("tree", "items")
 
-	[toyId, sectionId] = [int(x) for x in value]
-	item = items[sectionId][toyId]
+	[sectionName, itemId] = value
+	itemTag = list(items[sectionName])[itemId]
+
+	item = items[sectionName][itemTag]
 
 	currentInlineState = [
-		Keyformat(texts=[item['price']], callbacks=[toyId, sectionId]),
-		Keyformat(callbacks=[(toyId if toyId > 0 else len(items[sectionId])) - 1, sectionId]),
-		Keyformat(callbacks=[toyId, sectionId]),
-		Keyformat(callbacks=[toyId+1 if toyId < len(items[sectionId])-1 else 0, sectionId]),
-		Keyformat(texts=[toyId + 1, len(items[sectionId])], callbacks=[toyId, sectionId]),
+		Keyformat(texts=[item['price']], callbacks=[sectionName, itemId]),
+		Keyformat(callbacks=[sectionName, (itemId if itemId > 0 else len(items[sectionName])) - 1]),
+		Keyformat(callbacks=[sectionName, itemId]),
+		Keyformat(callbacks=[sectionName, itemId+1 if itemId < len(items[sectionName])-1 else 0]),
+		Keyformat(texts=[itemId + 1, len(items[sectionName])], callbacks=[sectionName, itemId]),
 		Keyformat()]
 
 	keyboard = create_keyboard(tree['display_items']['buttons'], currentInlineState)
@@ -229,12 +231,17 @@ def item_info(message, value):
 		menu(message)
 		return
 
-	[toyId, sectionId] = [int(x) for x in value]
-	item = items[sectionId][toyId]
+	[sectionName, itemId] = value
+	itemTag = list(items[sectionName])[itemId]
+
+	item = items[sectionName][itemTag]
 
 	date = get_today().strftime("%d/%m/%Y")
 
-	currentInlineState = [Keyformat(callbacks=[toyId, sectionId]), Keyformat(callbacks=[sectionId])]
+	currentInlineState = [
+		Keyformat(callbacks=[sectionName, itemId]), 
+		Keyformat(callbacks=[sectionName])]
+
 	keyboard = create_keyboard(tree['item_info']['buttons'], currentInlineState)
 	bot.send_photo(chat_id=userId, 
 				   photo=Image.open(URL_image + item['image']), 
@@ -243,10 +250,14 @@ def item_info(message, value):
 def buy_item(message, value):
 	userId = message.chat.id
 	[tree, items] = get("tree", "items")
-	[toyId, sectionId] = [int(x) for x in value]
-	item = items[sectionId][toyId]
+	
+	[sectionName, itemId] = value
+	itemTag = list(items[sectionName])[itemId]
+
+	item = items[sectionName][itemTag]
 
 	user = users.find_one({'_id': userId})
+	user_limit_on_item = user['limit_items'][sectionName][itemTag]
 
 	# Check if user can buy current item
 	if user['balance'] < item['price']:
@@ -254,14 +265,14 @@ def buy_item(message, value):
 		display_items(message, value)
 		return
 	# Check if user not reached limit yet for an item
-	if user['limit_items'][sectionId][toyId] + 1 > item['limit']:
+	if user_limit_on_item + 1 > item['limit']:
 		bot.send_message(userId, tree['buy_item']['limit_exceeded'])
 		display_items(message, value)
 		return
 
 	new_operation = create_operation(item['name'], -item['price'])
 	update_user(userId, set_args={'balance': user['balance'] - item['price'],
-								  f'limit_items.{sectionId}.{toyId}': user['limit_items'][sectionId][toyId] + 1},
+								  f'limit_items.{sectionName}.{itemTag}': user_limit_on_item + 1},
 						push_args={'operations': new_operation})
 
 	confirm_purchase(message, value)
@@ -272,45 +283,45 @@ def buy_item(message, value):
 def confirm_purchase(message, value):
 	userId = message.chat.id
 	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
-	[toyId, sectionId] = [int(x) for x in value]
-	item = items[sectionId][toyId]
+	[sectionName, itemId] = value
+	itemTag = list(items[sectionName])[itemId]
+
+	item = items[sectionName][itemTag]
 
 	user = users.find_one({'_id': userId})
 
-	currentInlineState = [Keyformat(callbacks=[userId, toyId, sectionId]), 
-						  Keyformat(callbacks=[userId, toyId, sectionId])]
+	currentInlineState = [Keyformat(callbacks=[userId, sectionName, itemId]), 
+						  Keyformat(callbacks=[userId, sectionName, itemId])]
 
 	keyboard = create_keyboard(tree['confirmation']['buttons'], currentInlineState)
 	bot.send_photo(chat_id=groupChatId, 
 				   photo=Image.open(URL_image + item['image']),
-				   caption=tree['confirmation']['text'].format(item['tag'], user['username'], user['balance'], user['name'], user['phone']), 
+				   caption=tree['confirmation']['text'].format(itemTag, user['username'], user['balance'], user['name'], user['phone']), 
 				   reply_markup=keyboard,
 				   parse_mode='html')
 def purchase_status(message, value):
-	option = value[0]
 	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
-	[userId, toyId, sectionId] = [int(x) for x in value[1:]]
+	[status, userId, sectionName, itemId] = value
+	itemTag = list(items[sectionName])[itemId]
 
-	item = items[sectionId][toyId]
+	item = items[sectionName][itemTag]
 
 	user = users.find_one({'_id': userId})
-	if option == 'no':
-		text = 'Отвергнут ❌'
+	if status == 'Отвергнут❌':
 		bot.send_message(userId, tree['notification']['product_warning'])
 
 		new_operation = create_operation(tree['operations']['back'], +item['price'])
 		update_user(userId, set_args={'balance': user['balance'] + item['price'],
-									  f'limit_items.{sectionId}.{toyId}': user['limit_items'][sectionId][toyId] - 1},
+									  f'limit_items.{sectionName}.{itemTag}': user['limit_items'][sectionName][itemTag] - 1},
 							push_args={'operations': new_operation})
 
 		user['balance'] = user['balance'] + item['price']
-	elif option == 'yes':
-		text = 'Одобрит ✅'
+	elif status == 'Одобрит✅':
 		bot.send_message(userId, tree['notification']['product_success'])
 
 	bot.send_photo(chat_id=groupChatId,
 				   photo=Image.open(URL_image + item['image']),
-				   caption=tree['notification']['client_info'].format(item['tag'], user['username'], text, user['balance'], user['name'], user['phone']),
+				   caption=tree['notification']['client_info'].format(itemTag, user['username'], status, user['balance'], user['name'], user['phone']),
 				   parse_mode='html')
 # <+=============================================================================================+>
 
