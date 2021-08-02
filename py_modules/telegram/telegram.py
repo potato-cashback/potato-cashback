@@ -375,6 +375,7 @@ def qr_finish(message, values):
 	userId = message.chat.id
 	[tree, cashback] = get("tree", "cashback")
 	[url, sum] = values
+	url = str(url)
 	cashback_sum = int(sum * cashback_logic(sum, cashback))
 
 	urllib.request.urlopen(URL_ser+'/api/response/'+url)
@@ -394,7 +395,7 @@ def qr_finish(message, values):
 	bot.send_message(userId, tree['notification']['balance_increase'].format(cashback_sum))
 def qr_cancel(message, values):
 	[function_name, url] = values
-
+	url = str(url)
 	urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
 
 	possibles = globals().copy()
