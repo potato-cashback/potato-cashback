@@ -94,24 +94,24 @@ def check_balances(message):
 		return
 	
 	[items] = get("items")
-	data = users.find({})
+	# data = users.find({})
 	ans = {sectionName:{itemTag:0 for itemTag in items[sectionName]} for sectionName in items}
 	print(ans)
 	# users.update_one({}, {'limit_items': ans})
 
-	for user in data:
-		balance = user['balance']
-		operations = user['operations']
+	# for user in data:
+	# 	balance = user['balance']
+	# 	operations = user['operations']
 
-		sum = 0
-		for operation in operations:
-			sum += operation['cashback'] if operation['cashback'] != -1 else operation['sum']
+	# 	sum = 0
+	# 	for operation in operations:
+	# 		sum += operation['cashback'] if operation['cashback'] != -1 else operation['sum']
 		
-		if sum == balance:
-			ans = ans + user['name'] + ' ' + user['phone'] + ": OK\n"
-		else:
-			ans = ans + user['name'] + ' ' + user['phone'] + ": " + str(balance) + " != " + str(sum) + "\n"
-	bot.send_message(userId, ans)
+	# 	if sum == balance:
+	# 		ans = ans + user['name'] + ' ' + user['phone'] + ": OK\n"
+	# 	else:
+	# 		ans = ans + user['name'] + ' ' + user['phone'] + ": " + str(balance) + " != " + str(sum) + "\n"
+	# bot.send_message(userId, ans)
 
 @bot.message_handler(commands=['start'])
 def menu(message):
