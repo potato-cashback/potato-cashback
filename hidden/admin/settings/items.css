@@ -49,7 +49,7 @@
     max-width: 370px;
 }
 
-#menu{
+#addMenu{
     display: none;
 
     z-index: 1000;
@@ -59,22 +59,55 @@
     background-color:white;
 }
 
-#menu table{
+#addMenu table{
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-#closeMenu{
+#closeAddMenu{
     float:right;
 }
 
-#menu #inputImage{
+#addMenu #inputAddImage{
     width:90vw;
     max-width: 400px;
 }
 
-#menu input[type="file"]{
+#addMenu input[type="file"]{
+    width:8rem;
+}
+
+
+/* Edit Menu */
+
+#editMenu{
+    display: none;
+
+    z-index: 1000;
+    position: absolute;
+    width:100vw;
+    height:100vh;
+    background-color:white;
+}
+
+#editMenu table{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#closeEditMenu{
+    float:right;
+}
+
+#editMenu #inputAddImage{
+    width:90vw;
+    max-width: 400px;
+}
+
+#editMenu input[type="file"]{
     width:8rem;
 }
