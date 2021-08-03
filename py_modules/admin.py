@@ -107,7 +107,6 @@ def imageItem(u, p, path):
 
 
 import io
-import random
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
