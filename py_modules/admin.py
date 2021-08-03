@@ -56,51 +56,43 @@ def getJson(u, p):
 	except:
 		return 'server error', 404
 
-def fillDict(d, key, nextKey):
-    if type(d).__name__ == 'list':
-        print("hello")
-        while key >= len(d):
-            d.append([] if type(nextKey).__name__ == 'int' else {})
-        print(d)
-    elif not key in d:
-        d[key] = [] if type(nextKey).__name__ == 'int' else {}
-        
-def recursedict(d, keylist, value):
-    key = keylist.pop(0)
-    print(key)
-    if len(keylist): # True if there are more levels to go down
-        try: nextKey = keylist[0]
-        except: nextKey = None
-        
-        fillDict(d, key, nextKey)
+def recurseToSetValue(jsonTree, operation, pathToKey, newValue):
+    key = pathToKey.pop(0)
+    
+    if key not in jsonTree: jsonTree[key] = {}
 
-        recursedict(d[key],keylist,value)
+    if len(pathToKey): # if there are more levels to go down
+        recurseToSetValue(jsonTree[key], operation, pathToKey, newValue)
         # recurse
     else:
-        fillDict(d, key, 0)
-        d[key] = value
-    return
+        if operation == '$set':
+            jsonTree[key] = newValue
+        elif operation == '$delete':
+            del jsonTree[key]
 
-def setdeepdict(d, attributestr, value): # double entery intentional
-    keys = attributestr.split('.')
-    for i in range(len(keys)):
-        try: keys[i] = int(keys[i])
-        except: pass
-    recursedict(d, keys, value)
+    return jsonTree
 
-def updateJsonFile(path, new_data):
+def setValueInJson(jsonTree, operation, pathToKeyString, newValue): # double entery intentional
+    pathToKey = pathToKeyString.split('.')
+    
+    recurseToSetValue(jsonTree, operation, pathToKey, newValue)
+
+def updateJsonFile(path, queries):
 	try:
 		# Get data from JSON file
 		jsonFile = open(path, "r", encoding='utf-8')
-		data = json.load(jsonFile)
+		jsonTree = json.load(jsonFile)
 		jsonFile.close()
 
-		for key in new_data:
-			setdeepdict(data, key, new_data[key])
+		for operation in queries:
+			for key in queries[operation]:
+				path = key
+				value = queries[operation][key]
+				setValueInJson(jsonTree, operation, path, value)
 
 		## Save our changes to JSON file
 		jsonFile = open(path, "w+", encoding='utf-8')
-		jsonFile.write(json.dumps(data, ensure_ascii=False))
+		jsonFile.write(json.dumps(jsonTree, ensure_ascii=False))
 		jsonFile.close()
 		return 'good'
 	except Exception as e:

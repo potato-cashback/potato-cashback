@@ -8,7 +8,10 @@ let cashback_friends = document.querySelector('#cashback-friends')
 let welcome_cashbask = document.querySelector('#welcome-cashback')
 let limit_cashback = document.querySelector('#max-limit-cashback')
 
-let change = {}
+let change = {
+    '$set': {},
+    '$delete': {},
+}
 let sectionId = 0
 let itemId = 0
 let sectionName = ['Товары для дома', 'Игршуки']
@@ -29,7 +32,7 @@ function onChange(e) {
             break;
         }
     }
-    change[key] = value
+    change['$set'][key] = value
 }
 
 function addPercents() {
