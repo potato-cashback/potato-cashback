@@ -220,7 +220,7 @@
                 [
                     {
                         "text": "Написать боту контакты друзей! 👬",
-                        "callback": "get_nicknames"
+                        "callback": "get_contacts"
                     }
                 ],
                 [
