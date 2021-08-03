@@ -20,7 +20,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -407,22 +407,22 @@ def qr_cancel(message, values):
 
 # SHARE
 # <+=============================================================================================+>
-def share(message):
+def share_with_friends_info(message):
 	[tree, friend_money] = get("tree", "friend_money")
 
 	userId = message.chat.id
 	currentInlineState = [Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['share']['buttons'], currentInlineState)
+	keyboard = create_keyboard(tree['share_with_friends']['buttons'], currentInlineState)
 	bot.send_photo(chat_id=userId,
-				   photo=Image.open(URL_image + tree['share']['image']),
-				   caption=tree['share']['text'].format(friend_money),
+				   photo=Image.open(URL_image + tree['shareWithFriends']['image']),
+				   caption=tree['share_with_friends']['text'].format(friend_money),
 				   reply_markup=keyboard)
 
-def get_nicknames(message):
+def get_contacts(message):
 	userId = message.chat.id
 	[tree] = get("tree")
 
-	update_user(userId, 'get_nicknames')
+	update_user(userId, 'get_contacts')
 
 	user = users.find_one({'_id': userId})
 	
@@ -438,15 +438,14 @@ def get_nicknames(message):
 			if users.find_one({'phone': phone}) == None:
 				update_user(userId, set_args={'friends.{}'.format(phone): False})
 			else:
-				bot.send_message(userId, tree['get_nicknames']['user_already_joined'].format(phone), parse_mode='html')
+				bot.send_message(userId, tree['notification']['user_already_joined'].format(phone), parse_mode='html')
 		else:
-			bot.send_message(userId, tree['get_nicknames']['user_is_written'].format(phone), parse_mode='html')
+			bot.send_message(userId, tree['notification']['user_is_in_contacts'].format(phone), parse_mode='html')
 	
 	user = users.find_one({'_id': userId})
 
 	list_friends = "\n"
 	cnt = 0
-	print(user['friends'])
 	for friend in user['friends']:
 		print(friend)
 		if not user['friends'][friend]:
@@ -456,19 +455,19 @@ def get_nicknames(message):
 		list_friends = ": 0"
 
 	currentInlineState = [Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['get_nicknames']['buttons'], currentInlineState)
+	keyboard = create_keyboard(tree['share_with_friends']['get_contacts']['buttons'], currentInlineState)
 	
 	if user['prev_message'] == '#':
 		msg = bot.send_photo(chat_id=userId,
-							 photo=Image.open(URL_image + tree['get_nicknames']['image']),
-							 caption=tree['get_nicknames']['text'] + list_friends,
+							 photo=Image.open(URL_image + tree['share_with_friends']['get_contacts']['image']),
+							 caption=tree['share_with_friends']['get_contacts']['text'] + list_friends,
 							 reply_markup=keyboard,
 							 parse_mode='html')
 		update_user(userId, set_args={'prev_message': msg.message_id})
 	else:
 		bot.edit_message_caption(chat_id=userId,
 								 message_id=user['prev_message'],
-								 caption=tree['get_nicknames']['text'] + list_friends,
+								 caption=tree['share_with_friends']['get_contacts']['text'] + list_friends,
 								 reply_markup=keyboard,
 								 parse_mode='html')
 # <+=============================================================================================+>
