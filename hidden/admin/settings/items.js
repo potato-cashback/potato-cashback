@@ -99,6 +99,9 @@ const deleteItem = (itemTag, conf) => {
 
         document.querySelector("#items")
         .removeChild(document.querySelector(`#tag_${itemTag}`))
+
+        path = `items.toys.${itemTag}`
+        change["$delete"][path] = 0    
     }
 }
 
@@ -106,7 +109,7 @@ const addNewItem = (data) => {
     Object.entries(data).forEach(entery => {
         path = `items.toys.${data["tag"]}.${entery[0]}`
         
-        change[path] = entery[1]
+        change["$set"][path] = entery[1]
     })
     
     document.querySelector("#items").innerHTML += itemTemplate(data)
@@ -191,19 +194,30 @@ document.querySelector("#addMenu")
 })
 
 // edit menu
+const editingItem = {}
+
 
 const openEditMenu = (tag) => {
     editMenu = document.querySelector("#editMenu")
     tag = document.querySelector(`#tag_${tag}`)
     
     editMenu.querySelectorAll("input").forEach(input => {
+        cl = input.name
+        
         if(input.type != "file"){
-            cl = input.name
             if(cl != "price"){
-                input.value = tag.querySelector(`.${cl} > td:nth-child(2)`).innerText
+                v = tag.querySelector(`.${cl} > td:nth-child(2)`).innerText
             }else{
-                input.value = tag.querySelector(`.${cl} > td:nth-child(2)`).innerText.split(" ")[0]
+                v = tag.querySelector(`.${cl} > td:nth-child(2)`).innerText.split(" ")[0]
             }
+            
+            input.value = v
+            editingItem[cl] = v
+        }else{
+            editingItem[cl] = tag
+            .querySelector("img").src
+            .split(window.location.href.split("settings")[0])[1]
+            .split("image")[1]
         }
     })
 
@@ -240,16 +254,26 @@ const getEditMenuData = () => {
     return data
 }
 
-const updateItem = (data) => {
+const updateItem = (oldData, newData) => {
     currImgURL = document.querySelector(".current")
                 .querySelector("img").src
                 .split(window.location.href.split("settings")[0])[1]
                 .split("image")[1]
-    data.image = data.image || currImgURL
-    currTag = document.querySelector(".current").querySelector(".tag").querySelector("td:nth-child(2)").innerText
+    newData.image = newData.image || currImgURL
 
-    deleteItem(currTag, true)
-    addNewItem(data)
+    Object.entries(newData).forEach(entery => {
+        if(newData[entery[0]] != oldData[entery[0]]){
+
+            path = `items.toys.${oldData["tag"]}.${entery[0]}`
+            change["$set"][path] = entery[1]
+
+            document.querySelector(`#tag_${oldData.tag}`)
+            .querySelector(`.${entery[0]} > td:nth-child(2)`).innerHTML = entery[1]
+            
+            if(entery[0] == "tag")
+                document.querySelector(`#tag_${oldData.tag}`).id = `#tag_${entery[1]}`
+        }
+    })
 } 
 
 const editMenuButton = () => {
@@ -263,7 +287,7 @@ const editMenuButton = () => {
     })
 
     if(editMenuFilled){
-        updateItem(getEditMenuData())
+        updateItem(editingItem, getEditMenuData())
         closeEditMenu()
     }
     else{
