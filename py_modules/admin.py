@@ -105,6 +105,8 @@ def imageItem(u, p, path):
 	except: return 'wrong username or password'
 	return send_from_directory("./py_modules/telegram/images/", path)
 
+# --------------------------------------------------------------------
+
 
 import io
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
