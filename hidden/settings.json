@@ -1,5 +1,5 @@
 {
-    "TOKEN": "1272925344:AAGArvS0kwYUB8W0wL3EufrsGn8kNRGar9w",
+    "TOKEN": "1861177956:AAGfxYGzvOlw4Fxwi4S6P_GOns-R_YwUFvA",
     "URI": "mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     "TECHNICAL_STOP": false,
     "groupChatId": 1654644284,
@@ -350,7 +350,7 @@
                 [
                     {
                         "text": "Список партнеров 🏪",
-                        "callback": "list_partners"
+                        "callback": "display_partners"
                     }
                 ],
                 [
@@ -373,7 +373,7 @@
                 ]
             ]
         },
-        "list_partners": {
+        "display_partners": {
             "text": "СПИСОК ПАРТНЕРОВ\n\n1. ИП \"Сулейман\" Рыскулбекова 28/5, ЖК \"Байтал\"",
             "buttons": [
                 [

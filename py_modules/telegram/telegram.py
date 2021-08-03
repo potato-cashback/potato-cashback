@@ -20,7 +20,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://test-potato-cashback.herokuapp.com'
+URL_ser = 'https://potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -490,12 +490,12 @@ def conditions(message):
 
 # LIST PARTNERS
 # <+=============================================================================================+>
-def list_partners(message):
+def display_partners(message):
 	userId = message.chat.id
 	[tree] = get("tree")
 	currentInlineState = [Keyformat()]
-	keyboard = create_keyboard(tree['list_partners']['buttons'], currentInlineState)
-	bot.send_message(userId, tree['list_partners']['text'], reply_markup=keyboard)
+	keyboard = create_keyboard(tree['display_partners']['buttons'], currentInlineState)
+	bot.send_message(userId, tree['display_partners']['text'], reply_markup=keyboard)
 # <+=============================================================================================+>
 
 # QUESTIONS
