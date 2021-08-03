@@ -85,10 +85,9 @@ def updateJsonFile(path, queries):
 		jsonFile.close()
 
 		for operation in queries:
-			for key in queries[operation]:
-				path = key
-				value = queries[operation][key]
-				setValueInJson(jsonTree, operation, path, value)
+			for keyPath in queries[operation]:
+				value = queries[operation][keyPath]
+				setValueInJson(jsonTree, operation, keyPath, value)
 
 		## Save our changes to JSON file
 		jsonFile = open(path, "w+", encoding='utf-8')
@@ -108,7 +107,6 @@ def imageItem(u, p, path):
 
 
 import io
-import random
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
