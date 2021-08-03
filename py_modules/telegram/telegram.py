@@ -414,7 +414,7 @@ def share_with_friends_info(message):
 	currentInlineState = [Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree['share_with_friends']['buttons'], currentInlineState)
 	bot.send_photo(chat_id=userId,
-				   photo=Image.open(URL_image + tree['shareWithFriends']['image']),
+				   photo=Image.open(URL_image + tree['share_with_friends']['image']),
 				   caption=tree['share_with_friends']['text'].format(friend_money),
 				   reply_markup=keyboard)
 
