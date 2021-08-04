@@ -20,7 +20,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://test-potato-cashback.herokuapp.com'
+URL_ser = 'https://potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -597,7 +597,6 @@ def register_complete(message):
 # <+=============================================================================================+>
 
 def run_method_by_name(name, *args):
-	print(name)
 	possibles = globals().copy()
 	possibles.update(locals())
 	method = possibles.get(name)
@@ -614,11 +613,8 @@ def receiver(message):
 	if user['use_function']:
 		[method_name, args] = calc(user['function_name'])
 		args.insert(0, message)
-
 		update_user(userId, '#')
-
 		run_method_by_name(method_name, *args)
-
 	elif message.content_type == "photo":
 		[TEMPLATE_MESSAGE] = get("TEMPLATE_MESSAGE")
 		data = get_qr(message)
@@ -632,7 +628,6 @@ def receiver(message):
 def callback_query(call):
 	message = call.message
 	bot.delete_message(message.chat.id, message.message_id)
-
 
 	[method_name, args] = calc(call.data)
 	args.insert(0, message)
