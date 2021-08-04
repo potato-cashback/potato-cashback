@@ -6,6 +6,8 @@ from flask import send_from_directory, Response, request
 from py_modules.mongo import users
 import json
 
+import base64
+
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
 	try: assert username == u and password == p
@@ -98,6 +100,13 @@ def updateJsonFile(path, queries):
 		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
 		return False
 
+def createOrUpdateImage(base64Img, tag):
+	imgdata = base64.b64decode(base64Img)
+	pathToImage = "items/toys/" + tag + ".png"
+	with open("py_modules/telegram/images/" + pathToImage, 'wb+') as file:
+		file.write(imgdata)
+
+	return pathToImage
 
 @app.route('/admin/<u>/<p>/image/<path:path>')
 def imageItem(u, p, path):
