@@ -45,7 +45,7 @@ def create_operation(text, sum, cashback = -1):
 	return {'date': date, 'time': ctime, 'details': text, 'sum': sum, 'cashback': cashback}
 
 def calc(query):
-	value = -1
+	value = []
 	if '?' in query:
 		value = re.search(r'\?.+', query)[0][1:].split(',')
 		for i in range(len(value)):
