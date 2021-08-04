@@ -19,16 +19,6 @@ def get(*args):
 	jsonFile.close()
 	return [data[k] for k in list(args)]
 
-def run_method_by_name(name, *args):
-    possibles = globals().copy()
-    possibles.update(locals())
-    method = possibles.get(name)
-    try:
-        method(*args)
-    except:
-        print(traceback.format_exc())
-    return
-
 bot = telebot.TeleBot(get("TOKEN")[0])
 URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
@@ -606,6 +596,17 @@ def register_complete(message):
 	profile(message)
 # <+=============================================================================================+>
 
+def run_method_by_name(name, *args):
+	print(name)
+	possibles = globals().copy()
+	possibles.update(locals())
+	method = possibles.get(name)
+	try:
+		method(*args)
+	except:
+		print(traceback.format_exc())
+	return
+
 @bot.message_handler(content_types = ['text', 'photo', 'contact'])
 def receiver(message):
 	userId = message.chat.id
@@ -631,6 +632,7 @@ def receiver(message):
 def callback_query(call):
 	message = call.message
 	bot.delete_message(message.chat.id, message.message_id)
+
 
 	[method_name, args] = calc(call.data)
 	args.insert(0, message)
