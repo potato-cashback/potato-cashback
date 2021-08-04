@@ -58,25 +58,31 @@ def getJson(u, p):
 	except:
 		return 'server error', 404
 
+def createOrUpdateImage(base64Img, tag):
+	imgdata = base64.b64decode(base64Img)
+	pathToImage = "items/toys/" + tag + ".png"
+	with open("py_modules/telegram/images/" + pathToImage, 'wb+') as file:
+		file.write(imgdata)
+
+	return pathToImage
+
 def recurseToSetValue(jsonTree, operation, pathToKey, newValue):
-    key = pathToKey.pop(0)
-    
-    if key not in jsonTree: jsonTree[key] = {}
-
-    if len(pathToKey): # if there are more levels to go down
-        recurseToSetValue(jsonTree[key], operation, pathToKey, newValue)
-        # recurse
-    else:
-        if operation == '$set':
-            jsonTree[key] = newValue
-        elif operation == '$delete':
-            del jsonTree[key]
-
-    return jsonTree
+	key = pathToKey.pop(0)
+	if key not in jsonTree: jsonTree[key] = {}
+	if len(pathToKey): # if there are more levels to go down
+		recurseToSetValue(jsonTree[key], operation, pathToKey, newValue) # recurse
+	else:
+		if operation == '$set':
+			if key == 'image':
+				jsonTree[key] = createOrUpdateImage(newValue)
+			else:
+				jsonTree[key] = newValue
+		elif operation == '$delete':
+			del jsonTree[key]
+	return jsonTree
 
 def setValueInJson(jsonTree, operation, pathToKeyString, newValue): # double entery intentional
     pathToKey = pathToKeyString.split('.')
-    
     recurseToSetValue(jsonTree, operation, pathToKey, newValue)
 
 def updateJsonFile(path, queries):
@@ -99,14 +105,6 @@ def updateJsonFile(path, queries):
 	except Exception as e:
 		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
 		return False
-
-def createOrUpdateImage(base64Img, tag):
-	imgdata = base64.b64decode(base64Img)
-	pathToImage = "items/toys/" + tag + ".png"
-	with open("py_modules/telegram/images/" + pathToImage, 'wb+') as file:
-		file.write(imgdata)
-
-	return pathToImage
 
 @app.route('/admin/<u>/<p>/image/<path:path>')
 def imageItem(u, p, path):
