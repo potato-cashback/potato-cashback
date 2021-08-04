@@ -155,13 +155,3 @@ def create_reply_keyboard(arr):
             buttons.append(KeyboardButton(text=button['text'], request_contact=button['request_contact']))
         keyboard.row(*buttons)
     return keyboard
-
-def run_method_by_name(name, *args):
-    possibles = globals().copy()
-    possibles.update(locals())
-    method = possibles.get(name)
-    try:
-        method(*args)
-    except:
-        print(traceback.format_exc())
-    return

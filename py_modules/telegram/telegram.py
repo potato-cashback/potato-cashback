@@ -19,6 +19,16 @@ def get(*args):
 	jsonFile.close()
 	return [data[k] for k in list(args)]
 
+def run_method_by_name(name, *args):
+    possibles = globals().copy()
+    possibles.update(locals())
+    method = possibles.get(name)
+    try:
+        method(*args)
+    except:
+        print(traceback.format_exc())
+    return
+
 bot = telebot.TeleBot(get("TOKEN")[0])
 URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
