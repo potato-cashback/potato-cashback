@@ -20,7 +20,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -28,18 +28,15 @@ from py_modules.telegram.functions import *
 
 @app.route('/bot/'+get("TOKEN")[0], methods=['POST'])
 def getMessage():
-	try:
-		json_string = request.get_data().decode('utf-8')
-		update = telebot.types.Update.de_json(json_string)
-		
-		# TECHNICAL STOP FOR DEBUGS AND CODE FIXES
-		if techincal_stop_check(update):
-			return "Bug fixes", 200
-		
-		bot.process_new_updates([update])
-	except Exception as e:
-		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
-		return
+	json_string = request.get_data().decode('utf-8')
+	update = telebot.types.Update.de_json(json_string)
+	
+	# TECHNICAL STOP FOR DEBUGS AND CODE FIXES
+	if techincal_stop_check(update):
+		return "Bug fixes", 200
+	
+	bot.process_new_updates([update])
+
 	return "!", 200
 
 @app.route('/send_data/<phone>/<sum>')
@@ -81,7 +78,6 @@ def process_cashback(phone, sum):
 
 @app.route('/bot/')
 def webhook():
-	print("hello!!")
 	bot.remove_webhook()
 	[TOKEN] = get("TOKEN")
 	bot.set_webhook(url = URL_bot + TOKEN)
@@ -122,7 +118,7 @@ def menu(message):
 	[tree, items] = get("tree", "items")
 
 	user = users.find_one({'_id': userId})
-	if user == None:
+	if user is None:
 		date = get_today().strftime("%d/%m/%Y")
 		ctime = get_today().strftime("%H:%M")
 		nickname = message.chat.username
@@ -204,11 +200,11 @@ def sections(message):
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree['sections']['buttons'], currentInlineState)
 	bot.send_message(userId, tree['sections']['text'], reply_markup=keyboard)
-def display_items(message, value):
+
+def display_items(message, sectionName, itemId):
 	userId = message.chat.id
 	[tree, items] = get("tree", "items")
 
-	[sectionName, itemId] = value
 	itemTag = list(items[sectionName])[itemId]
 
 	item = items[sectionName][itemTag]
@@ -225,7 +221,8 @@ def display_items(message, value):
 	bot.send_photo(chat_id=userId, 
 				   photo=Image.open(URL_image + item['image']), 
 				   reply_markup=keyboard)
-def item_info(message, value):
+
+def item_info(message, sectionName, itemId):
 	userId = message.chat.id
 	[tree, items] = get("tree", "items")
 	user = users.find_one({'_id': userId})
@@ -235,7 +232,6 @@ def item_info(message, value):
 		menu(message)
 		return
 
-	[sectionName, itemId] = value
 	itemTag = list(items[sectionName])[itemId]
 
 	item = items[sectionName][itemTag]
@@ -251,11 +247,11 @@ def item_info(message, value):
 				   photo=Image.open(URL_image + item['image']), 
 				   caption=tree['item_info']['text'].format(item['name'], item['price'], user['balance'], date, user['name'], user['phone']),
 				   reply_markup=keyboard)
-def buy_item(message, value):
+
+def buy_item(message, sectionName, itemId):
 	userId = message.chat.id
 	[tree, items] = get("tree", "items")
 	
-	[sectionName, itemId] = value
 	itemTag = list(items[sectionName])[itemId]
 
 	item = items[sectionName][itemTag]
@@ -266,12 +262,12 @@ def buy_item(message, value):
 	# Check if user can buy current item
 	if user['balance'] < item['price']:
 		bot.send_message(userId, tree['buy_item']['not_enough'])
-		display_items(message, value)
+		display_items(message, sectionName, itemId)
 		return
 	# Check if user not reached limit yet for an item
 	if user_limit_on_item + 1 > item['limit']:
 		bot.send_message(userId, tree['buy_item']['limit_exceeded'])
-		display_items(message, value)
+		display_items(message, sectionName, itemId)
 		return
 
 	new_operation = create_operation(item['name'], -item['price'])
@@ -279,15 +275,15 @@ def buy_item(message, value):
 								  f'limit_items.{sectionName}.{itemTag}': user_limit_on_item + 1},
 						push_args={'operations': new_operation})
 
-	confirm_purchase(message, value)
+	confirm_purchase(message, sectionName, itemId)
 
 	currentInlineState = [Keyformat()]
 	keyboard = create_keyboard(tree['buy_item']['buttons'], currentInlineState)
 	bot.send_message(userId, tree['buy_item']['text'], reply_markup=keyboard)
-def confirm_purchase(message, value):
+
+def confirm_purchase(message, sectionName, itemId):
 	userId = message.chat.id
 	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
-	[sectionName, itemId] = value
 	itemTag = list(items[sectionName])[itemId]
 
 	item = items[sectionName][itemTag]
@@ -303,9 +299,8 @@ def confirm_purchase(message, value):
 				   caption=tree['confirmation']['text'].format(itemTag, user['username'], user['balance'], user['name'], user['phone']), 
 				   reply_markup=keyboard,
 				   parse_mode='html')
-def purchase_status(message, value):
+def purchase_status(message, status, userId, sectionName, itemId):
 	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
-	[status, userId, sectionName, itemId] = value
 	itemTag = list(items[sectionName])[itemId]
 
 	item = items[sectionName][itemTag]
@@ -371,11 +366,11 @@ def get_qr(message):
 
 	keyboard = create_keyboard(tree['qr']['buttons'], currentInlineState)
 	bot.send_message(userId, tree['qr']['result'].format(date, data.sum, available_cashback*100, int(data.sum * available_cashback)), reply_markup=keyboard)
-def qr_finish(message, values):
+def qr_finish(message, url, sum):
 	userId = message.chat.id
 	[tree, cashback] = get("tree", "cashback")
-	[url, sum] = values
 	url = str(url)
+
 	cashback_sum = int(sum * cashback_logic(sum, cashback))
 
 	urllib.request.urlopen(URL_ser+'/api/response/'+url)
@@ -393,15 +388,11 @@ def qr_finish(message, values):
 						push_args={'operations': new_operation})
 
 	bot.send_message(userId, tree['notification']['balance_increase'].format(cashback_sum))
-def qr_cancel(message, values):
-	[function_name, url] = values
+def qr_cancel(message, method_name, url):
 	url = str(url)
 	urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
 
-	possibles = globals().copy()
-	possibles.update(locals())
-	method = possibles.get(function_name)
-	method(message)
+	run_method_by_name(method_name, message)
 # <+=============================================================================================+>
 
 
@@ -610,23 +601,13 @@ def receiver(message):
 	userId = message.chat.id
 	user = users.find_one({'_id': userId})
 	if user['use_function']:
-		[query, values] = calc(user['function_name'])
+		[method_name, args] = calc(user['function_name'])
+		args.insert(0, message)
 
 		update_user(userId, '#')
 
-		print(query, values)
-		possibles = globals().copy()
-		possibles.update(locals())
-		method = possibles.get(query)
-		
-		try:
-			if values != -1:
-				method(message, values)
-			else:
-				method(message)
-		except Exception as e:
-			print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
-			return
+		run_method_by_name(method_name, *args)
+
 	elif message.content_type == "photo":
 		[TEMPLATE_MESSAGE] = get("TEMPLATE_MESSAGE")
 		data = get_qr(message)
@@ -638,25 +619,12 @@ def receiver(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
-	bot.delete_message(call.message.chat.id, call.message.message_id)
+	message = call.message
+	bot.delete_message(message.chat.id, message.message_id)
 
-	userId = call.message.chat.id
-	[query, value] = calc(call.data)
-
-	print(query, value)
-
-	possibles = globals().copy()
-	possibles.update(locals())
-	method = possibles.get(query)
-	
-	try:
-		if value == -1:
-			method(call.message)
-		else:
-			method(call.message, value)
-	except Exception as e:
-		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
-		return
+	[method_name, args] = calc(call.data)
+	args.insert(0, message)
+	run_method_by_name(method_name, *args)
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
