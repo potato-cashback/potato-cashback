@@ -110,8 +110,12 @@ class User(dict):
     def user_exists(self, _id=None, phone=None):
         if _id is None and phone is None:
             return False
-        user = users.find_one({'_id': _id}) or users.find_one({'phone': phone, 'registered': True})
-        return user is not None
+        
+        if users.find_one({'_id': _id}) is not None:
+            return True
+        elif users.find_one({'phone': phone, 'registered': True}) is not None:
+            return True
+        return False
     
     def phone_in_friends_list(self, phone):
         return phone in self.friends
