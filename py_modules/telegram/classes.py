@@ -22,7 +22,7 @@ def empty_items_shelfs():
 class User(dict):
     def __init__(self, user):
         today = get_today()
-        self.id = user.get('id', 'no id')
+        self._id = user.get('_id', 'no id')
 
         self.register_date  = user.get('register_date', today.strftime("%d/%m/%Y"))
         self.register_time = user.get('register_time', today.strftime("%H:%M"))
@@ -69,12 +69,12 @@ class User(dict):
         self.push_to_arr('operation', operation)
 
     def push_to_arr(self, arr, value):
-        users.update_one({'_id': self.id}, {'$push': {arr: value}})
+        users.update_one({'_id': self._id}, {'$push': {arr: value}})
     def set_value(self, key, value):
-        users.update_one({'_id': self.id}, {'$set': {key: value}})
+        users.update_one({'_id': self._id}, {'$set': {key: value}})
     def overwrite_data(self):
         data = self.__dict__
-        old_data = users.find_one({'_id': self.id})
+        old_data = users.find_one({'_id': self._id})
         for key in data:
             if old_data[key] == data[key]: continue
             self.set_value(key, data[key])
