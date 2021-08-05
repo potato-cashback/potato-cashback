@@ -135,9 +135,9 @@ def menu(message):
 
 		currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
 		keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
-		bot.send_message(userId, tree['menu']['text'], reply_markup=keyboard)
+		bot.send_message(user.id, tree['menu']['text'], reply_markup=keyboard)
 	except:
-		print(traceback.format_exc)
+		print(traceback.format_exc())
 # EXTRACT LIST SYSTEM
 # <+=============================================================================================+>
 @bot.message_handler(commands=['extract'])
