@@ -1,5 +1,5 @@
 import py_modules.telegram.telegram as telegram
-from py_modules.telegram.classes import *
+import py_modules.telegram.classes as classes
 from py_modules.mongo import users
 
 import re
@@ -39,6 +39,10 @@ def fraud_check(user, money):
 		return True
 	return False
 
+def find_user(search):
+	user = users.find_one(search)
+	return classes.User(user)
+
 def create_operation(text, sum, cashback = -1):
 	date = get_today().strftime("%d/%m/%Y")
 	ctime = get_today().strftime("%H:%M")
@@ -53,6 +57,18 @@ def calc(query):
 			except: pass
 		query = re.search(r'^[^\?]+', query)[0]
 	return [query, value]
+
+def check_if_registered(message, user):
+	if not user['registered']:
+		telegram.register(message)
+		return False
+	return True
+
+def set_phone_template(phone_number):
+	hasPlus = (phone_number[0] == '+')
+	if not hasPlus:
+		return '+' + phone_number
+	return phone_number
 
 # MONGODB UPDATES
 # <==========================================>
@@ -116,7 +132,7 @@ def get_data_from_qr(message):
 	print(decoded)
 	# ANTI-FRAUD SYSTEM
 	try:
-		data = Data(decoded[0].data)
+		data = classes.Data(decoded[0].data)
 		response = urllib.request.urlopen(telegram.URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
 		status = json.loads(response)
 		print(status)

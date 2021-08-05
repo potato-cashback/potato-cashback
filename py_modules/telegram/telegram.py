@@ -10,7 +10,6 @@ import urllib.request
 
 from flask import request
 from PIL import Image
-from py_modules.telegram.classes import *
 
 def get(*args):
 	path = './hidden/settings.json'
@@ -20,10 +19,11 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://tree-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
+from py_modules.telegram.classes import *
 from py_modules.telegram.functions import *
 
 @app.route('/bot/'+get("TOKEN")[0], methods=['POST'])
@@ -92,7 +92,7 @@ def check_balances(message):
 	
 	[items] = get("items")
 	# data = users.find({})
-	ans = {sectionName:{itemTag:0 for itemTag in items[sectionName]} for sectionName in items}
+	ans = empty_items_shelfs()
 	print(ans)
 	users.update_one({}, {'$set': {'limit_items': ans}})
 
@@ -114,39 +114,23 @@ def check_balances(message):
 def menu(message):
 	print(message)
 	userId = message.chat.id
-	month = get_today().strftime("%m")
-	[tree, items] = get("tree", "items")
+	[tree] = get("tree")
 
-	user = users.find_one({'_id': userId})
-	if user is None:
-		date = get_today().strftime("%d/%m/%Y")
-		ctime = get_today().strftime("%H:%M")
-		nickname = message.chat.username
+	user = find_user({'_id': userId})
 
-		users.insert_one({
-			'_id': userId,
-			'username': nickname,
-			'register_date': date,
-			'register_time': ctime,
-			'balance': 0,
-			'all_balance': 0,
-			'registered': False,
+	if not user.onTelegram:
+		user.id = message.chat.id
+		user.username = message.chat.username
+		user.onTelegram = True
+		user.overwrite_data()
 
-			'name': '',
-			'phone': '', 
-			'friends': {},
-			'limit_items': {sectionName:{itemTag:0 for itemTag in items[sectionName]} for sectionName in items},
+		users.insert_one(user)
 
-			'function_name': '#',
-			'use_function': False,
-			'prev_message': '#',
-			'month': month,
-
-			'operations': [],
-		})
-	else:
-		update_all_balance(user, month)
-		update_user(userId, function_name='#', set_args={'prev_message': '#'})
+	user.clear_data_every_month()
+	
+	user.function_name = '#'
+	user.prev_message = '#'
+	user.overwrite_data()
 
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
@@ -505,17 +489,6 @@ def ask_question(message):
 	bot.send_message(userId, tree['ask_question']['text'], reply_markup=keyboard)
 # <+=============================================================================================+>
 
-def check_if_registered(message, user):
-	if not user['registered']:
-		register(message)
-		return False
-	return True
-
-def set_phone_template(phone_number):
-	hasPlus = (phone_number[0] == '+')
-	if not hasPlus:
-		return '+' + phone_number
-	return phone_number
 
 # PROFILE/REGISTERATION SYSTEM
 # <+=============================================================================================+>
