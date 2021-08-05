@@ -508,8 +508,8 @@ def ask_question(message):
 def check_if_registered(message, user):
 	if not user['registered']:
 		register(message)
-		return True
-	return False
+		return False
+	return True
 
 def set_phone_template(phone_number):
 	hasPlus = (phone_number[0] == '+')
@@ -523,7 +523,8 @@ def profile(message):
 	userId = message.chat.id
 	[tree] = get("tree")
 	user = users.find_one({'_id': userId})
-	check_if_registered(message, user)
+	if not check_if_registered(message, user):
+		return
 
 	date = get_today().strftime("%d/%m/%Y")
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
