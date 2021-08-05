@@ -71,8 +71,8 @@
 }
 
 #addMenu #inputAddImage{
-    width:90vw;
-    max-width: 400px;
+    max-width:90vw;
+    max-height:50vh;
 }
 
 #addMenu input[type="file"]{
@@ -103,9 +103,9 @@
     float:right;
 }
 
-#editMenu #inputAddImage{
-    width:90vw;
-    max-width: 400px;
+#editMenu #inputEditImage{
+    max-width:90vw;
+    max-height:50vh;
 }
 
 #editMenu input[type="file"]{
