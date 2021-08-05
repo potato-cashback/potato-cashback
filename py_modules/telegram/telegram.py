@@ -340,15 +340,15 @@ def get_qr(message):
 		menu(message)
 		return
 
-	currentInlineState = [Keyformat(callbacks=[data.date, data.sum]), 
-						  Keyformat(callbacks=[data.date]), 
-						  Keyformat(callbacks=[data.date])]
+	currentInlineState = [Keyformat(callbacks=[data['date'], data['sum']]), 
+						  Keyformat(callbacks=[data['date']]), 
+						  Keyformat(callbacks=[data['date']])]
 	
-	available_cashback = cashback_logic(data.sum, cashback)
+	available_cashback = cashback_logic(data['sum'], cashback)
 	date = get_today().strftime("%d/%m/%Y")
 
 	keyboard = create_keyboard(tree['qr']['buttons'], currentInlineState)
-	bot.send_message(user._id, tree['qr']['result'].format(date, data.sum, available_cashback*100, int(data.sum * available_cashback)), reply_markup=keyboard)
+	bot.send_message(user._id, tree['qr']['result'].format(date, data['sum'], available_cashback*100, int(data['sum'] * available_cashback)), reply_markup=keyboard)
 def qr_finish(message, url, sum):
 	[tree, cashback] = get("tree", "cashback")
 	url = str(url)

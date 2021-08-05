@@ -105,11 +105,8 @@ def get_data_from_qr(photo):
 
 	print(decoded)
 	qr_data = json.loads(decoded[0].data)
-	print(qr_data)
-	print(qr_data.date)
-	print(qr_data['date'])
 	try:
-		url = telegram.URL_ser+'/api/react/'+str(qr_data.date)
+		url = telegram.URL_ser+'/api/react/'+str(qr_data['date'])
 		response = urllib.request.urlopen(url).read().decode("utf-8")
 		status = json.loads(response)
 		print(status)
