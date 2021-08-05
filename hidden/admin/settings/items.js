@@ -185,7 +185,7 @@ const addMenuButton = () => {
 
 // display loaded image
 
-var loadFile = function(event) {
+var loadAddFile = function(event) {
 	var image = document.getElementById('inputAddImage');
 	image.src = URL.createObjectURL(event.target.files[0]);
 };
@@ -193,7 +193,7 @@ var loadFile = function(event) {
 document.querySelector("#addMenu")
 .querySelector("input[type='file']")
 .addEventListener("change", (e) => {
-    loadFile(e)
+    loadAddFile(e)
 })
 
 // edit menu
@@ -262,7 +262,7 @@ const updateItem = (oldData, newData) => {
                 .querySelector("img").src
                 .split(window.location.href.split("settings")[0])[1]
                 .split("image")[1]
-    newData.image = (newData.image)?newData.image.image.split(",")[1]:"" || currImgURL
+    newData.image = (newData.image)?newData.image.split(",")[1]:"" || currImgURL
 
     console.log(newData, oldData)
 
@@ -272,14 +272,29 @@ const updateItem = (oldData, newData) => {
             path = `items.toys.${oldData["tag"]}.${entery[0]}`
             change["$set"][path] = entery[1]
 
-            document.querySelector(`#tag_${oldData.tag}`)
-            .querySelector(`.${entery[0]} > td:nth-child(2)`).innerHTML = entery[1]
-            
+            if(entery[0] != "image")
+                document.querySelector(`#tag_${oldData.tag}`)
+                .querySelector(`.${entery[0]} > td:nth-child(2)`).innerHTML = entery[1]
+            else
+                document.querySelector(`#tag_${oldData.tag}`)
+                .querySelector('img').src = "data:image/png;base64," + entery[1]
+
             if(entery[0] == "tag")
                 document.querySelector(`#tag_${oldData.tag}`).id = `#tag_${entery[1]}`
         }
     })
 } 
+
+var loadEditFile = function(event) {
+	var image = document.getElementById('inputEditImage');
+	image.src = URL.createObjectURL(event.target.files[0]);
+};
+
+document.querySelector("#editMenu")
+.querySelector("input[type='file']")
+.addEventListener("change", (e) => {
+    loadEditFile(e)
+})
 
 const editMenuButton = () => {
     let editMenuFilled = true;
