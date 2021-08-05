@@ -1,3 +1,11 @@
+# TODO:
+# 1. make all functions use class "User" from classes.py
+# 2. function "get" change name also add deep key retrivale
+# 3. Make better Error handiling using traceback
+# 4. If possible try removing yellow squiggle lines in imports
+# 5. Create credential file where all testing variables will be stored for bot testing
+# 6. better method/variable naming  
+
 from flask import current_app as app
 from py_modules.mongo import users
 
@@ -127,8 +135,8 @@ def menu(message):
 			users.insert_one(user.__dict__)
 
 		user.clear_data_every_month()
-		
-		user.function_name = '#'
+		user.clear_next_step_handler()
+
 		user.prev_message = '#'
 		user.overwrite_data()
 
@@ -383,64 +391,43 @@ def qr_cancel(message, method_name, url):
 def share_with_friends_info(message):
 	[tree, friend_money] = get("tree", "friend_money")
 
-	userId = message.chat.id
 	currentInlineState = [Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree['share_with_friends']['buttons'], currentInlineState)
-	bot.send_photo(chat_id=userId,
+	bot.send_photo(chat_id=message.chat.id,
 				   photo=Image.open(URL_image + tree['share_with_friends']['image']),
 				   caption=tree['share_with_friends']['text'].format(friend_money),
 				   reply_markup=keyboard)
 
 def get_contacts(message):
-	userId = message.chat.id
 	[tree] = get("tree")
 
-	update_user(userId, 'get_contacts')
-
-	user = users.find_one({'_id': userId})
+	user = find_user({'_id': message.chat.id})
+	user.next_step_handler('get_contacts')
 	
-	try: bot.delete_message(userId, message.message_id)
+	try: bot.delete_message(user._id, message.message_id)
 	except: pass
 
 	if message.contact is not None:
-		print(message.contact)
-		phone = message.contact.phone_number
-		phone = f'+{phone}' if phone[0] != '+' else phone
-		
-		if not phone in user['friends']:
-			if users.find_one({'phone': phone, 'registered': True}) is None:
-				update_user(userId, set_args={'friends.{}'.format(phone): False})
-			else:
-				bot.send_message(userId, tree['notification']['user_already_joined'].format(phone), parse_mode='html')
-		else:
-			bot.send_message(userId, tree['notification']['user_is_in_contacts'].format(phone), parse_mode='html')
-	
-	user = users.find_one({'_id': userId})
+		notification = user.add_friend_contact(message.contact)
+		if notification != 'ok':
+			bot.send_message(user._id, notification, parse_mode='html')
 
-	list_friends = "\n"
-	cnt = 0
-	for friend in user['friends']:
-		print(friend)
-		if not user['friends'][friend]:
-			cnt = cnt + 1
-			list_friends = list_friends + "{}. {}\n".format(cnt, friend)
-	if list_friends == "\n":
-		list_friends = ": 0"
+	friends = user.friend_list_stringify()
 
 	currentInlineState = [Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree['share_with_friends']['get_contacts']['buttons'], currentInlineState)
 	
-	if user['prev_message'] == '#':
-		msg = bot.send_photo(chat_id=userId,
+	if user.prev_message == '#':
+		msg = bot.send_photo(chat_id=user._id,
 							 photo=Image.open(URL_image + tree['share_with_friends']['get_contacts']['image']),
-							 caption=tree['share_with_friends']['get_contacts']['text'] + list_friends,
+							 caption=tree['share_with_friends']['get_contacts']['text'] + friends,
 							 reply_markup=keyboard,
 							 parse_mode='html')
-		update_user(userId, set_args={'prev_message': msg.message_id})
+		user.set_value('prev_message', msg.message_id)
 	else:
-		bot.edit_message_caption(chat_id=userId,
-								 message_id=user['prev_message'],
-								 caption=tree['share_with_friends']['get_contacts']['text'] + list_friends,
+		bot.edit_message_caption(chat_id=user._id,
+								 message_id=user.prev_message,
+								 caption=tree['share_with_friends']['get_contacts']['text'] + friends,
 								 reply_markup=keyboard,
 								 parse_mode='html')
 # <+=============================================================================================+>

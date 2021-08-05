@@ -50,6 +50,11 @@ class User(dict):
         self.use_function = True
         self.overwrite_data()
 
+    def clear_next_step_handler(self):
+        self.function_name = '#'
+        self.use_function = False
+        self.overwrite_data()
+
     def is_registered(self):
         return self.registered
 
@@ -80,6 +85,7 @@ class User(dict):
     def push_to_arr(self, arr, value):
         users.update_one({'_id': self._id}, {'$push': {arr: value}})
     def set_value(self, key, value):
+        self.__dict__[key] = value
         users.update_one({'_id': self._id}, {'$set': {key: value}})
     def overwrite_data(self):
         data = self.__dict__
@@ -110,14 +116,27 @@ class User(dict):
     def phone_in_friends_list(self, phone):
         return phone in self.friends
 
+    def friend_list_stringify(self):
+        friends = ""
+        buffer_counter = 1
+        for friends_phone in self.friends:
+            friendOnTelegram = self.friends[friends_phone]
+            if not friendOnTelegram:
+                friends += f"{buffer_counter}. {friendOnTelegram}\n"
+                buffer_counter += 1
+
+        return friends if friends != "" else ": 0"
+
     def add_friend_contact(self, contact):
+        if contact is None: return 'no contact'
+
         [tree] = telegram.get("tree")
         friends_phone = set_phone_template(contact.phone_number)
         if not self.phone_in_friends_list(friends_phone):
             if self.user_exists(phone=friends_phone):
                 self.friends[friends_phone] = False
                 self.overwrite_data()
-                return self.friends
+                return 'ok'
             else:
                 return tree['notification']['user_already_joined'].format(friends_phone)
         else:
