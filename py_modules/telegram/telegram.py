@@ -293,7 +293,7 @@ def purchase_status(message, status, userId, sectionName, itemId):
 		bot.send_message(user._id, tree['notification']['product_warning'])
 
 		new_operation = user.create_operation(tree['operations']['back'], +item['price'])
-		user_limit_on_item = user['limit_items'][sectionName][itemTag]
+		user_limit_on_item = user.limit_items[sectionName][itemTag]
 		user.update_balance(+item['price'])
 		user.set_value(f'limit_items.{sectionName}.{itemTag}', user_limit_on_item - 1)
 		user.remove_operation(new_operation)

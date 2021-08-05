@@ -46,6 +46,9 @@ class User(dict):
 
         self.operations = user.get('operations', [])
 
+    def is_registered(self):
+        return self.registered
+
     def clear_data_every_month(self):
         if self.is_new_month():
             self.all_balance = 0
@@ -64,16 +67,13 @@ class User(dict):
             'cashback': cashback
         }
 
-    def is_registered(self):
-        return self.registered
-
     def push_operation(self, operation):
         self.operations.append(operation)
-        self.push_to_arr('operation', operation)
+        self.push_to_arr('operations', operation)
 
     def remove_operation(self, operation):
         self.operations = pop_element(self.operations, operation)
-        self.pull_from_arr('operation', operation)
+        self.pull_from_arr('operations', operation)
 
     def pull_from_arr(self, arr, value):
         users.update_one({'_id': self._id}, {'$pull': {arr: value}})
