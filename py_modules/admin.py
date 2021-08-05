@@ -31,12 +31,12 @@ def clean(u, p):
 	except:	
 		return 'server error'
 
-@app.route('/admin/<u>/<p>/saveJSON', methods=['GET'])
+@app.route('/admin/<u>/<p>/saveJSON', methods=['POST'])
 def saveJson(u, p):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'
 
-	data = json.loads(request.args.get('data'))
+	data = json.loads(request.data)
 	path = './hidden/settings.json'
 
 	updateJsonFile(path, data)
@@ -58,23 +58,26 @@ def getJson(u, p):
 	except:
 		return 'server error', 404
 
+
 def createOrUpdateImage(base64Img, tag):
-	imgdata = base64.b64decode(base64Img)
+	base64Img = base64Img + "=" * (4 - len(base64Img) % 4)
+	imgdata = base64.b64decode(str(base64Img))
+
 	pathToImage = "items/toys/" + tag + ".png"
 	with open("py_modules/telegram/images/" + pathToImage, 'wb+') as file:
 		file.write(imgdata)
 
 	return pathToImage
 
-def recurseToSetValue(jsonTree, operation, pathToKey, newValue):
+def recurseToSetValue(jsonTree, operation, pathToKey, prevKey, newValue):
 	key = pathToKey.pop(0)
 	if key not in jsonTree: jsonTree[key] = {}
 	if len(pathToKey): # if there are more levels to go down
-		recurseToSetValue(jsonTree[key], operation, pathToKey, newValue) # recurse
+		recurseToSetValue(jsonTree[key], operation, pathToKey, key, newValue) # recurse
 	else:
 		if operation == '$set':
 			if key == 'image':
-				jsonTree[key] = createOrUpdateImage(newValue)
+				jsonTree[key] = createOrUpdateImage(newValue, prevKey)
 			else:
 				jsonTree[key] = newValue
 		elif operation == '$delete':
@@ -83,7 +86,7 @@ def recurseToSetValue(jsonTree, operation, pathToKey, newValue):
 
 def setValueInJson(jsonTree, operation, pathToKeyString, newValue): # double entery intentional
     pathToKey = pathToKeyString.split('.')
-    recurseToSetValue(jsonTree, operation, pathToKey, newValue)
+    recurseToSetValue(jsonTree, operation, pathToKey, None, newValue)
 
 def updateJsonFile(path, queries):
 	try:

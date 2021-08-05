@@ -109,7 +109,10 @@ const addNewItem = (data) => {
     Object.entries(data).forEach(entery => {
         path = `items.toys.${data["tag"]}.${entery[0]}`
         
-        change["$set"][path] = entery[1]
+        if(entery[0] != "image")
+            change["$set"][path] = entery[1]
+        else
+            change["$set"][path] = entery[1].split(",")[1]
     })
     
     document.querySelector("#items").innerHTML += itemTemplate(data)
@@ -259,7 +262,9 @@ const updateItem = (oldData, newData) => {
                 .querySelector("img").src
                 .split(window.location.href.split("settings")[0])[1]
                 .split("image")[1]
-    newData.image = newData.image || currImgURL
+    newData.image = (newData.image)?newData.image.image.split(",")[1]:"" || currImgURL
+
+    console.log(newData, oldData)
 
     Object.entries(newData).forEach(entery => {
         if(newData[entery[0]] != oldData[entery[0]]){

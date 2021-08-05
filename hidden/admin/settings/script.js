@@ -95,9 +95,15 @@ function nextSection(move) {
 const saveJson = function() {
     popup("Вы уверены что хотите <strong>сохранить</strong> изменение?", async () => {
         removePopup()
-        let url = 'saveJSON?data=' + encodeURIComponent(JSON.stringify(change))
+        let url = 'saveJSON'
         console.log(url)
-        let request = await fetch(url)
+        let request = await fetch(url, {
+            method:'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(change)
+        })
         if (request.ok) {
             alert("Saved!");
         }        
