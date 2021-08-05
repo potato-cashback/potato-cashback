@@ -390,13 +390,13 @@
                 [
                     {
                         "text": "Игрушки",
-                        "callback": "display_items?household,0"
+                        "callback": "display_items?toys,0"
                     }
                 ],
                 [
                     {
                         "text": "Товары для дома",
-                        "callback": "display_items?toys,0"
+                        "callback": "display_items?household,0"
                     }
                 ],
                 [

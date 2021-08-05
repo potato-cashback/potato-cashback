@@ -310,32 +310,33 @@ def purchase_status(message, status, userId, sectionName, itemId):
 # <+=============================================================================================+>
 @bot.message_handler(commands=['qr'])
 def start_qr(message):
-	userId = message.chat.id
 	[tree] = get("tree")
-	user = users.find_one({'_id': userId})
+	user = find_user({'_id': message.chat.id})
 
-	if not user['registered']:
-		bot.send_message(userId, tree['notification']['not_registered'])
+	if not user.is_registered():
+		bot.send_message(user._id, tree['notification']['not_registered'])
 		menu(message)
 		return
 
-	update_user(userId, 'get_qr')
-	bot.send_message(userId, tree['qr']['text'])
+	update_user(user._id, 'get_qr')
+	bot.send_message(user._id, tree['qr']['text'])
 def get_qr(message):
-	userId = message.chat.id
 	[tree, cashback] = get("tree", "cashback")
+	
+	user = find_user({'_id': message.chat.id})
+
 	if message.content_type != 'photo':
-		update_user(userId, 'get_qr')
-		bot.send_message(userId, tree['qr']['wrong_format'])
+		user.next_step_handler('get_qr')
+		bot.send_message(user._id, tree['qr']['wrong_format'])
 		return
 
 	data = get_data_from_qr(message)
 	if data == "not found":
-		update_user(userId, 'get_qr')
-		bot.send_message(userId, tree['qr']['qr_not_found'])
+		user.next_step_handler('get_qr')
+		bot.send_message(user._id, tree['qr']['qr_not_found'])
 		return
 	elif data == "not ok":
-		bot.send_message(userId, tree['qr']['wrong_qr'])
+		bot.send_message(user._id, tree['qr']['wrong_qr'])
 		menu(message)
 		return
 
@@ -347,9 +348,8 @@ def get_qr(message):
 	date = get_today().strftime("%d/%m/%Y")
 
 	keyboard = create_keyboard(tree['qr']['buttons'], currentInlineState)
-	bot.send_message(userId, tree['qr']['result'].format(date, data.sum, available_cashback*100, int(data.sum * available_cashback)), reply_markup=keyboard)
+	bot.send_message(user._id, tree['qr']['result'].format(date, data.sum, available_cashback*100, int(data.sum * available_cashback)), reply_markup=keyboard)
 def qr_finish(message, url, sum):
-	userId = message.chat.id
 	[tree, cashback] = get("tree", "cashback")
 	url = str(url)
 
@@ -357,19 +357,19 @@ def qr_finish(message, url, sum):
 
 	urllib.request.urlopen(URL_ser+'/api/response/'+url)
 
-	user = users.find_one({'_id': userId})
+	user = find_user({'_id': message.chat.id})
 
-	if fraud_check(user, cashback_sum): 
+	if user.fraud_check(cashback_sum): 
+		bot.send_message(user._id, tree['notification']['fraud_detect'])
 		urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
 		menu(message)
 		return
 
-	new_operation = create_operation(tree['operations']['photo'], sum, cashback_sum)
-	update_user(userId, set_args={'balance': user['balance'] + cashback_sum, 
-								  'all_balance': user['all_balance'] + cashback_sum},
-						push_args={'operations': new_operation})
+	new_operation = user.create_operation(tree['operations']['photo'], sum, cashback_sum)
+	user.update_balance(+cashback_sum)
+	user.push_operation(new_operation)
 
-	bot.send_message(userId, tree['notification']['balance_increase'].format(cashback_sum))
+	bot.send_message(user._id, tree['notification']['balance_increase'].format(cashback_sum))
 def qr_cancel(message, method_name, url):
 	url = str(url)
 	urllib.request.urlopen(URL_ser+'/api/cancel/'+url)

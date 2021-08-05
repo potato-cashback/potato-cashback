@@ -46,6 +46,15 @@ class User(dict):
 
         self.operations = user.get('operations', [])
 
+    def fraud_check(self, value):
+        [MAX_BALANCE] = telegram.get("MAX_BALANCE")
+        return self.all_balance + value > MAX_BALANCE
+
+    def next_step_handler(self, function_name):
+        self.function_name = function_name
+        self.use_function = True
+        self.overwrite_data()
+
     def is_registered(self):
         return self.registered
 
@@ -93,7 +102,9 @@ class User(dict):
 
     def update_balance(self, value):
         self.balance += value
-        self.set_value('balance', self.balance)
+        if value > 0: 
+            self.all_balance += value
+        self.overwrite_data()
         
     def user_exists(self, _id=None, phone=None):
         if _id is None and phone is None:
@@ -110,7 +121,7 @@ class User(dict):
         if not self.phone_in_friends_list(friends_phone):
             if self.user_exists(phone=friends_phone):
                 self.friends[friends_phone] = False
-                self.set_value(f'friends.{friends_phone}', False)
+                self.overwrite_data()
                 return self.friends
             else:
                 return tree['notification']['user_already_joined'].format(friends_phone)
@@ -119,8 +130,8 @@ class User(dict):
     
     def change_phone(self, new_phone):
         self.phone = new_phone
-        self.set_value('phone', self.phone)
+        self.overwrite_data()
     
     def change_name(self, new_name):
         self.name = new_name
-        self.set_value('name', self.name)
+        self.overwrite_data()

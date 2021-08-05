@@ -30,22 +30,9 @@ def cashback_logic(sum, cashback):
 			return cashback[i]['percent'] / 100
 	return 'error'
 
-def fraud_check(user, money):
-	[tree, MAX_BALANCE] = telegram.get("tree", "MAX_BALANCE")
-	if user['all_balance'] + money > MAX_BALANCE:
-		try: telegram.bot.send_message(user['_id'], tree['notification']['fraud_detect'])
-		except: pass
-		return True
-	return False
-
 def find_user(search):
 	user = users.find_one(search) or {}
 	return classes.User(user)
-
-def create_operation(text, sum, cashback = -1):
-	date = get_today().strftime("%d/%m/%Y")
-	ctime = get_today().strftime("%H:%M")
-	return {'date': date, 'time': ctime, 'details': text, 'sum': sum, 'cashback': cashback}
 
 def calc(query):
 	value = []
@@ -79,19 +66,6 @@ def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_
 	if push_args != {}: users.update_one({'_id': userId}, {'$push': push_args})
 	if pull_args != {}: users.update_one({'_id': userId}, {'$pull': pull_args})
 	return
-
-def update_all_balance(user, month = get_today().strftime('%m')):
-	[items] = telegram.get("items")
-	if user['month'] != month:
-		if 'not_joined' in user:
-			users.update_one({'phone': user['phone']}, {'all_balance': 0, 'month': month})
-		else:
-			update_user(user['_id'], set_args={'all_balance': 0, 
-											   'month': month, 
-											   'limit_items': {sectionName:{itemTag:0 for itemTag in items[sectionName]} for sectionName in items},})
-		return True
-		
-	return False
 # <==========================================>
 
 def techincal_stop_check(update):
