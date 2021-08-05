@@ -71,10 +71,6 @@ class User(dict):
         self.operations.append(operation)
         self.push_to_arr('operations', operation)
 
-    def remove_operation(self, operation):
-        self.operations = pop_element(self.operations, operation)
-        self.pull_from_arr('operations', operation)
-
     def pull_from_arr(self, arr, value):
         users.update_one({'_id': self._id}, {'$pull': {arr: value}})
     def push_to_arr(self, arr, value):

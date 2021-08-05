@@ -296,7 +296,7 @@ def purchase_status(message, status, userId, sectionName, itemId):
 		user_limit_on_item = user.limit_items[sectionName][itemTag]
 		user.update_balance(+item['price'])
 		user.set_value(f'limit_items.{sectionName}.{itemTag}', user_limit_on_item - 1)
-		user.remove_operation(new_operation)
+		user.push_operation(new_operation)
 	elif status == 'Одобрит✅':
 		bot.send_message(user._id, tree['notification']['product_success'])
 
