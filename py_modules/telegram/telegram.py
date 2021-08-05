@@ -124,7 +124,7 @@ def menu(message):
 			user.username = message.chat.username
 			user.onTelegram = True
 
-			users.insert_one(user)
+			users.insert_one(user.__dict__)
 
 		user.clear_data_every_month()
 		
