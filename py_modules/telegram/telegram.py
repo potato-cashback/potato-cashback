@@ -123,7 +123,6 @@ def menu(message):
 			user.id = message.chat.id
 			user.username = message.chat.username
 			user.onTelegram = True
-			user.overwrite_data()
 
 			users.insert_one(user)
 
