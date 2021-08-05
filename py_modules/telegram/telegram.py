@@ -7,6 +7,7 @@ import json
 import telebot
 from telebot.types import ReplyKeyboardRemove
 import urllib.request
+import traceback # Error handiling
 
 from flask import request
 from PIL import Image
@@ -112,30 +113,31 @@ def check_balances(message):
 
 @bot.message_handler(commands=['start'])
 def menu(message):
-	print(message)
-	userId = message.chat.id
-	[tree] = get("tree")
+	try:
+		print(message)
+		[tree] = get("tree")
 
-	user = find_user({'_id': userId})
+		user = find_user({'_id': message.chat.id})
 
-	if not user.onTelegram:
-		user.id = message.chat.id
-		user.username = message.chat.username
-		user.onTelegram = True
+		if not user.onTelegram:
+			user.id = message.chat.id
+			user.username = message.chat.username
+			user.onTelegram = True
+			user.overwrite_data()
+
+			users.insert_one(user)
+
+		user.clear_data_every_month()
+		
+		user.function_name = '#'
+		user.prev_message = '#'
 		user.overwrite_data()
 
-		users.insert_one(user)
-
-	user.clear_data_every_month()
-	
-	user.function_name = '#'
-	user.prev_message = '#'
-	user.overwrite_data()
-
-	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
-	bot.send_message(userId, tree['menu']['text'], reply_markup=keyboard)
-
+		currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
+		keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
+		bot.send_message(userId, tree['menu']['text'], reply_markup=keyboard)
+	except:
+		print(traceback.format_exc)
 # EXTRACT LIST SYSTEM
 # <+=============================================================================================+>
 @bot.message_handler(commands=['extract'])

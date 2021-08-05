@@ -5,7 +5,6 @@ from py_modules.mongo import users
 import re
 import json
 import urllib.request
-import traceback # Error handiling
 
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from datetime import datetime
