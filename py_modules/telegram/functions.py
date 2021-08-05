@@ -1,3 +1,4 @@
+import traceback
 import py_modules.telegram.telegram as telegram
 import py_modules.telegram.classes as classes
 from py_modules.mongo import users
@@ -5,6 +6,7 @@ from py_modules.mongo import users
 import re
 import json
 import urllib.request
+import traceback
 
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from datetime import datetime
@@ -92,10 +94,9 @@ def techincal_stop_check(update):
 	return False
 
 
-def get_data_from_qr(message):
-	userId = message.chat.id
+def get_data_from_qr(photo):
 
-	photo_id = message.photo[-1].file_id
+	photo_id = photo.file_id
 	file_photo = telegram.bot.get_file(photo_id)
 	downloaded_file_photo = telegram.bot.download_file(file_photo.file_path)
 
@@ -103,19 +104,19 @@ def get_data_from_qr(message):
 	decoded = decode(img)
 
 	print(decoded)
-	# ANTI-FRAUD SYSTEM
+	qr_data = classes.Data(decoded[0].data)
+	print(qr_data)
 	try:
-		data = classes.Data(decoded[0].data)
-		response = urllib.request.urlopen(telegram.URL_ser+'/api/react/'+str(data.date)).read().decode("utf-8")
+		response = urllib.request.urlopen(telegram.URL_ser+'/api/react/'+str(qr_data.date)).read().decode("utf-8")
 		status = json.loads(response)
 		print(status)
 	except:
+		print(traceback.format_exc())
 		return 'not found'
 	if status['status'] == 'not ok':
 		return 'not ok'
 
-	data.sum = int(data.sum)
-	return data
+	return qr_data
 
 def create_keyboard(arr, vals):
 	keyboard = InlineKeyboardMarkup()

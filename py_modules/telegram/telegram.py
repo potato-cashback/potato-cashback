@@ -330,7 +330,7 @@ def get_qr(message):
 		bot.send_message(user._id, tree['qr']['wrong_format'])
 		return
 
-	data = get_data_from_qr(message)
+	data = get_data_from_qr(message.photo[-1])
 	if data == "not found":
 		user.next_step_handler('get_qr')
 		bot.send_message(user._id, tree['qr']['qr_not_found'])
