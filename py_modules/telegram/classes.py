@@ -97,7 +97,7 @@ class User(dict):
 
     def update_balance(self, value):
         self.balance += value
-        self.update_database('balance', self.balance)
+        self.set_value('balance', self.balance)
         
     def user_exists(self, _id=None, phone=None):
         if _id is None and phone is None:
@@ -114,7 +114,7 @@ class User(dict):
         if not self.phone_in_friends_list(friends_phone):
             if self.user_exists(phone=friends_phone):
                 self.friends[friends_phone] = False
-                self.update_database(f'friends.{friends_phone}', False)
+                self.set_value(f'friends.{friends_phone}', False)
                 return self.friends
             else:
                 return tree['notification']['user_already_joined'].format(friends_phone)
@@ -122,7 +122,9 @@ class User(dict):
             return tree['notification']['user_is_in_contacts'].format(friends_phone)
     
     def change_phone(self, new_phone):
-        self.update_database('phone', new_phone)
+        self.phone = new_phone
+        self.set_value('phone', self.phone)
     
     def change_name(self, new_name):
-        self.update_database('name', new_name)
+        self.name = new_name
+        self.set_value('name', self.name)
