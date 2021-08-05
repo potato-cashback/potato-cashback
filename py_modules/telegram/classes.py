@@ -1,10 +1,5 @@
-import json
 import py_modules.telegram.telegram as telegram
 from py_modules.telegram.functions import *
-
-class Data(object):
-    def __init__(self, j):
-        self.__dict__ = json.loads(j)
 
 class Keyformat(object):
     def __init__(self, type='callback', texts=[], callbacks=[], urls=[]):
