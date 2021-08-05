@@ -426,7 +426,7 @@ def get_contacts(message):
 		phone = f'+{phone}' if phone[0] != '+' else phone
 		
 		if not phone in user['friends']:
-			if users.find_one({'phone': phone}) == None:
+			if users.find_one({'phone': phone, 'registered': True}) is None:
 				update_user(userId, set_args={'friends.{}'.format(phone): False})
 			else:
 				bot.send_message(userId, tree['notification']['user_already_joined'].format(phone), parse_mode='html')
