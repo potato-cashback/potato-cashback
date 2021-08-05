@@ -64,10 +64,19 @@ class User(dict):
             'cashback': cashback
         }
 
+    def is_registered(self):
+        return self.registered
+
     def push_operation(self, operation):
         self.operations.append(operation)
         self.push_to_arr('operation', operation)
 
+    def remove_operation(self, operation):
+        self.operations = pop_element(self.operations, operation)
+        self.pull_from_arr('operation', operation)
+
+    def pull_from_arr(self, arr, value):
+        users.update_one({'_id': self._id}, {'$pull': {arr: value}})
     def push_to_arr(self, arr, value):
         users.update_one({'_id': self._id}, {'$push': {arr: value}})
     def set_value(self, key, value):
@@ -90,10 +99,10 @@ class User(dict):
         self.balance += value
         self.update_database('balance', self.balance)
         
-    def user_exists(self, id=None, phone=None):
-        if id is None and phone is None:
+    def user_exists(self, _id=None, phone=None):
+        if _id is None and phone is None:
             return False
-        user = users.find_one({'_id': id}) or users.find_one({'phone': phone, 'registered': True})
+        user = users.find_one({'_id': _id}) or users.find_one({'phone': phone, 'registered': True})
         return user is not None
     
     def phone_in_friends_list(self, phone):

@@ -42,6 +42,13 @@ def find_user(search):
 	user = users.find_one(search) or {}
 	return classes.User(user)
 
+def pop_element(arr, value):
+	for i in range(len(arr)):
+		if arr[i] == value:
+			arr.pop(i)
+			break
+	return arr
+
 def create_operation(text, sum, cashback = -1):
 	date = get_today().strftime("%d/%m/%Y")
 	ctime = get_today().strftime("%H:%M")
