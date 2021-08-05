@@ -39,7 +39,7 @@ def fraud_check(user, money):
 	return False
 
 def find_user(search):
-	user = users.find_one(search)
+	user = users.find_one(search) or {}
 	return classes.User(user)
 
 def create_operation(text, sum, cashback = -1):
