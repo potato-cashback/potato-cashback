@@ -20,7 +20,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -475,7 +475,6 @@ def conditions(message):
 				   photo=Image.open(URL_image + tree['conditions']['image']), 
 				   caption=tree['conditions']['text'], 
 				   reply_markup=keyboard)
-
 # <+=============================================================================================+>
 
 
@@ -506,84 +505,88 @@ def ask_question(message):
 	bot.send_message(userId, tree['ask_question']['text'], reply_markup=keyboard)
 # <+=============================================================================================+>
 
+def check_if_registered(message, user):
+	if not user['registered']:
+		register(message)
+		return True
+	return False
+
+def set_phone_template(phone_number):
+	hasPlus = (phone_number[0] == '+')
+	if not hasPlus:
+		return '+' + phone_number
+	return phone_number
+
 # PROFILE/REGISTERATION SYSTEM
 # <+=============================================================================================+>
 def profile(message): 
 	userId = message.chat.id
 	[tree] = get("tree")
 	user = users.find_one({'_id': userId})
-	if not user['registered']:
-		register(message)
-		return
-	date = get_today()
-	string_date = date.strftime("%d/%m/%Y")
+	check_if_registered(message, user)
 
+	date = get_today().strftime("%d/%m/%Y")
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree['profile']['buttons'], currentInlineState)
-	bot.send_message(userId, tree['profile']['text'].format(user['balance'], string_date, user['name'], user['phone']), reply_markup=keyboard)
+	bot.send_message(userId, tree['profile']['text'].format(user['balance'], date, user['name'], user['phone']), reply_markup=keyboard)
+
 def register(message):
 	userId = message.chat.id
 	[tree] = get("tree")
-	update_user(userId, 'process_register_step_get_name')
-	bot.send_message(userId, tree['register']['choose_name'])
+	update_user(userId, 'enter_name')
+	bot.send_message(userId, tree['register']['enter_name'])
 # NAME
-def process_register_step_get_name(message):
+def enter_name(message):
 	userId = message.chat.id
 	[tree] = get("tree")
-	update_user(userId, 'register_last_step_phone', set_args={'name': message.text})
+	update_user(userId, 'enter_contact', set_args={'name': message.text})
 
 	keyboard = create_reply_keyboard(tree['register']['reply_buttons'])
-	bot.send_message(userId, tree['register']['get_telephone'], reply_markup=keyboard, parse_mode='html')
+	bot.send_message(userId, tree['register']['enter_contact'], reply_markup=keyboard, parse_mode='html')
 # PHONE
-def register_last_step_phone(message):
+def enter_contact(message):
 	userId = message.chat.id
 	[tree] = get("tree")
 	if message.contact is not None:
-		phone = message.contact.phone_number
-		phone = f'+{phone}' if phone[0] != '+' else phone
+		phone = set_phone_template(message.contact.phone_number)
 
 		users.update_one({'_id': userId}, {'$set': {'phone': phone}})
-
 		user = users.find_one({'_id': userId})
 
 		date = get_today().strftime("%d/%m/%Y")
 
 		bot.send_message(userId, tree['register']['check_info'], reply_markup=ReplyKeyboardRemove())
-
 		keyboard = create_keyboard(tree['register']['buttons'], [Keyformat(), Keyformat()])
 		bot.send_message(userId, tree['profile']['text'].format(user['balance'], date, user['name'], user['phone']), reply_markup=keyboard)
 	else:
 		keyboard = create_reply_keyboard(tree['register']['reply_buttons'])
-		bot.send_message(userId, tree['register']['get_telephone'], reply_markup=keyboard, parse_mode='html')
+		bot.send_message(userId, tree['register']['enter_contact'], reply_markup=keyboard, parse_mode='html')
 
-# COMPLETE
-def register_complete(message):
-	userId = message.chat.id
-	[tree, welcome_cashback_sum, friend_money] = get("tree", "welcome_cashback_sum", "friend_money")
-	user = users.find_one({'_id': userId})
-
+def on_new_user_registery(user):
+	[tree, welcome_cashback_sum] = get("tree", "welcome_cashback_sum")
+	userId = user['_id']
 	if not user['registered']:
 		bot.send_message(userId, tree['register']['welcome_casback'].format(welcome_cashback_sum))
 		new_operation = create_operation(tree['operations']['register'], welcome_cashback_sum)
 
 		update_user(userId, set_args={'balance': user['balance'] + welcome_cashback_sum, 'registered': True},
 							push_args={'operations': new_operation})
-	
-	user = users.find_one({'_id': userId})
-
-	# Adding previous cashback to a registered account
+def add_previous_cashback_from_phone(user):
+	[tree] = get("tree")
+	userId = user['_id']
 	prev_user_data = users.find_one({'phone': user['phone'], 'not_joined': True})
-	if prev_user_data != None:
+	if prev_user_data is not None:
 		bot.send_message(userId, tree['register']['previous_cashbacks'].format(prev_user_data['balance']))
 
-		# Update balance and add operations
 		update_user(userId, set_args={'balance': user['balance'] + prev_user_data['balance']})
 		for operation in prev_user_data['operations']:
 			update_user(userId, push_args={'operations': operation})
 
 		users.delete_one({'phone': user['phone'], 'not_joined': True})
 
-	# Sending cashback to those who written their phone number
+def add_cashback_to_their_friends(user):
+	[tree, friend_money] = get("tree", "friend_money")
+
 	users_to_add_money = users.find({'friends.{}'.format(user['phone']): False})
 	for u in users_to_add_money:
 		bot.send_message(u['_id'], tree['notification']['friend_join'].format(user['phone'], friend_money))
@@ -592,6 +595,17 @@ def register_complete(message):
 		update_user(u['_id'], set_args={'balance': u['balance'] + friend_money,
 										'friends.{}'.format(user['phone']): True},
 								push_args={'operations': new_operation})
+
+def register_completed(message):
+	userId = message.chat.id
+	user = users.find_one({'_id': userId})
+
+	on_new_user_registery(user)
+
+	user = users.find_one({'_id': userId})
+
+	add_previous_cashback_from_phone(user)
+	add_cashback_to_their_friends(user)
 
 	profile(message)
 # <+=============================================================================================+>
