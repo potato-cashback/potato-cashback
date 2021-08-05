@@ -123,7 +123,7 @@ class User(dict):
         for friends_phone in self.friends:
             friendOnTelegram = self.friends[friends_phone]
             if not friendOnTelegram:
-                friends += f"{buffer_counter}. {friendOnTelegram}\n"
+                friends += f"{buffer_counter}. {friends_phone}\n"
                 buffer_counter += 1
 
         return friends if friends != "" else ": 0"

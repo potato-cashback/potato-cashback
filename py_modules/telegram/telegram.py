@@ -413,6 +413,7 @@ def get_contacts(message):
 			bot.send_message(user._id, notification, parse_mode='html')
 
 	friends = user.friend_list_stringify()
+	if friends != ": 0": friends = '\n' + friends
 
 	currentInlineState = [Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree['share_with_friends']['get_contacts']['buttons'], currentInlineState)
