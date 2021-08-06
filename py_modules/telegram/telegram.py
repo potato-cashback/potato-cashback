@@ -97,7 +97,7 @@ def check_balances(message):
 			
 			value = find_user({'_id': user['_id']})
 			print(value.__dict__)
-			users.update_one({'_id': user['_id']}, {'$set': {value.__dict__}})
+			users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
 	except:
 		print(traceback.format_exc())
 
