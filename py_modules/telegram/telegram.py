@@ -90,7 +90,7 @@ def check_balances(message):
 	# Update for everyone limit_items
 	for user in users.find({}):
 		# users.update_one({'_id': user['_id']}, {'$set': {'limit_items': ans, 'onTelegram': True}})
-		users.update_one({'_id': user['_id']}, {'$set': {'test-element': True}})		
+		users.update_one({'_id': user['_id']}, {'$unset': {'test-element': True}})		
 
 	print("UPDATED")
 
