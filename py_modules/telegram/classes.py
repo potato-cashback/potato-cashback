@@ -54,7 +54,7 @@ class User(dict):
         users_to_add_balance = users.find({f'friends.{self.phone}': False})
         for user in users_to_add_balance:
             user = User(user)
-            self.send_notification(tree['notification']['friend_join'].format(self.phone, friend_money))
+            user.send_notification(tree['notification']['friend_join'].format(self.phone, friend_money))
 
             new_operation = self.create_operation(self.phone[1:], friend_money)
             # [1:] is important, max length for operation text is 12.

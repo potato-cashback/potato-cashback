@@ -17,7 +17,7 @@ try:
 	@app.route('/mongodb/phone/<phone>')
 	def phone_name(phone):
 		user = users.find_one({'phone': phone})
-		if user != None and "not_joined" not in user:
+		if user is not None and user['onTelegram']:
 			return user['name']
 		else:
 			return ""
@@ -45,7 +45,7 @@ def send_data(phone, sum):
 	try:
 		r = requests.get(URL + '/send_data/'+phone+'/'+sum)
 		if(r.text == 'nice'):
-			user = users.find_one({'phone': phone, "not_joined":True})
+			user = users.find_one({'phone': phone, "onTelegram": False})
 			if(user != None):
 				send_to_whatsapp(phone, sum)
 			return 'good'
