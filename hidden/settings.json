@@ -17,141 +17,50 @@
     ],
     "MAX_BALANCE": 20000,
     "items": {
-        "household": {
-            "toilet-paper": {
-                "name": "Бумага",
-                "image": "items/household/toilet-paper.png",
-                "price": 700,
-                "tag": "toilet-paper",
-                "limit": 4
+        "food": {
+            "snickers": {
+                "name": "Сникерс",
+                "image": "items/food/snickers.png",
+                "price": 150,
+                "tag": "snickers",
+                "limit": 1
             },
-            "towel": {
-                "name": "Полотенце",
-                "image": "items/household/towel.png",
-                "price": 1400,
-                "tag": "towel",
-                "limit": 3
+            "drink": {
+                "name": "Напиток",
+                "image": "items/food/drink.png",
+                "price": 200,
+                "tag": "drink",
+                "limit": 1
             },
-            "slippers": {
-                "name": "Тапочки",
-                "image": "items/household/slippers.png",
-                "price": 3000,
-                "tag": "slippers",
-                "limit": 1000
+            "gum": {
+                "name": "Жвачка",
+                "image": "items/food/gum.png",
+                "price": 150,
+                "tag": "gum",
+                "limit": 1
             },
-            "powder": {
-                "name": "Порошок",
-                "image": "items/household/powder.png",
-                "price": 3000,
-                "tag": "powder",
-                "limit": 2
-            },
-            "pan": {
-                "name": "Сковорода",
-                "image": "items/household/pan.png",
-                "price": 9999,
-                "tag": "pan",
+            "chips": {
+                "name": "Чипсы",
+                "image": "items/food/chips.png",
+                "price": 300,
+                "tag": "chips",
                 "limit": 1
             }
         },
-        "toys": {
-            "HKD207": {
-                "name": "Кукла",
-                "image": "items/toys/HKD207.png",
-                "price": 1680,
-                "tag": "HKD207",
-                "limit": 1000
+        "balance": {
+            "telebalance": {
+                "name": "Телефонный Баланс",
+                "image": "items/balance/telebalance.png",
+                "price": 100,
+                "tag": "telebalance",
+                "limit": 1
             },
-            "1817-1": {
-                "name": "Грузовик",
-                "image": "items/toys/1817-1.png",
-                "price": 1953,
-                "tag": "1817-1",
-                "limit": 1000
-            },
-            "1822-1": {
-                "name": "Трактор",
-                "image": "items/toys/1822-1.png",
-                "price": 1960,
-                "tag": "1822-1",
-                "limit": 1000
-            },
-            "LM2587": {
-                "name": "Малыш",
-                "image": "items/toys/LM2587.png",
-                "price": 2079,
-                "tag": "LM2587",
-                "limit": 1000
-            },
-            "M38-B0633D": {
-                "name": "Гоночная",
-                "image": "items/toys/M38-B0633D.png",
-                "price": 2786,
-                "tag": "M38-B0633D",
-                "limit": 1000
-            },
-            "M38-B0651": {
-                "name": "Вертолет",
-                "image": "items/toys/M38-B0651.png",
-                "price": 4606,
-                "tag": "M38-B0651",
-                "limit": 1000
-            },
-            "M38-B0330": {
-                "name": "Автобус",
-                "image": "items/toys/M38-B0330.png",
-                "price": 4606,
-                "tag": "M38-B0330",
-                "limit": 1000
-            },
-            "M38-B0566": {
-                "name": "Автофургон",
-                "image": "items/toys/M38-B0566.png",
-                "price": 5166,
-                "tag": "M38-B0566",
-                "limit": 1000
-            },
-            "M38-B0567": {
-                "name": "Ресторан",
-                "image": "items/toys/M38-B0567.png",
-                "price": 5166,
-                "tag": "M38-B0567",
-                "limit": 1000
-            },
-            "M38-B0568": {
-                "name": "Автозаправка",
-                "image": "items/toys/M38-B0568.png",
-                "price": 5166,
-                "tag": "M38-B0568",
-                "limit": 1000
-            },
-            "M38-B0625": {
-                "name": "Пожарная",
-                "image": "items/toys/M38-B0625.png",
-                "price": 5166,
-                "tag": "M38-B0625",
-                "limit": 1000
-            },
-            "M38-B0655": {
-                "name": "Машина",
-                "image": "items/toys/M38-B0655.png",
-                "price": 6986,
-                "tag": "M38-B0655",
-                "limit": 1000
-            },
-            "M38-B0656": {
-                "name": "Вертолет",
-                "image": "items/toys/M38-B0656.png",
-                "price": 6986,
-                "tag": "M38-B0656",
-                "limit": 1000
-            },
-            "M38-B0759D": {
-                "name": "Автомойка",
-                "image": "items/toys/M38-B0759D.png",
-                "price": 7966,
-                "tag": "M38-B0759D",
-                "limit": 1000
+            "onay": {
+                "name": "Онай",
+                "image": "items/balance/onay.png",
+                "price": 100,
+                "tag": "onay",
+                "limit": 1
             }
         }
     },
@@ -389,14 +298,14 @@
             "buttons": [
                 [
                     {
-                        "text": "Игрушки",
-                        "callback": "display_items?toys,0"
+                        "text": "Еда и Напитки",
+                        "callback": "display_items?food,0"
                     }
                 ],
                 [
                     {
-                        "text": "Товары для дома",
-                        "callback": "display_items?household,0"
+                        "text": "Платежи",
+                        "callback": "display_items?balance,0"
                     }
                 ],
                 [

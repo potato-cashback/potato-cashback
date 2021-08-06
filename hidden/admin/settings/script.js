@@ -72,7 +72,7 @@ async function setValues() {
     welcome_cashbask.innerText = data["welcome_cashback_sum"]
     limit_cashback.innerText = data["MAX_BALANCE"]
 
-    setItems(data.items.toys);
+    setItems(data.items.balance);
     settingCashbackPercents(data)
 }
 setValues()

@@ -63,7 +63,7 @@ def createOrUpdateImage(base64Img, tag):
 	base64Img = base64Img + "=" * (4 - len(base64Img) % 4)
 	imgdata = base64.b64decode(str(base64Img))
 
-	pathToImage = "items/toys/" + tag + ".png"
+	pathToImage = "items/balance/" + tag + ".png"
 	with open("py_modules/telegram/images/" + pathToImage, 'wb+') as file:
 		file.write(imgdata)
 
