@@ -66,8 +66,10 @@ class User(dict):
 
     def add_previous_cashback_from_phone(self):
         [tree] = telegram.get("tree")
-        prev_user_data = find_user({'phone': self.phone, 'onTelegram': False})
-        if prev_user_data is not None:
+        search_key = {'phone': self.phone, 'onTelegram': False}
+        if users.find_one(search_key) is not None:
+            prev_user_data = find_user(search_key)
+
             self.update_balance(prev_user_data.balance)
             self.push_operation(*prev_user_data.operations)
 
