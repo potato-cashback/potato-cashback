@@ -88,15 +88,17 @@ def check_balances(message):
 	
 	ans = empty_items_shelfs()
 	# Update for everyone limit_items
-	for user in users.find({}):
-		if 'not_joined' in user:
-			users.update_one({'_id': user['_id']}, {'$unset': {'not_joined': True, '_id': 'no id'}})
-		else:
-			users.update_one({'_id': user['_id']}, {'$set': {'limit_items': ans}})
-		
-		value = User(user)
-		users.update_one({'_id': user['_id']}, {'$set': {value.__dict__}})
-
+	try:
+		for user in users.find({}):
+			if 'not_joined' in user:
+				users.update_one({'_id': user['_id']}, {'$unset': {'not_joined': True}})
+			else:
+				users.update_one({'_id': user['_id']}, {'$set': {'limit_items': ans}})
+			
+			value = User(user)
+			users.update_one({'_id': user['_id']}, {'$set': {value.__dict__}})
+	except:
+		print(traceback.format_exc())
 
 	print("UPDATED")
 
