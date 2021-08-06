@@ -46,7 +46,7 @@ class User(dict):
         return self.admin
 
     def send_notification(self, message_text):
-        telegram.bot.send_message(self._id, message_text)
+        telegram.bot.send_message(self._id, message_text, parse_mode="html")
 
     def add_cashback_to_their_friends(self):
         [tree, friend_money] = telegram.get("tree", "friend_money")
@@ -147,7 +147,7 @@ class User(dict):
 
     def is_new_month(self):
         todays_month = get_today().strftime("%m")
-        if todays_month == self.month:
+        if todays_month != self.month:
             self.month = todays_month
             return True
         return False
@@ -184,16 +184,16 @@ class User(dict):
 
         [tree] = telegram.get("tree")
         friends_phone = set_phone_template(contact.phone_number)
-        if not self.phone_in_friends_list(friends_phone):
-            if not self.user_exists(phone=friends_phone):
+        if not self.user_exists(phone=friends_phone):
+            if not self.phone_in_friends_list(friends_phone):
                 self.friends[friends_phone] = False
                 self.overwrite_data()
                 return 'ok'
             else:
-                self.send_notification(tree['notification']['user_already_joined'].format(friends_phone))
+                self.send_notification(tree['notification']['user_is_in_contacts'].format(friends_phone))
                 return
         else:
-            self.send_notification(tree['notification']['user_is_in_contacts'].format(friends_phone))
+            self.send_notification(tree['notification']['user_already_joined'].format(friends_phone))
             return
     
     def set_phone(self, new_phone):

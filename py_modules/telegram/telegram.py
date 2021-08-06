@@ -57,7 +57,7 @@ def process_cashback(phone, sum):
 	user = find_user({'phone': phone})
 	if users.find_one({'phone': phone}) is None:
 		user.phone = phone
-
+		
 		users.insert_one(user.__dict__)
 
 	user.clear_data_every_month()
