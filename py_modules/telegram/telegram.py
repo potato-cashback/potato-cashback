@@ -28,7 +28,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://test-potato-cashback.herokuapp.com'
+URL_ser = 'https://potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -57,7 +57,7 @@ def process_cashback(phone, sum):
 	user = find_user({'phone': phone})
 	if users.find_one({'phone': phone}) is None:
 		user.phone = phone
-		
+
 		users.insert_one(user.__dict__)
 
 	user.clear_data_every_month()
@@ -87,7 +87,6 @@ def check_balances(message):
 	if user.is_admin():
 		return
 	
-	[items] = get("items")
 	ans = empty_items_shelfs()
 	users.update_one({}, {'$set': {'limit_items': ans}}) # Update for everyone limit_items
 
