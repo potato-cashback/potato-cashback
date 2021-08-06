@@ -27,7 +27,7 @@ def get(*args):
 	return [data[k] for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -87,8 +87,7 @@ def check_balances(message):
 	# 	return
 	
 	ans = empty_items_shelfs()
-	users.update_one({}, {'$set': {'limit_items': ans, 
-								   'onTelegram': True}}) # Update for everyone limit_items
+	users.update({}, {'$set': {'limit_items': ans, 'onTelegram': True}}) # Update for everyone limit_items
 
 @bot.message_handler(commands=['start'])
 def menu(message):
