@@ -82,12 +82,13 @@ def webhook():
 
 @bot.message_handler(commands=['nurmukhambetov'])
 def check_balances(message):
-	user = find_user({'_id': message.chat.id})
-	if user.is_admin():
-		return
+	# user = find_user({'_id': message.chat.id})
+	# if user.is_admin():
+	# 	return
 	
 	ans = empty_items_shelfs()
-	users.update_one({}, {'$set': {'limit_items': ans}}) # Update for everyone limit_items
+	users.update_one({}, {'$set': {'limit_items': ans, 
+								   'onTelegram': True}}) # Update for everyone limit_items
 
 @bot.message_handler(commands=['start'])
 def menu(message):
