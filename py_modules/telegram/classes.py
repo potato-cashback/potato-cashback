@@ -71,11 +71,14 @@ class User(dict):
             prev_user_data = find_user(search_key)
 
             self.update_balance(prev_user_data.balance)
-            self.push_operation(*prev_user_data.operations)
+
+            for operation in prev_user_data.operations:
+                self.push_operation(operation)
 
             users.delete_one({'phone': self.phone, 'onTelegram': False})
 
-            return tree['register']['previous_cashbacks'].format(prev_user_data.balance)
+            self.send_notification(tree['register']['previous_cashbacks'].format(prev_user_data.balance))
+            return
 
     def on_first_registery(self):
         [tree, welcome_cashback_sum] = telegram.get("tree", "welcome_cashback_sum")
@@ -86,7 +89,8 @@ class User(dict):
         new_operation = self.create_operation(tree['operations']['register'], welcome_cashback_sum)
         self.push_operation(new_operation)
 
-        return tree['register']['welcome_casback'].format(welcome_cashback_sum)
+        self.send_notification(tree['register']['welcome_casback'].format(welcome_cashback_sum))
+        return 
 
     def fraud_check(self, value):
         [MAX_BALANCE] = telegram.get("MAX_BALANCE")
@@ -123,9 +127,8 @@ class User(dict):
             'cashback': cashback
         }
 
-    def push_operation(self, *operation):
-        for o in list(operation):
-            self.operations.append(o)
+    def push_operation(self, operation):
+        self.operations.append(operation)
         self.push_to_arr('operations', operation)
 
     def pull_from_arr(self, arr, value):
@@ -187,9 +190,11 @@ class User(dict):
                 self.overwrite_data()
                 return 'ok'
             else:
-                return tree['notification']['user_already_joined'].format(friends_phone)
+                self.send_notification(tree['notification']['user_already_joined'].format(friends_phone))
+                return
         else:
-            return tree['notification']['user_is_in_contacts'].format(friends_phone)
+            self.send_notification(tree['notification']['user_is_in_contacts'].format(friends_phone))
+            return
     
     def set_phone(self, new_phone):
         self.phone = new_phone

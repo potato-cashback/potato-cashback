@@ -375,9 +375,7 @@ def get_contacts(message):
 	except: pass
 
 	if message.contact is not None:
-		notification = user.add_friend_contact(message.contact)
-		if notification != 'ok':
-			bot.send_message(user._id, notification, parse_mode='html')
+		user.add_friend_contact(message.contact)
 
 	friends = user.friend_list_stringify()
 	if friends != ": 0": friends = '\n' + friends
