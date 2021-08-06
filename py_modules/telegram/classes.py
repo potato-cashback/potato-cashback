@@ -23,6 +23,7 @@ class User(dict):
         self.register_time = user.get('register_time', today.strftime("%H:%M"))
         self.registered = user.get('registered', False)
         self.onTelegram = user.get('onTelegram', False)
+        self.admin = user.get('admin', False)
 
         self.name = user.get('name', 'no name')
         self.username = user.get('username', 'no username')
@@ -40,6 +41,56 @@ class User(dict):
         self.month = user.get('month', today.strftime("%m"))
 
         self.operations = user.get('operations', [])
+    
+    def is_admin(self):
+        return self.admin
+
+    def send_notification(self, message_text):
+        telegram.bot.send_message(self._id, message_text)
+
+    def add_cashback_to_their_friends(self):
+        [tree, friend_money] = telegram.get("tree", "friend_money")
+
+        users_to_add_balance = users.find({f'friends.{self.phone}': False})
+        for user in users_to_add_balance:
+            user = User(user)
+            self.send_notification(tree['notification']['friend_join'].format(self.phone, friend_money))
+
+            new_operation = self.create_operation(self.phone[1:], friend_money)
+            # [1:] is important, max length for operation text is 12.
+            # Exceeding it will casuse offset in a telegram message.
+            user.push_operation(new_operation)
+            user.update_balance(friend_money)
+            user.friends[self.phone] = True
+            user.overwrite_data()
+
+    def handle_message(self, message):
+        [method_name, args] = calc(self.function_name)
+        args.insert(0, message)
+        self.clear_next_step_handler()
+        run_method_by_name(method_name, *args)
+
+    def add_previous_cashback_from_phone(self):
+        [tree] = telegram.get("tree")
+        prev_user_data = find_user({'phone': self.phone, 'onTelegram': False})
+        if prev_user_data is not None:
+            self.update_balance(prev_user_data.balance)
+            self.push_operation(*prev_user_data.operations)
+
+            users.delete_one({'phone': self.phone, 'onTelegram': False})
+
+            return tree['register']['previous_cashbacks'].format(prev_user_data.balance)
+
+    def on_first_registery(self):
+        [tree, welcome_cashback_sum] = telegram.get("tree", "welcome_cashback_sum")
+        
+        self.set_value('registered', True)
+        self.update_balance(welcome_cashback_sum)
+
+        new_operation = self.create_operation(tree['operations']['register'], welcome_cashback_sum)
+        self.push_operation(new_operation)
+
+        return tree['register']['welcome_casback'].format(welcome_cashback_sum)
 
     def fraud_check(self, value):
         [MAX_BALANCE] = telegram.get("MAX_BALANCE")
@@ -76,8 +127,9 @@ class User(dict):
             'cashback': cashback
         }
 
-    def push_operation(self, operation):
-        self.operations.append(operation)
+    def push_operation(self, *operation):
+        for o in list(operation):
+            self.operations.append(o)
         self.push_to_arr('operations', operation)
 
     def pull_from_arr(self, arr, value):
@@ -143,10 +195,10 @@ class User(dict):
         else:
             return tree['notification']['user_is_in_contacts'].format(friends_phone)
     
-    def change_phone(self, new_phone):
+    def set_phone(self, new_phone):
         self.phone = new_phone
         self.overwrite_data()
     
-    def change_name(self, new_name):
+    def set_name(self, new_name):
         self.name = new_name
         self.overwrite_data()
