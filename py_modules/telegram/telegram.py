@@ -489,13 +489,26 @@ def register_completed(message):
 	profile(message)
 
 
+def run_method_by_name(name, *args):
+	possibles = globals().copy()
+	possibles.update(locals())
+	method = possibles.get(name)
+	try:
+		method(*args)
+	except:
+		print(traceback.format_exc())
+	return
+
 @bot.message_handler(content_types = ['text', 'photo', 'contact'])
 def receiver(message):
 	[TEMPLATE_MESSAGE] = get("TEMPLATE_MESSAGE")
 	user = find_user({'_id': message.chat.id})
 
 	if user.use_function:
-		user.handle_message(message)
+		[method_name, args] = calc(user.function_name)
+		args.insert(0, message)
+		user.clear_next_step_handler()
+		run_method_by_name(method_name, *args)
 	elif message.content_type == "photo":
 		data = get_qr(message)
 		if data == "not found" or data == "not ok":

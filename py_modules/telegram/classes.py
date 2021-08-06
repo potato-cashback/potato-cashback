@@ -64,12 +64,6 @@ class User(dict):
             user.friends[self.phone] = True
             user.overwrite_data()
 
-    def handle_message(self, message):
-        [method_name, args] = calc(self.function_name)
-        args.insert(0, message)
-        self.clear_next_step_handler()
-        run_method_by_name(method_name, *args)
-
     def add_previous_cashback_from_phone(self):
         [tree] = telegram.get("tree")
         prev_user_data = find_user({'phone': self.phone, 'onTelegram': False})
