@@ -1,10 +1,9 @@
 # TODO:
-# 1. make all functions use class "User" from classes.py
-# 2. function "get" change name also add deep key retrivale
-# 3. Make better Error handiling using traceback
-# 4. If possible try removing yellow squiggle lines in imports
-# 5. Create credential file where all testing variables will be stored for bot testing
-# 6. better method/variable naming  
+# 1. function "get" change name also add deep key retrivale
+# 2. Make better Error handiling using traceback
+# 3. If possible try removing yellow squiggle lines in imports
+# 4. Create credential file where all testing variables will be stored for bot testing
+# 5. better method/variable naming  
 
 from flask import current_app as app
 from py_modules.mongo import users
@@ -413,11 +412,11 @@ def display_partners(message):
 	bot.send_message(message.chat.id, tree['display_partners']['text'], reply_markup=keyboard)
 
 
-def faq(message):
+def services_rules(message):
 	[tree] = get("tree")
 	currentInlineState = [Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['faq']['buttons'], currentInlineState)
-	bot.send_message(message.chat.id, tree['faq']['text'], reply_markup=keyboard, parse_mode='html')
+	keyboard = create_keyboard(tree['services_rules']['buttons'], currentInlineState)
+	bot.send_message(message.chat.id, tree['services_rules']['text'], reply_markup=keyboard, parse_mode='html')
 
 def ask_question(message):
 	[tree] = get("tree")
