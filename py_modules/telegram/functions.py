@@ -58,6 +58,16 @@ def set_phone_template(phone_number):
 		return '+' + phone_number
 	return phone_number
 
+def run_method_by_name(name, *args):
+	possibles = globals().copy()
+	possibles.update(locals())
+	method = possibles.get(name)
+	try:
+		method(*args)
+	except:
+		print(traceback.format_exc())
+	return
+
 # MONGODB UPDATES
 # <==========================================>
 def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_args = {}):

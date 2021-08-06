@@ -487,17 +487,7 @@ def register_completed(message):
 	user.add_cashback_to_their_friends()
 
 	profile(message)
-# <+=============================================================================================+>
 
-def run_method_by_name(name, *args):
-	possibles = globals().copy()
-	possibles.update(locals())
-	method = possibles.get(name)
-	try:
-		method(*args)
-	except:
-		print(traceback.format_exc())
-	return
 
 @bot.message_handler(content_types = ['text', 'photo', 'contact'])
 def receiver(message):
