@@ -100,14 +100,14 @@ const deleteItem = (itemTag, conf) => {
         document.querySelector("#items")
         .removeChild(document.querySelector(`#tag_${itemTag}`))
 
-        path = `items.toys.${itemTag}`
+        path = `items.balance.${itemTag}`
         change["$delete"][path] = 0    
     }
 }
 
 const addNewItem = (data) => {
     Object.entries(data).forEach(entery => {
-        path = `items.toys.${data["tag"]}.${entery[0]}`
+        path = `items.balance.${data["tag"]}.${entery[0]}`
         
         if(entery[0] != "image")
             change["$set"][path] = entery[1]
@@ -269,7 +269,7 @@ const updateItem = (oldData, newData) => {
     Object.entries(newData).forEach(entery => {
         if(newData[entery[0]] != oldData[entery[0]]){
 
-            path = `items.toys.${oldData["tag"]}.${entery[0]}`
+            path = `items.balance.${oldData["tag"]}.${entery[0]}`
             change["$set"][path] = entery[1]
 
             if(entery[0] != "image")
