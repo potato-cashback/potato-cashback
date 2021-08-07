@@ -3,7 +3,7 @@ from flask import Flask
 app = Flask(__name__)
 
 with app.app_context():
-    from py_modules import admin, api, files, mongo, whatsapp
+    from py_modules import admin, api, files, mongo#, whatsapp
 
 with app.app_context():
 	from py_modules.telegram import telegram

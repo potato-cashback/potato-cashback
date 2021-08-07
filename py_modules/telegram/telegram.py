@@ -94,7 +94,7 @@ def check_balances(message):
 			if 'not_joined' in user:
 				users.update_one({'_id': user['_id']}, {'$unset': {'not_joined': True}})
 			else:
-				users.update_one({'_id': user['_id']}, {'$set': {'limit_items': ans}})
+				value.limit_items = ans
 				value.onTelegram = True
 			
 			users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
