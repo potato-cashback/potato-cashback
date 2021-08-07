@@ -3,19 +3,19 @@
     "URI": "mongodb+srv://H_reugo:Nurmukhambetov@cluster0.vq2an.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     "TECHNICAL_STOP": false,
     "groupChatId": 1654644284,
-    "friend_money": 20,
-    "welcome_cashback_sum": 200,
-    "cashback": [
-        {
+    "friend_money": 5,
+    "welcome_cashback_sum": 50,
+    "cashback": {
+        "0": {
             "on": 3000,
             "percent": 6
         },
-        {
+        "1": {
             "on": 5000,
             "percent": 11
         }
-    ],
-    "MAX_BALANCE": 20000,
+    },
+    "MAX_BALANCE": 15000,
     "items": {
         "food": {
             "snickers": {
@@ -54,14 +54,14 @@
                 "limit": 1
             },
             "monster": {
-                "name": "Энергетический напиток Монстер",
+                "name": "Монстер",
                 "image": "items/food/monster.png",
                 "price": 500,
                 "tag": "monster",
                 "limit": 1
             },
             "nescafe": {
-                "name": "Пакетик Кофе Nescafe 3 в 1",
+                "name": "Кофе Nescafe",
                 "image": "items/food/nescafe.png",
                 "price": 100,
                 "tag": "nescafe",
@@ -70,7 +70,7 @@
         },
         "balance": {
             "telebalance": {
-                "name": "Телефонный Баланс",
+                "name": "Тел.Баланс",
                 "image": "items/balance/telebalance.png",
                 "price": 100,
                 "tag": "telebalance",
@@ -86,7 +86,7 @@
         },
         "toys": {
             "bubbles": {
-                "name": "Мыльные Пузыри",
+                "name": "Пузыри",
                 "image": "items/toys/bubbles.png",
                 "price": 100,
                 "tag": "bubbles",
@@ -95,28 +95,28 @@
         },
         "household": {
             "masks": {
-                "name": "Одноразовые Маски (20 шт.)",
+                "name": "Маски",
                 "image": "items/household/masks.png",
                 "price": 100,
                 "tag": "masks",
                 "limit": 1
             },
             "prokladki": {
-                "name": "Прокладки Naturella",
+                "name": "Naturella",
                 "image": "items/household/prokladki.png",
                 "price": 350,
                 "tag": "prokladki",
                 "limit": 1
             },
             "cable": {
-                "name": "Зарядный Провод",
+                "name": "Провод",
                 "image": "items/household/cable.png",
                 "price": 700,
                 "tag": "cable",
                 "limit": 1
             },
             "toilet-paper": {
-                "name": "Туалетная Бумага",
+                "name": "Бумага",
                 "image": "items/household/toilet-paper.png",
                 "price": 700,
                 "tag": "toilet-paper",

@@ -22,14 +22,17 @@ def get_today():
 def sign(x):
     return str(x) if x < 0 else '+'+str(x)
 
-def cashback_logic(sum, cashback):
-	cashback = sorted(cashback, key=lambda k: k['on'])
-	for i in range(len(cashback)):
-		if i+1 == len(cashback):
-			if cashback[i]['on'] <= sum:
-				return cashback[i]['percent'] / 100
-		elif cashback[i]['on'] <= sum and sum < cashback[i+1]['on']:
-			return cashback[i]['percent'] / 100
+def cashback_logic(sum):
+	cashback = telegram.get("cashback")
+	arr_cashback = [cashback[x] for x in cashback]
+
+	arr_cashback = sorted(arr_cashback, key=lambda k: k['on'])
+	for i in range(len(arr_cashback)):
+		if i+1 == len(arr_cashback):
+			if arr_cashback[i]['on'] <= sum:
+				return arr_cashback[i]['percent'] / 100
+		elif arr_cashback[i]['on'] <= sum and sum < arr_cashback[i+1]['on']:
+			return arr_cashback[i]['percent'] / 100
 	return 'error'
 
 def find_user(search):

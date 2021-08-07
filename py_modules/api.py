@@ -1,5 +1,6 @@
 from flask import current_app as app
 import os, shutil
+import json
 
 folder = "./public/_ids/"
 
@@ -60,3 +61,26 @@ def ids(qrId):
 		return '{"status":"ok", "data":"'+ str(data) +'"}'
 	except:
 		return '{"status":"ok", "data":"no data"}'
+
+def get(*args):
+	path = './hidden/settings.json'
+	jsonFile = open(path, "r", encoding='utf-8')
+	data = json.load(jsonFile)
+	jsonFile.close()
+	return [data[k] for k in list(args)]
+
+@app.route('/getCashbackLogic/<sum>')
+def get_cashback_logic(sum):
+	sum = int(sum)
+	[cashback] = get("cashback")
+
+	arr_cashback = [cashback[x] for x in cashback]
+
+	arr_cashback = sorted(arr_cashback, key=lambda k: k['on'])
+	for i in range(len(arr_cashback)):
+		if i+1 == len(arr_cashback):
+			if arr_cashback[i]['on'] <= sum:
+				return str(arr_cashback[i]['percent'] / 100)
+		elif arr_cashback[i]['on'] <= sum and sum < arr_cashback[i+1]['on']:
+			return str(arr_cashback[i]['percent'] / 100)
+	return 'error'

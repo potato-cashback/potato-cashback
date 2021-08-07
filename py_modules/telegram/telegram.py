@@ -4,6 +4,8 @@
 # 3. If possible try removing yellow squiggle lines in imports
 # 4. Create credential file where all testing variables will be stored for bot testing
 # 5. better method/variable naming  
+# 6. Update limit_items for all users when items update
+# 7. Clear extract every month
 
 from flask import current_app as app
 from py_modules.mongo import users
@@ -50,8 +52,8 @@ def getMessage():
 @app.route('/send_data/<phone>/<sum>')
 def process_cashback(phone, sum):
 	sum = int(sum)
-	[tree, cashback] = get("tree", "cashback")
-	money = int(sum * cashback_logic(sum, cashback))
+	[tree] = get("tree")
+	money = int(sum * cashback_logic(sum))
 	
 	user = find_user({'phone': phone})
 	if users.find_one({'phone': phone}) is None:
@@ -311,7 +313,7 @@ def start_qr(message):
 	bot.send_message(user._id, tree['qr']['text'])
 
 def get_qr(message):
-	[tree, cashback] = get("tree", "cashback")
+	[tree] = get("tree")
 	
 	user = find_user({'_id': message.chat.id})
 
@@ -334,17 +336,17 @@ def get_qr(message):
 						  Keyformat(callbacks=[data['date']]), 
 						  Keyformat(callbacks=[data['date']])]
 	
-	available_cashback = cashback_logic(data['sum'], cashback)
+	available_cashback = cashback_logic(data['sum'])
 	date = get_today().strftime("%d/%m/%Y")
 
 	keyboard = create_keyboard(tree['qr']['buttons'], currentInlineState)
 	bot.send_message(user._id, tree['qr']['result'].format(date, data['sum'], available_cashback*100, int(data['sum'] * available_cashback)), reply_markup=keyboard)
 
 def qr_finish(message, url, sum):
-	[tree, cashback] = get("tree", "cashback")
+	[tree] = get("tree")
 	url = str(url)
 
-	cashback_sum = int(sum * cashback_logic(sum, cashback))
+	cashback_sum = int(sum * cashback_logic(sum))
 
 	urllib.request.urlopen(URL_ser+'/api/response/'+url)
 

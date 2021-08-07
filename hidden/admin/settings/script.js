@@ -12,9 +12,6 @@ let change = {
     '$set': {},
     '$delete': {},
 }
-let sectionId = 0
-let itemId = 0
-let sectionName = ['Товары для дома', 'Игршуки']
 
 function onChange(e) {
     let tag = e.target
@@ -33,6 +30,7 @@ function onChange(e) {
         }
     }
     change['$set'][key] = value
+    console.log(change)
 }
 
 function addPercents() {
@@ -49,13 +47,13 @@ function addPercents() {
 }
 
 function settingCashbackPercents(data) {
-    for (const c of data['cashback']) {
+    for (const key in data['cashback']) {
         addPercents()
         let list_percents = document.querySelectorAll('#cashback-percent li')
         let empty_percent = list_percents[list_percents.length - 1]
 
-        empty_percent.querySelector('.cashback').innerText = c['on']
-        empty_percent.querySelector('.percent').innerText = c['percent']
+        empty_percent.querySelector('.cashback').innerText = data['cashback'][key]['on']
+        empty_percent.querySelector('.percent').innerText = data['cashback'][key]['percent']
     }
 }
 
@@ -76,21 +74,6 @@ async function setValues() {
     settingCashbackPercents(data)
 }
 setValues()
-
-function nextSection(move) {
-    let list_sections = document.querySelectorAll('.section')
-
-    if (sectionId + move == list_sections.length || sectionId + move < 0) return;
-    
-    document.querySelectorAll(`.section.current .item`)[itemId].classList.remove("current")
-    list_sections[sectionId].classList.remove("current")
-
-    sectionId += move
-    itemId = 0
-
-    list_sections[sectionId].classList.add("current")
-    document.querySelectorAll(`.section.current .item`)[itemId].classList.add("current")
-}
 
 const saveJson = function() {
     popup("Вы уверены что хотите <strong>сохранить</strong> изменение?", async () => {

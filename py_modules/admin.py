@@ -5,7 +5,7 @@ from flask import send_from_directory, Response, request
 
 from py_modules.mongo import users
 import json
-
+import traceback
 import base64
 
 @app.route('/admin/<u>/<p>/<path:path>')
@@ -95,6 +95,7 @@ def updateJsonFile(path, queries):
 		jsonTree = json.load(jsonFile)
 		jsonFile.close()
 
+		print(queries)
 		for operation in queries:
 			for keyPath in queries[operation]:
 				value = queries[operation][keyPath]
@@ -106,7 +107,7 @@ def updateJsonFile(path, queries):
 		jsonFile.close()
 		return 'good'
 	except Exception as e:
-		print('Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
+		print(traceback.format_exc())
 		return False
 
 @app.route('/admin/<u>/<p>/image/<path:path>')

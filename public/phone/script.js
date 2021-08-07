@@ -137,27 +137,26 @@ const sendCashback = () => {
 		error('Неверный Телефон')
 }
 
-const cashback = (s) => {
-	let coef = [0.06, 0.11]
-    let res = 0
-    
-	if(s >= 5000)
-		res = coef[1]
-    else if(s >= 3000)
-		res = coef[0]
-    return res * s
+const cashback = async (s) => {
+	url = `/getCashbackLogic/${s}`
+	return await fetch(url)
+	.then(r => r.text())
+	.then(r => {
+		res = parseFloat(r) * s
+		return res
+	})
 }
 
-
-const phonefound = (s)=>{
+const phonefound = async (s) => {
 	s = s || "";
+	cashback_text = (s != "")?`<h1>${Math.floor(await cashback(s))} ₸</h1>`:""
     document.querySelector("main").innerHTML = `
 	<div id="phone-found">
 		<center>
 			<h1>Кешбэк Начислен</h1>
-			${(s!="")?`<h1>${Math.floor(cashback(s))} ₸</h1>`:""}
+			${cashback_text}
 			<svg xml:space="preserve" viewBox="0 0 100 100" y="0" x="0" xmlns="http://www.w3.org/2000/svg" id="圖層_1" version="1.1" width="200px" height="200px"><g class="ldl-scale" style="transform-origin: 50% 50%; transform: rotate(0deg);"><g class="ldl-ani"><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 50px 50px; animation: 1.11111s linear -0.833333s infinite normal forwards running static-56f88607-cb0b-42f6-81ec-1c50b6a84277;"><circle stroke-miterlimit="10" stroke-width="8" stroke="#333" fill="none" r="40" cy="50" cx="50" style="stroke: rgb(51, 51, 51);"></circle></g></g><g class="ldl-layer"><g class="ldl-ani"><g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 50px 50px; animation: 1.11111s linear -1.11111s infinite normal forwards running static-56f88607-cb0b-42f6-81ec-1c50b6a84277;"><path fill="#abbd81" d="M47.3 66.4L73.7 40c1.8-1.8 1.8-4.6 0-6.4-1.8-1.8-4.6-1.8-6.4 0L44.1 56.8 32.7 45.4c-1.8-1.8-4.6-1.8-6.4 0-1.8 1.8-1.8 4.6 0 6.4l14.6 14.6c.9.9 2 1.3 3.2 1.3s2.3-.5 3.2-1.3z" style="fill: rgb(171, 189, 129);"></path></g></g></g></g></g></g></g></svg>
-			<p><a href="/">Вернуться обратно</a></p>
+			<p><a href="/">Вернуться обратно</a></p
 		</center>
 	</div>`
 
