@@ -45,6 +45,27 @@
                 "price": 300,
                 "tag": "chips",
                 "limit": 1
+            },
+            "barni": {
+                "name": "Барни",
+                "image": "items/food/barni.png",
+                "price": 150,
+                "tag": "barni",
+                "limit": 1
+            },
+            "monster": {
+                "name": "Энергетический напиток Монстер",
+                "image": "items/food/monster.png",
+                "price": 500,
+                "tag": "monster",
+                "limit": 1
+            },
+            "nescafe": {
+                "name": "Пакетик Кофе Nescafe 3 в 1",
+                "image": "items/food/nescafe.png",
+                "price": 100,
+                "tag": "nescafe",
+                "limit": 1
             }
         },
         "balance": {
@@ -60,6 +81,45 @@
                 "image": "items/balance/onay.png",
                 "price": 100,
                 "tag": "onay",
+                "limit": 1
+            }
+        },
+        "toys": {
+            "bubbles": {
+                "name": "Мыльные Пузыри",
+                "image": "items/toys/bubbles.png",
+                "price": 100,
+                "tag": "bubbles",
+                "limit": 1
+            }
+        },
+        "household": {
+            "masks": {
+                "name": "Одноразовые Маски (20 шт.)",
+                "image": "items/household/masks.png",
+                "price": 100,
+                "tag": "masks",
+                "limit": 1
+            },
+            "prokladki": {
+                "name": "Прокладки Naturella",
+                "image": "items/household/prokladki.png",
+                "price": 350,
+                "tag": "prokladki",
+                "limit": 1
+            },
+            "cable": {
+                "name": "Зарядный Провод",
+                "image": "items/household/cable.png",
+                "price": 700,
+                "tag": "cable",
+                "limit": 1
+            },
+            "toilet-paper": {
+                "name": "Туалетная Бумага",
+                "image": "items/household/toilet-paper.png",
+                "price": 700,
+                "tag": "toilet-paper",
                 "limit": 1
             }
         }
@@ -306,6 +366,18 @@
                     {
                         "text": "Платежи",
                         "callback": "display_items?balance,0"
+                    }
+                ],
+                [
+                    {
+                        "text": "Товары для Дома",
+                        "callback": "display_items?household,0"
+                    }
+                ],
+                [
+                    {
+                        "text": "Игрушки",
+                        "callback": "display_items?toys,0"
                     }
                 ],
                 [
