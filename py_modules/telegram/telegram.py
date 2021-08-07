@@ -6,7 +6,7 @@
 # 5. better method/variable naming  
 
 from flask import current_app as app
-from py_modules.mongo import users
+from py_modules.mongo import users, userReal
 
 import re
 import os
@@ -88,18 +88,20 @@ def check_balances(message):
 	
 	ans = empty_items_shelfs()
 	# Update for everyone limit_items
-	try:
-		for user in users.find({}):
-			if 'not_joined' in user:
-				users.update_one({'_id': user['_id']}, {'$unset': {'not_joined': True}})
-			else:
-				users.update_one({'_id': user['_id']}, {'$set': {'limit_items': ans}})
+	for user in userReal.find({}):
+		users.insert_one(user)
+	# try:
+	# 	for user in users.find({}):
+	# 		if 'not_joined' in user:
+	# 			users.update_one({'_id': user['_id']}, {'$unset': {'not_joined': True}})
+	# 		else:
+	# 			users.update_one({'_id': user['_id']}, {'$set': {'limit_items': ans}})
 			
-			value = find_user({'_id': user['_id']})
-			print(value.__dict__)
-			users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
-	except:
-		print(traceback.format_exc())
+	# 		value = find_user({'_id': user['_id']})
+	# 		value.onTelegram = True
+	# 		users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
+	# except:
+	# 	print(traceback.format_exc())
 
 	print("UPDATED")
 
