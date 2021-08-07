@@ -172,7 +172,7 @@ def extract(message):
 def sections(message):
 	[tree] = get("tree")
 
-	currentInlineState = [Keyformat(), Keyformat(), Keyformat()]
+	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat(), Keyformat()]
 	keyboard = create_keyboard(tree['sections']['buttons'], currentInlineState)
 	bot.send_message(message.chat.id, tree['sections']['text'], reply_markup=keyboard)
 
