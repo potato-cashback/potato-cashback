@@ -25,7 +25,8 @@ function onChange(e) {
             break;
         }
         case "DIV": {
-            value = +tag.innerText || tag.innerText
+            value = +tag.innerText
+            if (isNaN(value)) value = tag.innerText
             break;
         }
     }
