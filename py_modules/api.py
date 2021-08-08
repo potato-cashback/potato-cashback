@@ -83,4 +83,4 @@ def get_cashback_logic(sum):
 				return str(arr_cashback[i]['percent'] / 100)
 		elif arr_cashback[i]['on'] <= sum and sum < arr_cashback[i+1]['on']:
 			return str(arr_cashback[i]['percent'] / 100)
-	return 'error'
+	return '0'
