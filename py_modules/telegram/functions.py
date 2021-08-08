@@ -24,6 +24,7 @@ def sign(x):
 
 def cashback_logic(sum):
 	cashback = telegram.get("cashback")
+	print(cashback)
 	arr_cashback = [cashback[x] for x in cashback]
 
 	arr_cashback = sorted(arr_cashback, key=lambda k: k['on'])
