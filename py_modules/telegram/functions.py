@@ -25,16 +25,16 @@ def sign(x):
 def cashback_logic(sum):
 	sum = int(sum)
 	[cashback] = telegram.get("cashback")
-
+	
 	arr_cashback = [cashback[x] for x in cashback]
 
 	arr_cashback = sorted(arr_cashback, key=lambda k: k['on'])
 	for i in range(len(arr_cashback)):
 		if i+1 == len(arr_cashback):
 			if arr_cashback[i]['on'] <= sum:
-				return str(arr_cashback[i]['percent'] / 100)
+				return arr_cashback[i]['percent'] / 100
 		elif arr_cashback[i]['on'] <= sum and sum < arr_cashback[i+1]['on']:
-			return str(arr_cashback[i]['percent'] / 100)
+			return arr_cashback[i]['percent'] / 100
 	return 'error'
 
 def find_user(search):
