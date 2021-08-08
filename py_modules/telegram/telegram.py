@@ -1,11 +1,10 @@
 # TODO:
 # 1. function "get" change name also add deep key retrivale
-# 2. Make better Error handiling using traceback
-# 3. If possible try removing yellow squiggle lines in imports
-# 4. Create credential file where all testing variables will be stored for bot testing
-# 5. better method/variable naming  
-# 6. Update limit_items for all users when items update
-# 7. Clear extract every month
+# 2. If possible try removing yellow squiggle lines in imports
+# 3. Create credential file where all testing variables will be stored for bot testing
+# 4. better method/variable naming  
+# 5. Update limit_items for all users when items update
+# 6. Clear extract every month
 
 from flask import current_app as app
 from py_modules.mongo import users
@@ -137,38 +136,41 @@ def menu(message):
 
 @bot.message_handler(commands=['extract'])
 def extract(message):
-	[tree] = get("tree")
-	user = find_user(message.chat.id)
+	try:
+		[tree] = get("tree")
+		user = find_user(message.chat.id)
 
-	if not user.is_registered():
-		bot.send_message(user._id, tree['notification']['not_registered'])
-		menu(message)
-		return
+		if not user.is_registered():
+			bot.send_message(user._id, tree['notification']['not_registered'])
+			menu(message)
+			return
 
-	operations = sorted(user.operations, key=lambda k: k['date']+'#'+k['time'])
-	queries = [{'date': re.sub(r'2021','21', o['date']), 
-				'details': o['details'],
-				'value': sign(o['cashback'] if o['cashback'] != -1 else o['sum'])} for o in operations]
-	mx_lens = {
-		'date': max(len(q['date']) for q in queries),
-		'value': max(len(q['value']) for q in queries),
-		'details': max(len(q['details']) for q in queries)
-	}
+		operations = sorted(user.operations, key=lambda k: k['date']+'#'+k['time'])
+		queries = [{'date': re.sub(r'2021','21', o['date']), 
+					'details': o['details'],
+					'value': sign(o['cashback'] if o['cashback'] != -1 else o['sum'])} for o in operations]
+		mx_lens = {
+			'date': max(len(q['date']) for q in queries),
+			'value': max(len(q['value']) for q in queries),
+			'details': max(len(q['details']) for q in queries)
+		}
 
-	msg = 'ДАТА'.center(mx_lens['date'] + 1)+'|'+'СУММА'.center(mx_lens['value'] + 3)+'|'+'ОПЕРАЦИИ'.center(mx_lens['details'] + 1)+'\n'
-	sum_value = 0
-	for q in queries:
-		spaces = (mx_lens['value'] - len(q['value']))*' '
-		new_msg = '{} | {}{}₸ | {}\n'.format(q['date'], spaces, q['value'], q['details'])
-		msg = msg + new_msg
-		sum_value = sum_value + int(q['value'])
-	msg = msg + '\nОстаток: {}₸'.format(sum_value)
+		msg = 'ДАТА'.center(mx_lens['date'] + 1)+'|'+'СУММА'.center(mx_lens['value'] + 3)+'|'+'ОПЕРАЦИИ'.center(mx_lens['details'] + 1)+'\n'
+		sum_value = 0
+		for q in queries:
+			spaces = (mx_lens['value'] - len(q['value']))*' '
+			new_msg = '{} | {}{}₸ | {}\n'.format(q['date'], spaces, q['value'], q['details'])
+			msg = msg + new_msg
+			sum_value = sum_value + int(q['value'])
+		msg = msg + '\nОстаток: {}₸'.format(sum_value)
 
-	msg = '<code>'+msg+'</code>'
+		msg = '<code>'+msg+'</code>'
 
-	currentInlineState = [Keyformat()]
-	keyboard = create_keyboard(tree['extract']['buttons'], currentInlineState)
-	bot.send_message(user._id, msg, reply_markup=keyboard, parse_mode='html')
+		currentInlineState = [Keyformat()]
+		keyboard = create_keyboard(tree['extract']['buttons'], currentInlineState)
+		bot.send_message(user._id, msg, reply_markup=keyboard, parse_mode='html')
+	except:
+		print(traceback.format_exc())
 
 
 def sections(message):
