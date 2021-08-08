@@ -23,8 +23,7 @@ def sign(x):
     return str(x) if x < 0 else '+'+str(x)
 
 def cashback_logic(sum):
-	cashback = telegram.get("cashback")
-	print(cashback)
+	[cashback] = telegram.get("cashback")
 	arr_cashback = [cashback[x] for x in cashback]
 
 	arr_cashback = sorted(arr_cashback, key=lambda k: k['on'])
