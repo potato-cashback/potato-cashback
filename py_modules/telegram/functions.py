@@ -109,22 +109,18 @@ def get_data_from_qr(photo):
 	decoded = decode(img)
 
 	print(decoded)
-	qr_data = json.loads(decoded[0].data)
-	print(qr_data['date'])
 	try:
+		qr_data = json.loads(decoded[0].data)
 		url = telegram.URL_ser+'/api/react/'+str(qr_data['date'])
-		print(url)
 		response = urllib.request.urlopen(url).read()
-		print(response)
 		status = json.loads(response)
-		print(status)
+
+		if status['status'] == 'not ok':
+			return 'not ok'
+		return qr_data
 	except:
 		print(traceback.format_exc())
 		return 'not found'
-	if status['status'] == 'not ok':
-		return 'not ok'
-
-	return qr_data
 
 def create_keyboard(arr, vals):
 	keyboard = InlineKeyboardMarkup()
