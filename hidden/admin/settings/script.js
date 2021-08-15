@@ -1,4 +1,5 @@
 let stop_bot = document.querySelector('#stop_bot')
+let show_qr = document.querySelector('#show_qr')
 
 let groupChatId = document.querySelector('#groupChatId')
 let token = document.querySelector('#bot-token')
@@ -66,6 +67,7 @@ async function setValues() {
     token.innerText = data["TOKEN"]
     uri.innerText = data["URI"]
     stop_bot.checked = data["TECHNICAL_STOP"]
+    show_qr.checked = data["show_qr"]
     groupChatId.innerText = data["groupChatId"]
     cashback_friends.innerText = data["friend_money"]
     welcome_cashbask.innerText = data["welcome_cashback_sum"]
