@@ -502,7 +502,9 @@ def enter_contact(message):
 		bot.send_message(user._id, profile['text'].format(user.balance, date, user.name, user.phone), reply_markup=keyboard)
 	else:
 		user.next_step_handler('enter_contact')
-		
+		keyboard = create_reply_keyboard(register['reply_buttons'])
+		bot.send_message(user._id, register['enter_contact'], reply_markup=keyboard, parse_mode='html')
+
 def register_completed(message):
 	user = find_user({'_id': message.chat.id})
 
