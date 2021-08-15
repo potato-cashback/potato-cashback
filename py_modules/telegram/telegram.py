@@ -20,15 +20,26 @@ import traceback # Error handiling
 from flask import request
 from PIL import Image
 
+def recurseToGetValue(jsonTree, pathToKey):
+	key = pathToKey.pop(0)
+	if len(pathToKey): # if there are more levels to go down
+		return recurseToGetValue(jsonTree[key], pathToKey) # recurse
+	return jsonTree[key]
+
+def getValueInJson(jsonTree, pathToKeyString): # double entery intentional
+    pathToKey = pathToKeyString.split('.')
+    return recurseToGetValue(jsonTree, pathToKey)
+
 def get(*args):
 	path = './hidden/settings.json'
 	jsonFile = open(path, "r", encoding='utf-8')
 	data = json.load(jsonFile)
 	jsonFile.close()
-	return [data[k] for k in list(args)]
+
+	return [getValueInJson(data, k) for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -51,7 +62,7 @@ def getMessage():
 @app.route('/send_data/<phone>/<sum>')
 def process_cashback(phone, sum):
 	sum = int(sum)
-	[tree] = get("tree")
+	[operations, notifications] = get("tree.operations", "tree.notifications")
 	money = int(sum * cashback_logic(sum))
 	
 	user = find_user({'phone': phone})
@@ -65,11 +76,11 @@ def process_cashback(phone, sum):
 	if user.fraud_check(money):
 		return 'bad'
 	
-	new_operation = user.create_operation(tree['operations']['photo'], sum, money)
+	new_operation = user.create_operation(operations['photo'], sum, money)
 	user.push_operation(new_operation)
 	user.update_balance(money)
 	
-	try: bot.send_message(user._id, tree['notification']['balance_increase'].format(money))
+	try: bot.send_message(user._id, notifications['balance_increase'].format(money))
 	except: pass
 
 	return 'nice'
@@ -81,36 +92,36 @@ def webhook():
 	bot.set_webhook(url = URL_bot + TOKEN)
 	return '!', 200
 
-@bot.message_handler(commands=['nurmukhambetov'])
-def check_balances(message):
-	# user = find_user({'_id': message.chat.id})
-	# if user.is_admin():
-	# 	return
+# @bot.message_handler(commands=['nurmukhambetov'])
+# def check_balances(message):
+# 	# user = find_user({'_id': message.chat.id})
+# 	# if user.is_admin():
+# 	# 	return
 	
-	ans = empty_items_shelfs()
-	# Update for everyone limit_items
-	# for user in userReal.find({}):
-	# 	users.insert_one(user)
-	try:
-		for user in users.find({}):
-			value = find_user({'_id': user['_id']})
-			if 'not_joined' in user:
-				users.update_one({'_id': user['_id']}, {'$unset': {'not_joined': True}})
-			else:
-				value.limit_items = ans
-				value.onTelegram = True
+# 	ans = empty_items_shelfs()
+# 	# Update for everyone limit_items
+# 	# for user in userReal.find({}):
+# 	# 	users.insert_one(user)
+# 	try:
+# 		for user in users.find({}):
+# 			value = find_user({'_id': user['_id']})
+# 			if 'not_joined' in user:
+# 				users.update_one({'_id': user['_id']}, {'$unset': {'not_joined': True}})
+# 			else:
+# 				value.limit_items = ans
+# 				value.onTelegram = True
 			
-			users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
-	except:
-		print(traceback.format_exc())
+# 			users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
+# 	except:
+# 		print(traceback.format_exc())
 
-	print("UPDATED")
+# 	print("UPDATED")
 
 @bot.message_handler(commands=['start'])
 def menu(message):
 	try:
 		print(message)
-		[tree] = get("tree")
+		[menu] = get("tree.menu")
 
 		user = find_user({'_id': message.chat.id})
 
@@ -128,8 +139,8 @@ def menu(message):
 		user.overwrite_data()
 
 		currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
-		keyboard = create_keyboard(tree['menu']['buttons'], currentInlineState)
-		bot.send_message(user._id, tree['menu']['text'], reply_markup=keyboard)
+		keyboard = create_keyboard(menu['buttons'], currentInlineState)
+		bot.send_message(user._id, menu['text'], reply_markup=keyboard)
 	except:
 		print(traceback.format_exc())
 
@@ -137,11 +148,11 @@ def menu(message):
 @bot.message_handler(commands=['extract'])
 def extract(message):
 	try:
-		[tree] = get("tree")
+		[extract, notifications] = get("tree.extract", "tree.notifications")
 		user = find_user(message.chat.id)
 
 		if not user.is_registered():
-			bot.send_message(user._id, tree['notification']['not_registered'])
+			bot.send_message(user._id, notifications['not_registered'])
 			menu(message)
 			return
 
@@ -167,21 +178,21 @@ def extract(message):
 		msg = '<code>'+msg+'</code>'
 
 		currentInlineState = [Keyformat()]
-		keyboard = create_keyboard(tree['extract']['buttons'], currentInlineState)
+		keyboard = create_keyboard(extract['buttons'], currentInlineState)
 		bot.send_message(user._id, msg, reply_markup=keyboard, parse_mode='html')
 	except:
 		print(traceback.format_exc())
 
 
 def sections(message):
-	[tree] = get("tree")
+	[sections] = get("tree.sections")
 
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['sections']['buttons'], currentInlineState)
-	bot.send_message(message.chat.id, tree['sections']['text'], reply_markup=keyboard)
+	keyboard = create_keyboard(sections['buttons'], currentInlineState)
+	bot.send_message(message.chat.id, sections['text'], reply_markup=keyboard)
 
 def display_items(message, sectionName, itemId):
-	[tree, items] = get("tree", "items")
+	[display_items, items] = get("tree.display_items", "items")
 
 	itemTag = list(items[sectionName])[itemId]
 
@@ -195,18 +206,18 @@ def display_items(message, sectionName, itemId):
 		Keyformat(texts=[itemId + 1, len(items[sectionName])], callbacks=[sectionName, itemId]),
 		Keyformat()]
 
-	keyboard = create_keyboard(tree['display_items']['buttons'], currentInlineState)
+	keyboard = create_keyboard(display_items['buttons'], currentInlineState)
 	bot.send_photo(chat_id=message.chat.id, 
 				   photo=Image.open(URL_image + item['image']), 
 				   reply_markup=keyboard)
 
 def item_info(message, sectionName, itemId):
-	[tree, items] = get("tree", "items")
+	[item_info, items, notifications] = get("tree.item_info", "items", "notifications")
 
 	user = find_user({'_id': message.chat.id})
 
 	if not user.is_registered():
-		bot.send_message(user._id, tree['notification']['not_registered'])
+		bot.send_message(user._id, notifications['not_registered'])
 		menu(message)
 		return
 
@@ -220,14 +231,14 @@ def item_info(message, sectionName, itemId):
 		Keyformat(callbacks=[sectionName, itemId]), 
 		Keyformat(callbacks=[sectionName])]
 
-	keyboard = create_keyboard(tree['item_info']['buttons'], currentInlineState)
+	keyboard = create_keyboard(item_info['buttons'], currentInlineState)
 	bot.send_photo(chat_id=user._id, 
 				   photo=Image.open(URL_image + item['image']), 
-				   caption=tree['item_info']['text'].format(item['name'], item['price'], user.balance, date, user.name, user.phone),
+				   caption=item_info['text'].format(item['name'], item['price'], user.balance, date, user.name, user.phone),
 				   reply_markup=keyboard)
 
 def buy_item(message, sectionName, itemId):
-	[tree, items] = get("tree", "items")
+	[buy_item, items] = get("tree.buy_item", "items")
 	
 	itemTag = list(items[sectionName])[itemId]
 
@@ -238,12 +249,12 @@ def buy_item(message, sectionName, itemId):
 
 	# Check if user can buy current item
 	if user.balance < item['price']:
-		bot.send_message(user._id, tree['buy_item']['not_enough'])
+		bot.send_message(user._id, buy_item['not_enough'])
 		display_items(message, sectionName, itemId)
 		return
 	# Check if user not reached limit yet for an item
 	if user_limit_on_item + 1 > item['limit']:
-		bot.send_message(user._id, tree['buy_item']['limit_exceeded'])
+		bot.send_message(user._id, buy_item['limit_exceeded'])
 		display_items(message, sectionName, itemId)
 		return
 
@@ -254,13 +265,13 @@ def buy_item(message, sectionName, itemId):
 	user.push_operation(new_operation)
 
 	currentInlineState = [Keyformat()]
-	keyboard = create_keyboard(tree['buy_item']['buttons'], currentInlineState)
-	bot.send_message(user._id, tree['buy_item']['text'], reply_markup=keyboard)
+	keyboard = create_keyboard(buy_item['buttons'], currentInlineState)
+	bot.send_message(user._id, buy_item['text'], reply_markup=keyboard)
 
 	confirm_purchase(message, sectionName, itemId)
 
 def confirm_purchase(message, sectionName, itemId):
-	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
+	[confirmation, items, groupChatId] = get("tree.confirmation", "items", "groupChatId")
 	itemTag = list(items[sectionName])[itemId]
 
 	item = items[sectionName][itemTag]
@@ -270,67 +281,67 @@ def confirm_purchase(message, sectionName, itemId):
 	currentInlineState = [Keyformat(callbacks=[user._id, sectionName, itemId]), 
 						  Keyformat(callbacks=[user._id, sectionName, itemId])]
 
-	keyboard = create_keyboard(tree['confirmation']['buttons'], currentInlineState)
+	keyboard = create_keyboard(confirmation['buttons'], currentInlineState)
 	bot.send_photo(chat_id=groupChatId, 
 				   photo=Image.open(URL_image + item['image']),
-				   caption=tree['confirmation']['text'].format(itemTag, user.username, user.balance, user.name, user.phone), 
+				   caption=confirmation['text'].format(itemTag, user.username, user.balance, user.name, user.phone), 
 				   reply_markup=keyboard,
 				   parse_mode='html')
 
 def purchase_status(message, status, userId, sectionName, itemId):
-	[tree, items, groupChatId] = get("tree", "items", "groupChatId")
+	[notifications, operations, items, groupChatId] = get("tree.notifications", "tree.operations", "items", "groupChatId")
 	itemTag = list(items[sectionName])[itemId]
 
 	item = items[sectionName][itemTag]
 
 	user = find_user({'_id': userId})
 	if status == 'Отвергнут❌':
-		bot.send_message(user._id, tree['notification']['product_warning'])
+		bot.send_message(user._id, notifications['product_warning'])
 
-		new_operation = user.create_operation(tree['operations']['back'], +item['price'])
+		new_operation = user.create_operation(operations['back'], +item['price'])
 		user_limit_on_item = user.limit_items[sectionName][itemTag]
 		user.update_balance(+item['price'])
 		user.set_value(f'limit_items.{sectionName}.{itemTag}', user_limit_on_item - 1)
 		user.push_operation(new_operation)
 	elif status == 'Одобрит✅':
-		bot.send_message(user._id, tree['notification']['product_success'])
+		bot.send_message(user._id, notifications['product_success'])
 
 	bot.send_photo(chat_id=groupChatId,
 				   photo=Image.open(URL_image + item['image']),
-				   caption=tree['notification']['client_info'].format(itemTag, user.username, status, user.balance, user.name, user.phone),
+				   caption=notifications['client_info'].format(itemTag, user.username, status, user.balance, user.name, user.phone),
 				   parse_mode='html')
 
 
 @bot.message_handler(commands=['qr'])
 def start_qr(message):
-	[tree] = get("tree")
+	[qr, notifications] = get("tree.qr", "tree.notifications")
 	user = find_user({'_id': message.chat.id})
 
 	if not user.is_registered():
-		bot.send_message(user._id, tree['notification']['not_registered'])
+		bot.send_message(user._id, notifications['not_registered'])
 		menu(message)
 		return
 
 	update_user(user._id, 'get_qr')
-	bot.send_message(user._id, tree['qr']['text'])
+	bot.send_message(user._id, qr['text'])
 
 def get_qr(message):
-	[tree] = get("tree")
+	[qr] = get("tree.qr")
 	
 	user = find_user({'_id': message.chat.id})
 
 	if message.content_type != 'photo':
 		user.next_step_handler('get_qr')
-		bot.send_message(user._id, tree['qr']['wrong_format'])
+		bot.send_message(user._id, qr['wrong_format'])
 		return
 
 	data = get_data_from_qr(message.photo[-1])
 	if data == "not found":
 		user.next_step_handler('get_qr')
-		bot.send_message(user._id, tree['qr']['qr_not_found'])
+		bot.send_message(user._id, qr['qr_not_found'])
 		return data
 	elif data == "not ok":
-		bot.send_message(user._id, tree['qr']['wrong_qr'])
+		bot.send_message(user._id, qr['wrong_qr'])
 		menu(message)
 		return data
 
@@ -341,11 +352,11 @@ def get_qr(message):
 	available_cashback = cashback_logic(data['sum'])
 	date = get_today().strftime("%d/%m/%Y")
 
-	keyboard = create_keyboard(tree['qr']['buttons'], currentInlineState)
-	bot.send_message(user._id, tree['qr']['result'].format(date, data['sum'], available_cashback*100, int(data['sum'] * available_cashback)), reply_markup=keyboard)
+	keyboard = create_keyboard(qr['buttons'], currentInlineState)
+	bot.send_message(user._id, qr['result'].format(date, data['sum'], available_cashback*100, int(data['sum'] * available_cashback)), reply_markup=keyboard)
 
 def qr_finish(message, url, sum):
-	[tree] = get("tree")
+	[notifications, operations] = get("tree.notifications", "tree.operations")
 	url = str(url)
 
 	cashback_sum = int(sum * cashback_logic(sum))
@@ -355,16 +366,16 @@ def qr_finish(message, url, sum):
 	user = find_user({'_id': message.chat.id})
 
 	if user.fraud_check(cashback_sum): 
-		bot.send_message(user._id, tree['notification']['fraud_detect'])
+		bot.send_message(user._id, notifications['fraud_detect'])
 		urllib.request.urlopen(URL_ser+'/api/cancel/'+url)
 		menu(message)
 		return
 
-	new_operation = user.create_operation(tree['operations']['photo'], sum, cashback_sum)
+	new_operation = user.create_operation(operations['photo'], sum, cashback_sum)
 	user.update_balance(+cashback_sum)
 	user.push_operation(new_operation)
 
-	bot.send_message(user._id, tree['notification']['balance_increase'].format(cashback_sum))
+	bot.send_message(user._id, notifications['balance_increase'].format(cashback_sum))
 
 def qr_cancel(message, method_name, url):
 	url = str(url)
@@ -374,17 +385,17 @@ def qr_cancel(message, method_name, url):
 
 
 def share_with_friends_info(message):
-	[tree, friend_money] = get("tree", "friend_money")
+	[share_with_friends, friend_money] = get("tree.share_with_friends", "friend_money")
 
 	currentInlineState = [Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['share_with_friends']['buttons'], currentInlineState)
+	keyboard = create_keyboard(share_with_friends['buttons'], currentInlineState)
 	bot.send_photo(chat_id=message.chat.id,
-				   photo=Image.open(URL_image + tree['share_with_friends']['image']),
-				   caption=tree['share_with_friends']['text'].format(friend_money),
+				   photo=Image.open(URL_image + share_with_friends['image']),
+				   caption=share_with_friends['text'].format(friend_money),
 				   reply_markup=keyboard)
 
 def get_contacts(message):
-	[tree] = get("tree")
+	[get_contacts] = get("tree.share_with_friends.get_contacts")
 
 	user = find_user({'_id': message.chat.id})
 	user.next_step_handler('get_contacts')
@@ -399,54 +410,54 @@ def get_contacts(message):
 	if friends != ": 0": friends = '\n' + friends
 
 	currentInlineState = [Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['share_with_friends']['get_contacts']['buttons'], currentInlineState)
+	keyboard = create_keyboard(get_contacts['buttons'], currentInlineState)
 	
 	if user.prev_message == '#':
 		msg = bot.send_photo(chat_id=user._id,
-							 photo=Image.open(URL_image + tree['share_with_friends']['get_contacts']['image']),
-							 caption=tree['share_with_friends']['get_contacts']['text'] + friends,
+							 photo=Image.open(URL_image + get_contacts['image']),
+							 caption=get_contacts['text'] + friends,
 							 reply_markup=keyboard,
 							 parse_mode='html')
 		user.set_value('prev_message', msg.message_id)
 	else:
 		bot.edit_message_caption(chat_id=user._id,
 								 message_id=user.prev_message,
-								 caption=tree['share_with_friends']['get_contacts']['text'] + friends,
+								 caption=get_contacts['text'] + friends,
 								 reply_markup=keyboard,
 								 parse_mode='html')
 
 
 def conditions(message):
-	[tree] = get("tree")
+	[conditions] = get("tree.conditions")
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['conditions']['buttons'], currentInlineState)
+	keyboard = create_keyboard(conditions['buttons'], currentInlineState)
 	bot.send_photo(chat_id=message.chat.id, 
-				   photo=Image.open(URL_image + tree['conditions']['image']), 
-				   caption=tree['conditions']['text'], 
+				   photo=Image.open(URL_image + conditions['image']), 
+				   caption=conditions['text'], 
 				   reply_markup=keyboard)
 
 def display_partners(message):
-	[tree] = get("tree")
+	[display_partners] = get("tree.display_partners")
 	currentInlineState = [Keyformat()]
-	keyboard = create_keyboard(tree['display_partners']['buttons'], currentInlineState)
-	bot.send_message(message.chat.id, tree['display_partners']['text'], reply_markup=keyboard)
+	keyboard = create_keyboard(display_partners['buttons'], currentInlineState)
+	bot.send_message(message.chat.id, display_partners['text'], reply_markup=keyboard)
 
 
 def services_rules(message):
-	[tree] = get("tree")
+	[services_rules] = get("tree.services_rules")
 	currentInlineState = [Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['services_rules']['buttons'], currentInlineState)
-	bot.send_message(message.chat.id, tree['services_rules']['text'], reply_markup=keyboard, parse_mode='html')
+	keyboard = create_keyboard(services_rules['buttons'], currentInlineState)
+	bot.send_message(message.chat.id, services_rules['text'], reply_markup=keyboard, parse_mode='html')
 
 def ask_question(message):
-	[tree] = get("tree")
+	[ask_question] = get("tree.ask_question")
 	currentInlineState = [Keyformat()]
-	keyboard = create_keyboard(tree['ask_question']['buttons'], currentInlineState)
-	bot.send_message(message.chat.id, tree['ask_question']['text'], reply_markup=keyboard)
+	keyboard = create_keyboard(ask_question['buttons'], currentInlineState)
+	bot.send_message(message.chat.id, ask_question['text'], reply_markup=keyboard)
 
 
 def profile(message): 
-	[tree] = get("tree")
+	[profile] = get("tree.profile")
 	user = find_user({'_id': message.chat.id})
 
 	# Start registration process
@@ -456,28 +467,28 @@ def profile(message):
 
 	date = get_today().strftime("%d/%m/%Y")
 	currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
-	keyboard = create_keyboard(tree['profile']['buttons'], currentInlineState)
-	bot.send_message(user._id, tree['profile']['text'].format(user.balance, date, user.name, user.phone), reply_markup=keyboard)
+	keyboard = create_keyboard(profile['buttons'], currentInlineState)
+	bot.send_message(user._id, profile['text'].format(user.balance, date, user.name, user.phone), reply_markup=keyboard)
 
 def register(message):
-	[tree] = get("tree")
+	[register] = get("tree.register")
 	user = find_user({'_id': message.chat.id})
 
 	user.next_step_handler('enter_name')
-	bot.send_message(user._id, tree['register']['enter_name'])
+	bot.send_message(user._id, register['enter_name'])
 
 def enter_name(message):
-	[tree] = get("tree")
+	[register] = get("tree.register")
 	user = find_user({'_id': message.chat.id})
 
 	user.set_name(message.text)
 	user.next_step_handler('enter_contact')
 
-	keyboard = create_reply_keyboard(tree['register']['reply_buttons'])
-	bot.send_message(user._id, tree['register']['enter_contact'], reply_markup=keyboard, parse_mode='html')
+	keyboard = create_reply_keyboard(register['reply_buttons'])
+	bot.send_message(user._id, register['enter_contact'], reply_markup=keyboard, parse_mode='html')
 
 def enter_contact(message):
-	[tree] = get("tree")
+	[register, profile] = get("tree.register", "tree.profile")
 	user = find_user({'_id': message.chat.id})
 	if message.contact is not None:
 		phone = set_phone_template(message.contact.phone_number)
@@ -486,12 +497,12 @@ def enter_contact(message):
 
 		date = get_today().strftime("%d/%m/%Y")
 
-		bot.send_message(user._id, tree['register']['check_info'], reply_markup=ReplyKeyboardRemove())
-		keyboard = create_keyboard(tree['register']['buttons'], [Keyformat(), Keyformat()])
-		bot.send_message(user._id, tree['profile']['text'].format(user.balance, date, user.name, user.phone), reply_markup=keyboard)
+		bot.send_message(user._id, register['check_info'], reply_markup=ReplyKeyboardRemove())
+		keyboard = create_keyboard(register['buttons'], [Keyformat(), Keyformat()])
+		bot.send_message(user._id, profile['text'].format(user.balance, date, user.name, user.phone), reply_markup=keyboard)
 	else:
-		keyboard = create_reply_keyboard(tree['register']['reply_buttons'])
-		bot.send_message(user._id, tree['register']['enter_contact'], reply_markup=keyboard, parse_mode='html')
+		keyboard = create_reply_keyboard(register['reply_buttons'])
+		bot.send_message(user._id, register['enter_contact'], reply_markup=keyboard, parse_mode='html')
 
 def register_completed(message):
 	user = find_user({'_id': message.chat.id})
