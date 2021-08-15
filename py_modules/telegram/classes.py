@@ -49,12 +49,12 @@ class User(dict):
         telegram.bot.send_message(self._id, message_text, parse_mode="html")
 
     def add_cashback_to_their_friends(self):
-        [tree, friend_money] = telegram.get("tree", "friend_money")
+        [notifications, friend_money] = telegram.get("tree.notifications", "friend_money")
 
         users_to_add_balance = users.find({f'friends.{self.phone}': False})
         for user in users_to_add_balance:
             user = User(user)
-            user.send_notification(tree['notification']['friend_join'].format(self.phone, friend_money))
+            user.send_notification(notifications['friend_join'].format(self.phone, friend_money))
 
             new_operation = self.create_operation(self.phone[1:], friend_money)
             # [1:] is important, max length for operation text is 12.
@@ -65,7 +65,7 @@ class User(dict):
             user.overwrite_data()
 
     def add_previous_cashback_from_phone(self):
-        [tree] = telegram.get("tree")
+        [register] = telegram.get("tree.register")
         search_key = {'phone': self.phone, 'onTelegram': False}
         if users.find_one(search_key) is not None:
             prev_user_data = find_user(search_key)
@@ -77,19 +77,19 @@ class User(dict):
 
             users.delete_one({'phone': self.phone, 'onTelegram': False})
 
-            self.send_notification(tree['register']['previous_cashbacks'].format(prev_user_data.balance))
+            self.send_notification(register['previous_cashbacks'].format(prev_user_data.balance))
             return
 
     def on_first_registery(self):
-        [tree, welcome_cashback_sum] = telegram.get("tree", "welcome_cashback_sum")
+        [register, operations, welcome_cashback_sum] = telegram.get("tree.register", "tree.operations", "welcome_cashback_sum")
         
         self.set_value('registered', True)
         self.update_balance(welcome_cashback_sum)
 
-        new_operation = self.create_operation(tree['operations']['register'], welcome_cashback_sum)
+        new_operation = self.create_operation(operations['register'], welcome_cashback_sum)
         self.push_operation(new_operation)
 
-        self.send_notification(tree['register']['welcome_casback'].format(welcome_cashback_sum))
+        self.send_notification(register['welcome_casback'].format(welcome_cashback_sum))
         return 
 
     def fraud_check(self, value):
@@ -182,7 +182,7 @@ class User(dict):
     def add_friend_contact(self, contact):
         if contact is None: return 'no contact'
 
-        [tree] = telegram.get("tree")
+        [notifications] = telegram.get("tree.notifications")
         friends_phone = set_phone_template(contact.phone_number)
         if not self.user_exists(phone=friends_phone):
             if not self.phone_in_friends_list(friends_phone):
@@ -190,10 +190,10 @@ class User(dict):
                 self.overwrite_data()
                 return 'ok'
             else:
-                self.send_notification(tree['notification']['user_is_in_contacts'].format(friends_phone))
+                self.send_notification(notifications['user_is_in_contacts'].format(friends_phone))
                 return
         else:
-            self.send_notification(tree['notification']['user_already_joined'].format(friends_phone))
+            self.send_notification(notifications['user_already_joined'].format(friends_phone))
             return
     
     def set_phone(self, new_phone):
