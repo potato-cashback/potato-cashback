@@ -117,7 +117,8 @@ def menu(message):
 		[menu, show_qr] = get("tree.menu", "show_qr")
 
 		user = find_user({'_id': message.chat.id})
-
+		print(user)
+		
 		if not user.onTelegram:
 			user._id = message.chat.id
 			user.username = message.chat.username
@@ -528,10 +529,7 @@ def run_method_by_name(name, *args):
 
 @bot.poll_answer_handler()
 def receivePollAnswer(poll):
-	print(poll)
-	# user = find_user({'_id': poll.user.id})
-	user = find_user({'_id': 818110962})
-	print(poll.user.id, user)
+	user = find_user({'_id': poll.user.id})
 	user.update_poll_answer(poll.id, poll.options_ids[0]) #One option per poll
 
 @bot.message_handler(content_types = ['text', 'photo', 'contact'])
