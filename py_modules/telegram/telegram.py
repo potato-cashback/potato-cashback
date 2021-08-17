@@ -140,7 +140,7 @@ def menu(message):
 
 		currentInlineState = [Keyformat(), 
 							  Keyformat(), 
-							  Keyformat(hideButton=show_qr), 
+							  Keyformat(hideButton=(not show_qr)), 
 							  Keyformat()]
 		keyboard = create_keyboard(menu['buttons'], currentInlineState)
 		bot.send_message(user._id, menu['text'], reply_markup=keyboard)
