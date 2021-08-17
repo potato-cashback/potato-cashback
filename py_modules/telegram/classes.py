@@ -59,7 +59,6 @@ class User(dict):
         self.polls[poll_id]['answer'] = answer
         self.polls[poll_id]['date'] = today.strftime("%d/%m/%Y")
         self.polls[poll_id]['time'] = today.strftime("%H:%M")
-        print(self.polls)
         self.overwrite_data()
 
     def is_admin(self):
