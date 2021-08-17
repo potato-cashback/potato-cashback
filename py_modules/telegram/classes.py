@@ -54,7 +54,7 @@ class User(dict):
         self.overwrite_data()
 
     def update_poll_answer(self, poll_id, choosen_option):
-        answer = self.polls[poll_id]['options'][choosen_option]
+        answer = self.polls[poll_id]['options'][choosen_option].text
         self.polls[poll_id]['answer'] = answer
         self.overwrite_data()
 

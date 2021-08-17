@@ -95,9 +95,8 @@ def webhook():
 @bot.message_handler(commands=['nurmukhambetov'])
 def check_balances(message):
 	try:
-		# for user in users.find({}):
-		# 	value = find_user({'_id': user['_id']})
-		# 	users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
+		for user in users.find({}):
+			users.update_one({'_id': user['_id']}, {'$set': {'polls': {}}})
 
 		for user in users.find({}):
 			user = User(user)
@@ -109,7 +108,7 @@ def check_balances(message):
 	except:
 		print(traceback.format_exc())
 
-	print("POLL SENT")
+	print("POLL SENT AND UPDATED")
 
 @bot.message_handler(commands=['start'])
 def menu(message):
@@ -530,6 +529,7 @@ def run_method_by_name(name, *args):
 @bot.poll_answer_handler()
 def receivePollAnswer(poll):
 	user = find_user({"_id": poll.user.id})
+	print(poll, poll.options_ids[0], user)
 	user.update_poll_answer(poll.id, poll.options_ids[0]) #One option per poll
 
 @bot.message_handler(content_types = ['text', 'photo', 'contact'])
