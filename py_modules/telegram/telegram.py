@@ -212,7 +212,7 @@ def display_items(message, sectionName, itemId):
 				   reply_markup=keyboard)
 
 def item_info(message, sectionName, itemId):
-	[item_info, items, notifications] = get("tree.item_info", "items", "notifications")
+	[item_info, items, notifications] = get("tree.item_info", "items", "tree.notifications")
 
 	user = find_user({'_id': message.chat.id})
 
@@ -539,7 +539,7 @@ def receiver(message):
 		run_method_by_name(method_name, *args)
 	elif message.content_type == "photo":
 		data = get_qr(message)
-		if data == "not found" or data == "not ok":
+		if data == "not found" and data == "not ok":
 			bot.send_message(user._id, TEMPLATE_MESSAGE)
 	else:
 		bot.send_message(user._id, TEMPLATE_MESSAGE)
