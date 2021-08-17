@@ -54,8 +54,11 @@ class User(dict):
         self.overwrite_data()
 
     def update_poll_answer(self, poll_id, choosen_option):
+        print(self.polls[poll_id])
         answer = self.polls[poll_id]['options'][choosen_option].text
+        print(answer)
         self.polls[poll_id]['answer'] = answer
+        print(self.polls)
         self.overwrite_data()
 
     def is_admin(self):

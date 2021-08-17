@@ -117,8 +117,7 @@ def menu(message):
 		[menu, show_qr] = get("tree.menu", "show_qr")
 
 		user = find_user({'_id': message.chat.id})
-		print(user)
-		
+
 		if not user.onTelegram:
 			user._id = message.chat.id
 			user.username = message.chat.username
