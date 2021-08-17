@@ -95,21 +95,21 @@ def webhook():
 @bot.message_handler(commands=['nurmukhambetov'])
 def check_balances(message):
 	try:
-		for user in users.find({}):
-			value = find_user({'_id': user['_id']})
-			users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
-
 		# for user in users.find({}):
-		# 	user = User(user)
-		# 	poll = bot.send_poll(chat_id=user._id,
-		# 				  question="Test question: Are you a robot?",
-		# 				  options=["Yes", "No"],
-		# 				  is_anonymous=False)
-		# 	user.set_new_poll(poll.poll)
+		# 	value = find_user({'_id': user['_id']})
+		# 	users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
+
+		for user in users.find({}):
+			user = User(user)
+			poll = bot.send_poll(chat_id=user._id,
+						  question="Test question: Are you a robot?",
+						  options=["Yes", "No"],
+						  is_anonymous=False)
+			user.set_new_poll(poll.poll)
 	except:
 		print(traceback.format_exc())
 
-	print("UPDATED")
+	print("POLL SENT")
 
 @bot.message_handler(commands=['start'])
 def menu(message):
@@ -517,11 +517,6 @@ def register_completed(message):
 
 	profile(message)
 
-@bot.poll_answer_handler()
-def receivePollAnswer(poll):
-	user = find_user({"_id": poll.user.id})
-	user.update_poll_answer(poll.id, poll.options_ids[0]) #One option per poll
-
 def run_method_by_name(name, *args):
 	possibles = globals().copy()
 	possibles.update(locals())
@@ -531,6 +526,11 @@ def run_method_by_name(name, *args):
 	except:
 		print(traceback.format_exc())
 	return
+
+@bot.poll_answer_handler()
+def receivePollAnswer(poll):
+	user = find_user({"_id": poll.user.id})
+	user.update_poll_answer(poll.id, poll.options_ids[0]) #One option per poll
 
 @bot.message_handler(content_types = ['text', 'photo', 'contact'])
 def receiver(message):
