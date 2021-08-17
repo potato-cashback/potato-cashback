@@ -41,8 +41,23 @@ class User(dict):
         self.prev_message = user.get('prev_message', '#')
         self.month = user.get('month', today.strftime("%m"))
 
+        self.polls = user.get('polls', {})
+
         self.operations = user.get('operations', [])
-    
+
+    def set_new_poll(self, poll):
+        self.polls[poll.id] = {
+            'question': poll.question,
+            'options': [option.__dict__ for option in poll.options],
+            'answer': "",
+        } 
+        self.overwrite_data()
+
+    def update_poll_answer(self, poll_id, choosen_option):
+        answer = self.polls[poll_id]['options'][choosen_option]
+        self.polls[poll_id]['answer'] = answer
+        self.overwrite_data()
+
     def is_admin(self):
         return self.admin
 

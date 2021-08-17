@@ -39,7 +39,7 @@ def get(*args):
 	return [getValueInJson(data, k) for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -92,30 +92,24 @@ def webhook():
 	bot.set_webhook(url = URL_bot + TOKEN)
 	return '!', 200
 
-# @bot.message_handler(commands=['nurmukhambetov'])
-# def check_balances(message):
-# 	# user = find_user({'_id': message.chat.id})
-# 	# if user.is_admin():
-# 	# 	return
-	
-# 	ans = empty_items_shelfs()
-# 	# Update for everyone limit_items
-# 	# for user in userReal.find({}):
-# 	# 	users.insert_one(user)
-# 	try:
-# 		for user in users.find({}):
-# 			value = find_user({'_id': user['_id']})
-# 			if 'not_joined' in user:
-# 				users.update_one({'_id': user['_id']}, {'$unset': {'not_joined': True}})
-# 			else:
-# 				value.limit_items = ans
-# 				value.onTelegram = True
-			
-# 			users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
-# 	except:
-# 		print(traceback.format_exc())
+@bot.message_handler(commands=['nurmukhambetov'])
+def check_balances(message):
+	try:
+		for user in users.find({}):
+			value = find_user({'_id': user['_id']})
+			users.update_one({'_id': user['_id']}, {'$set': value.__dict__})
 
-# 	print("UPDATED")
+		# for user in users.find({}):
+		# 	user = User(user)
+		# 	poll = bot.send_poll(chat_id=user._id,
+		# 				  question="Test question: Are you a robot?",
+		# 				  options=["Yes", "No"],
+		# 				  is_anonymous=False)
+		# 	user.set_new_poll(poll.poll)
+	except:
+		print(traceback.format_exc())
+
+	print("UPDATED")
 
 @bot.message_handler(commands=['start'])
 def menu(message):
@@ -523,6 +517,10 @@ def register_completed(message):
 
 	profile(message)
 
+@bot.poll_answer_handler()
+def receivePollAnswer(poll):
+	user = find_user({"_id": poll.user.id})
+	user.update_poll_answer(poll.id, poll.options_ids[0]) #One option per poll
 
 def run_method_by_name(name, *args):
 	possibles = globals().copy()
