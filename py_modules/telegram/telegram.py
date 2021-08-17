@@ -97,18 +97,22 @@ def check_balances(message):
 	try:
 		for user in users.find({}):
 			users.update_one({'_id': user['_id']}, {'$set': {'polls': {}}})
-
-		for user in users.find({}):
-			user = User(user)
-			poll = bot.send_poll(chat_id=user._id,
-						  question="Test question: Are you a robot?",
-						  options=["Yes", "No"],
-						  is_anonymous=False)
-			user.set_new_poll(poll.poll)
 	except:
 		print(traceback.format_exc())
 
-	print("POLL SENT AND UPDATED")
+	print("UPDATED")
+
+
+@bot.message_handler(commands=['send_poll'])
+def sendPolls(message):
+	for user in users.find({}):
+		user = User(user)
+		poll = bot.send_poll(chat_id=user._id,
+						question="Are you a robot?",
+						options=["Yes", "No"],
+						is_anonymous=False)
+		user.set_new_poll(poll.poll)
+	print("SENT POLL")
 
 @bot.message_handler(commands=['start'])
 def menu(message):

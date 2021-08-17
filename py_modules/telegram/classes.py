@@ -57,7 +57,7 @@ class User(dict):
         answer = self.polls[poll_id]['options'][choosen_option]['text']
         today = get_today()
         self.polls[poll_id]['answer'] = answer
-        self.polls[poll_id]['time'] = today.strftime("%d/%m/%Y")
+        self.polls[poll_id]['date'] = today.strftime("%d/%m/%Y")
         self.polls[poll_id]['time'] = today.strftime("%H:%M")
         print(self.polls)
         self.overwrite_data()
