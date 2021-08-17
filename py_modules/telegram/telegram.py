@@ -121,7 +121,7 @@ def webhook():
 def menu(message):
 	try:
 		print(message)
-		[menu] = get("tree.menu")
+		[menu, show_qr] = get("tree.menu", "show_qr")
 
 		user = find_user({'_id': message.chat.id})
 
@@ -138,7 +138,10 @@ def menu(message):
 		user.prev_message = '#'
 		user.overwrite_data()
 
-		currentInlineState = [Keyformat(), Keyformat(), Keyformat(), Keyformat()]
+		currentInlineState = [Keyformat(), 
+							  Keyformat(), 
+							  Keyformat(hideButton=show_qr), 
+							  Keyformat()]
 		keyboard = create_keyboard(menu['buttons'], currentInlineState)
 		bot.send_message(user._id, menu['text'], reply_markup=keyboard)
 	except:
@@ -314,7 +317,11 @@ def purchase_status(message, status, userId, sectionName, itemId):
 
 @bot.message_handler(commands=['qr'])
 def start_qr(message):
-	[qr, notifications] = get("tree.qr", "tree.notifications")
+	[qr, notifications, show_qr] = get("tree.qr", "tree.notifications", "show_qr")
+	if not show_qr:
+		receiver(message)
+		return 
+
 	user = find_user({'_id': message.chat.id})
 
 	if not user.is_registered():
@@ -529,7 +536,7 @@ def run_method_by_name(name, *args):
 
 @bot.message_handler(content_types = ['text', 'photo', 'contact'])
 def receiver(message):
-	[TEMPLATE_MESSAGE] = get("TEMPLATE_MESSAGE")
+	[TEMPLATE_MESSAGE, show_qr] = get("TEMPLATE_MESSAGE", "show_qr")
 	user = find_user({'_id': message.chat.id})
 
 	if user.use_function:
@@ -537,7 +544,7 @@ def receiver(message):
 		args.insert(0, message)
 		user.clear_next_step_handler()
 		run_method_by_name(method_name, *args)
-	elif message.content_type == "photo":
+	elif message.content_type == "photo" and show_qr == True:
 		data = get_qr(message)
 		if data == "not found" and data == "not ok":
 			bot.send_message(user._id, TEMPLATE_MESSAGE)

@@ -149,7 +149,7 @@
                 [
                     {
                         "text": "Скинуть QR чека 📋",
-                        "callback": "start_qr"
+                        "callback": "start_qr",
                     }
                 ],
                 [

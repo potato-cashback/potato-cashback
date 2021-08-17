@@ -128,13 +128,14 @@ def create_keyboard(arr, vals):
 	for lst in arr:
 		buttons = []
 		for button in lst:
-			if vals[i].type == 'callback':
-				inlineValue = InlineKeyboardButton(button['text'].format(*vals[i].texts),
-												   callback_data=button['callback'].format(*vals[i].callbacks))
-			elif vals[i].type == 'url':
-				inlineValue = InlineKeyboardButton(button['text'].format(*vals[i].texts),
-												   url=button['url'].format(*vals[i].urls))
-			buttons.append(inlineValue)
+			if not vals[i].hideButton:
+				if vals[i].type == 'callback':
+					inlineValue = InlineKeyboardButton(button['text'].format(*vals[i].texts),
+													callback_data=button['callback'].format(*vals[i].callbacks))
+				elif vals[i].type == 'url':
+					inlineValue = InlineKeyboardButton(button['text'].format(*vals[i].texts),
+													url=button['url'].format(*vals[i].urls))
+				buttons.append(inlineValue)
 			i = i + 1
 		keyboard.row(*buttons)
 	return keyboard
