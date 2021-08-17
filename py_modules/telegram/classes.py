@@ -54,10 +54,11 @@ class User(dict):
         self.overwrite_data()
 
     def update_poll_answer(self, poll_id, choosen_option):
-        print(self.polls[poll_id])
-        answer = self.polls[poll_id]['options'][choosen_option].text
-        print(answer)
+        answer = self.polls[poll_id]['options'][choosen_option]['text']
+        today = get_today()
         self.polls[poll_id]['answer'] = answer
+        self.polls[poll_id]['time'] = today.strftime("%d/%m/%Y")
+        self.polls[poll_id]['time'] = today.strftime("%H:%M")
         print(self.polls)
         self.overwrite_data()
 
