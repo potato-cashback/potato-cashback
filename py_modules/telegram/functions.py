@@ -39,6 +39,7 @@ def cashback_logic(sum):
 
 def find_user(search):
 	user = users.find_one(search) or {}
+	print(user)
 	return classes.User(user)
 
 def calc(query):
