@@ -4,7 +4,7 @@ from py_modules.telegram.functions import *
 class Keyformat(object):
     def __init__(self, type='callback', texts=[], callbacks=[], urls=[], hideButton=False):
         self.type = type
-        self.hide = hideButton
+        self.hideButton = hideButton
         self.texts = texts
         self.callbacks = callbacks
         self.urls = urls
