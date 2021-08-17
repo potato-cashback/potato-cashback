@@ -7,8 +7,7 @@ import ssl
 
 try:
 	cluster = PyMongo(app, uri=URI, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
-	users = cluster.db.user
-	usersTest = cluster.db.user_test
+	users = cluster.db.user_test
 
 	@app.route('/mongodb')
 	def get_data():

@@ -7,7 +7,7 @@
 # 6. Clear extract every month
 
 from flask import current_app as app
-from py_modules.mongo import users, usersTest
+from py_modules.mongo import users
 
 import re
 import os
@@ -96,10 +96,9 @@ def webhook():
 def check_balances(message):
 	try:
 		for user in users.find({}):
-			usersTest.insert_one(user)
-			# if user['onTelegram'] == False:
-			# 	continue
-			# users.update_one({'_id': user['_id']}, {'$set': {'polls': {}}})
+			if user['onTelegram'] == False:
+				continue
+			users.update_one({'_id': user['_id']}, {'$set': {'polls': {}}})
 	except:
 		print(traceback.format_exc())
 
