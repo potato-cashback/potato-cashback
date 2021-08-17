@@ -529,10 +529,8 @@ def run_method_by_name(name, *args):
 @bot.poll_answer_handler()
 def receivePollAnswer(poll):
 	try:
-		print(poll, "Hello?")
 		user = find_user({'_id': poll.user.id})
-		print(type(user), user, poll.id, poll.options_ids[0])
-		user.update_poll_answer(poll.id, poll.options_ids[0]) #One option per poll
+		user.update_poll_answer(poll.poll_id, poll.options_ids[0]) #One option per poll
 	except:
 		print(traceback.format_exc())
 
