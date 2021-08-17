@@ -528,8 +528,9 @@ def run_method_by_name(name, *args):
 
 @bot.poll_answer_handler()
 def receivePollAnswer(poll):
-	user = find_user({"_id": poll.user.id})
-	print(poll, poll.options_ids[0], user)
+	print(poll)
+	user = find_user({'_id': poll.user.id})
+	print(poll.user.id, user)
 	user.update_poll_answer(poll.id, poll.options_ids[0]) #One option per poll
 
 @bot.message_handler(content_types = ['text', 'photo', 'contact'])
