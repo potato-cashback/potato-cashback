@@ -2,14 +2,12 @@ var numberOfItems;
 
 const setItems = (items) => {
     console.log(items)
-    items = Object.values(items)
 
     numberOfItems = items.length
     placeItemsInCarousel(items)
 }
 
 const itemTemplate = (item) => {
-
     if(!(item.image.indexOf("blob") + 1) && !(item.image.indexOf("data:image/") + 1)){ 
         // if not a blob or a data:image/ 
         item.image = "image/" + item.image
@@ -41,14 +39,16 @@ const itemTemplate = (item) => {
             <td class="rowName">Тег в Базе:</td>
             <td>${item.tag}</td>
         </tr>
+        <tr class="category">
+            <td class="rowName">Категория:</td>
+            <td>${item.category}</td>
+        </tr>
     </table>
 </div>    
 `
 } 
 
 const placeItemsInCarousel = (items) => {
-    console.log(items)
-
     items.forEach((item, i) => {
         document.querySelector("#items").innerHTML += itemTemplate(item)
         
@@ -97,17 +97,20 @@ const deleteItem = (itemTag, conf) => {
         else
             openAddMenu()
 
+        category = document.querySelector(`#tag_${itemTag} > table > tbody > tr.category > td:nth-child(2)`).innerText
+        path = `items.${category}.${itemTag}`
+        change["$delete"][path] = 0   
+
         document.querySelector("#items")
         .removeChild(document.querySelector(`#tag_${itemTag}`))
-
-        path = `items.balance.${itemTag}`
-        change["$delete"][path] = 0    
     }
 }
 
 const addNewItem = (data) => {
     Object.entries(data).forEach(entery => {
-        path = `items.balance.${data["tag"]}.${entery[0]}`
+        if(data["tag"] == "category") return 0;
+
+        path = `items.${data["category"]}.${data["tag"]}.${entery[0]}`
         
         if(entery[0] != "image")
             change["$set"][path] = entery[1]
@@ -117,6 +120,19 @@ const addNewItem = (data) => {
     
     document.querySelector("#items").innerHTML += itemTemplate(data)
     setCurr(document.querySelector(`#tag_${data.tag}`))
+}
+
+const prepareItems = (items) => {
+    output = [];
+    Object.entries(items).forEach(category => {
+        Object.values(category[1]).forEach(item => {
+            item.category = category[0]
+
+            output.push(item)
+        })
+    })
+
+    return output
 }
 
 // MENU
@@ -159,6 +175,11 @@ const getAddMenuData = () => {
             data[input.name] = input.value
         else if(input.type == 'file')
             data[input.name] = getBase64Image(document.querySelector("#inputAddImage"))
+    })
+    document.querySelector("#addMenu")
+    .querySelectorAll("select")
+    .forEach(select => {
+        data[select.name] = select.value
     })
 
     return data
@@ -223,6 +244,13 @@ const openEditMenu = (tag) => {
             .split("image")[1]
         }
     })
+    editMenu.querySelectorAll("select").forEach(select => {
+        cl = select.name
+        v = tag.querySelector(`.${cl} > td:nth-child(2)`).innerText.split(" ")[0]
+        
+        select.value = v
+        editingItem[cl] = v
+    })
 
     
     editMenu.style.display = "block";
@@ -253,6 +281,11 @@ const getEditMenuData = () => {
                 if(document.querySelector("#inputEditImage").src != "")
                     data[input.name] = getBase64Image(document.querySelector("#inputEditImage"))
     })
+    document.querySelector("#editMenu")
+    .querySelectorAll("select")
+    .forEach(select => {
+        data[select.name] = select.value
+    })
 
     return data
 }
@@ -269,7 +302,7 @@ const updateItem = (oldData, newData) => {
     Object.entries(newData).forEach(entery => {
         if(newData[entery[0]] != oldData[entery[0]]){
 
-            path = `items.balance.${oldData["tag"]}.${entery[0]}`
+            path = `items.${oldData["category"]}.${oldData["tag"]}.${entery[0]}`
             change["$set"][path] = entery[1]
 
             if(entery[0] != "image")
@@ -309,6 +342,7 @@ const editMenuButton = () => {
     if(editMenuFilled){
         updateItem(editingItem, getEditMenuData())
         closeEditMenu()
+        clearEditMenu()
     }
     else{
         alert("Заполните меню полностью!")

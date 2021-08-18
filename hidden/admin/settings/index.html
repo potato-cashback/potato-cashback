@@ -84,6 +84,7 @@
 			<summary class="noselect">
 				<h2>Товары</h2>
 			</summary>
+			<br>
 			<button onclick="openAddMenu()">Добавить Товар</button>
 			<br>
 			<br>
@@ -145,6 +146,17 @@
 					<input type="text" name="tag">
 				</td>
 			</tr>
+			<tr class="category">
+				<td class="rowName">Категория:</td>
+				<td>
+					<select name="category">
+						<option value="food">food</option>
+						<option value="household">household</option>
+						<option value="balance">balance</option>
+						<option value="toys">toys</option>
+					</select>
+				</td>
+			</tr>
 			<tr class="upload">
 				<td colspan="2">
 					<button onclick="addMenuButton()">Добавить</button>
@@ -191,6 +203,17 @@
 				<td class="rowName">Тег в Базе:</td>
 				<td>
 					<input type="text" name="tag" disabled>
+				</td>
+			</tr>
+			<tr class="tag">
+				<td class="rowName">Категория:</td>
+				<td>
+					<select type="text" name="category" disabled>
+						<option value="food">food</option>
+						<option value="household">household</option>
+						<option value="balance">balance</option>
+						<option value="toys">toys</option>
+					</select>
 				</td>
 			</tr>
 			<tr class="upload">

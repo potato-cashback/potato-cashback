@@ -62,6 +62,8 @@ ph.addEventListener("keyup", (e)=>{
 	}
 })
 
+const MAXSUM = 5000
+
 var sm = document.querySelector("#sum");
 sm.addEventListener('keydown', (e)=>{
 	if('1234567890'.split('').includes(e.key) || e.key == 'Backspace'){
@@ -73,7 +75,7 @@ sm.addEventListener('keydown', (e)=>{
 			e.preventDefault()
 			sm.innerHTML = 0;
 		}
-		else if(sm.innerHTML.length >= 5 && e.key !='Backspace')
+		else if(Number(sm.innerHTML + e.key) > MAXSUM && e.key !='Backspace')
 			e.preventDefault()
 	}else if(e.key == 'Enter'){
 		e.preventDefault()
