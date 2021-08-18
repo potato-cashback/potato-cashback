@@ -97,7 +97,7 @@ def sendPolls():
 		user.set_new_poll(poll.poll)
 
 @app.route('/send_message/', methods=['POST'])
-def sendPolls():
+def sendMessages():
 	data = json.loads(request.data)
 	for phone in data.phones:
 		user = find_user({'phone': phone})
