@@ -1,10 +1,10 @@
 # TODO:
-# 1. function "get" change name also add deep key retrivale
-# 2. If possible try removing yellow squiggle lines in imports
-# 3. Create credential file where all testing variables will be stored for bot testing
-# 4. better method/variable naming  
-# 5. Update limit_items for all users when items update
-# 6. Clear extract every month
+# 1. If possible try removing yellow squiggle lines in imports
+# 2. Create credential file where all testing variables will be stored for bot testing
+# 3. better method/variable naming  
+# 4. Update limit_items for all users when items update
+# 5. Clear extract every month
+# 6. Change for every router to method POST
 
 from flask import current_app as app
 from py_modules.mongo import users
@@ -39,7 +39,7 @@ def get(*args):
 	return [getValueInJson(data, k) for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -85,6 +85,25 @@ def process_cashback(phone, sum):
 
 	return 'nice'
 
+@app.route('/send_poll/', methods=['POST'])
+def sendPolls():
+	data = json.loads(request.data)
+	for id in data.users_id:
+		user = find_user({'_id': id})
+		poll = bot.send_poll(chat_id = user._id,
+						question = data.question,
+						options = data.options,
+						is_anonymous=False)
+		user.set_new_poll(poll.poll)
+
+@app.route('/send_message/', methods=['POST'])
+def sendPolls():
+	data = json.loads(request.data)
+	for phone in data.phones:
+		user = find_user({'phone': phone})
+		bot.send_message(user._id, data.message, parse_mode='html')
+
+
 @app.route('/bot/')
 def webhook():
 	bot.remove_webhook()
@@ -104,17 +123,6 @@ def check_balances(message):
 
 	print("COPIED")
 
-
-@bot.message_handler(commands=['send_poll'])
-def sendPolls(message):
-	for user in users.find({}):
-		user = User(user)
-		poll = bot.send_poll(chat_id=user._id,
-						question="Are you a robot?",
-						options=["Yes", "No"],
-						is_anonymous=False)
-		user.set_new_poll(poll.poll)
-	print("SENT POLL")
 
 @bot.message_handler(commands=['start'])
 def menu(message):

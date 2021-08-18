@@ -7,7 +7,7 @@ import ssl
 
 try:
 	cluster = PyMongo(app, uri=URI, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
-	users = cluster.db.user
+	users = cluster.db.user_test
 
 	@app.route('/mongodb')
 	def get_data():
@@ -70,6 +70,14 @@ def send_phones():
 def send_wa_phones():
 	try:
 		phones = users.find({"onTelegram": False}).distinct('phone')
+		return str(phones)
+	except:	
+		return 'server error'
+
+@app.route('/mongodb/phones/telegram')
+def send_tg_phones():
+	try:
+		phones = users.find({"onTelegram": True}).distinct('phone')
 		return str(phones)
 	except:	
 		return 'server error'
