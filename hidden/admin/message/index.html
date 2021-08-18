@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin – Рассылка</title>
 	<link rel="stylesheet" href="/uni.css">
+	<link rel="stylesheet" href="message/style.css">
 </head>
 <body>
 
@@ -17,7 +18,14 @@
 	</a>
 	<main>
 		<br>
+		<textarea name="message" id="message" cols="30" rows="10"></textarea>
+		<button onclick="sendMessage();" id="submit">Отправить сообщение</button>
 		
+		<details>
+			<summary>Получатели в WhatsApp</summary>
+			<div></div>
+		</details>
 	</main>
+<script src="./message/script.js"></script>
 </body>
 </html>
