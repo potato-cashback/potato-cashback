@@ -92,11 +92,12 @@ def sendPolls(u, p):
 	except: return 'wrong username or password'
 
 	data = json.loads(request.data)
-	for id in data.users_id:
-		user = find_user({'_id': id})
+	print(data)
+	for phone in data['phones']:
+		user = find_user({'phone': phone})
 		poll = bot.send_poll(chat_id = user._id,
-						question = data.question,
-						options = data.options,
+						question = data['question'],
+						options = data['options'],
 						is_anonymous=False)
 		user.set_new_poll(poll.poll)
 	return 'Poll sent to all users'
@@ -107,9 +108,11 @@ def sendMessages(u, p):
 	except: return 'wrong username or password'
 
 	data = json.loads(request.data)
-	for phone in data.phones:
+	print(data)
+	for phone in data['phones']:
+		print(phone)
 		user = find_user({'phone': phone})
-		bot.send_message(user._id, data.message, parse_mode='html')
+		bot.send_message(user._id, data['message'], parse_mode='html')
 	return 'Message sent to all users'
 
 
