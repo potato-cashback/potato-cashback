@@ -309,6 +309,7 @@ const editMenuButton = () => {
     if(editMenuFilled){
         updateItem(editingItem, getEditMenuData())
         closeEditMenu()
+        clearEditMenu()
     }
     else{
         alert("Заполните меню полностью!")
