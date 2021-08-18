@@ -65,3 +65,11 @@ def send_phones():
 		return str(phones)
 	except:	
 		return 'server error'
+
+@app.route('/mongodb/phones/whatsapp')
+def send_wa_phones():
+	try:
+		phones = users.find({"onTelegram": False}).distinct('phone')
+		return str(phones)
+	except:	
+		return 'server error'
