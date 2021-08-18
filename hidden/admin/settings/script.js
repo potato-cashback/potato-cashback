@@ -92,6 +92,7 @@ const saveJson = function() {
         })
         if (request.ok) {
             alert("Saved!");
+            window.location.href = window.location.href
         }        
     })
 }
