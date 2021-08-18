@@ -6,6 +6,7 @@
 # 5. Clear extract every month
 # 6. Change for every router to method POST
 
+from config import username, password
 from flask import current_app as app
 from py_modules.mongo import users
 
@@ -85,8 +86,11 @@ def process_cashback(phone, sum):
 
 	return 'nice'
 
-@app.route('/send_poll/', methods=['POST'])
-def sendPolls():
+@app.route('admin/<u>/<p>/message/send_poll/', methods=['POST'])
+def sendPolls(u, p):
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+
 	data = json.loads(request.data)
 	for id in data.users_id:
 		user = find_user({'_id': id})
@@ -95,13 +99,18 @@ def sendPolls():
 						options = data.options,
 						is_anonymous=False)
 		user.set_new_poll(poll.poll)
+	return 'Poll sent to all users'
 
-@app.route('/send_message/', methods=['POST'])
-def sendMessages():
+@app.route('admin/<u>/<p>/message/send_message/', methods=['POST'])
+def sendMessages(u, p):
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+
 	data = json.loads(request.data)
 	for phone in data.phones:
 		user = find_user({'phone': phone})
 		bot.send_message(user._id, data.message, parse_mode='html')
+	return 'Message sent to all users'
 
 
 @app.route('/bot/')
