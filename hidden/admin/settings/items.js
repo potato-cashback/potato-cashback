@@ -49,8 +49,6 @@ const itemTemplate = (item) => {
 } 
 
 const placeItemsInCarousel = (items) => {
-    console.log(items)
-
     items.forEach((item, i) => {
         document.querySelector("#items").innerHTML += itemTemplate(item)
         
@@ -110,6 +108,8 @@ const deleteItem = (itemTag, conf) => {
 
 const addNewItem = (data) => {
     Object.entries(data).forEach(entery => {
+        if(data["tag"] == "category") return 0;
+
         path = `items.${data["category"]}.${data["tag"]}.${entery[0]}`
         
         if(entery[0] != "image")
@@ -125,7 +125,6 @@ const addNewItem = (data) => {
 const prepareItems = (items) => {
     output = [];
     Object.entries(items).forEach(category => {
-        console.log(category)
         Object.values(category[1]).forEach(item => {
             item.category = category[0]
 
