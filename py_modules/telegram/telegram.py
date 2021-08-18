@@ -86,7 +86,7 @@ def process_cashback(phone, sum):
 
 	return 'nice'
 
-@app.route('admin/<u>/<p>/message/send_poll/', methods=['POST'])
+@app.route('/admin/<u>/<p>/message/send_poll/', methods=['POST'])
 def sendPolls(u, p):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'
@@ -101,7 +101,7 @@ def sendPolls(u, p):
 		user.set_new_poll(poll.poll)
 	return 'Poll sent to all users'
 
-@app.route('admin/<u>/<p>/message/send_message/', methods=['POST'])
+@app.route('/admin/<u>/<p>/message/send_message/', methods=['POST'])
 def sendMessages(u, p):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'
