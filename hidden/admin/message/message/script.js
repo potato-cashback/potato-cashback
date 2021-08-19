@@ -3,19 +3,20 @@ async function recieveWhatsappPhoneList() {
     await fetch("/mongodb/phones/whatsapp")
     .then(r => r.text())
     .then(r => {
-        r = r.split("'").join("\"").split("+").join("")
+        phoneList = JSON.parse(r.split("'").join("\"").split("+").join(""))
 
-        phoneList = r
     })
     console.log(phoneList)
     return phoneList
 }
+
+
 async function recieveTelegramPhoneList() {
     var phoneList = []
     await fetch("/mongodb/phones/telegram")
     .then(r => r.text())
     .then(r => {
-        phoneList = r.split("'").map(String).filter(str => str[0] == '+')
+        phoneList = JSON.parse(r.split("'").join("\""))
     })
     console.log(phoneList)
     return phoneList
@@ -39,20 +40,26 @@ async function sendMessagesInTelegram(message, image_URI) {
     else alert('Telegram messages were not sent!!!, somethings wrong!')
 }
 
-async function sendMessagesInWhatsapp(message, image_URI) {
-    const whatsapp_url = `https://whatsapp-web-potato.herokuapp.com/mail/?numbers=${await recieveWhatsappPhoneList()}&message=${message}`
-    fetch(whatsapp_url)
-    .then(async r => {
-        if(r.ok) {
-            alert("all good!")
-        }else{
-            alert(await r.text())
-        }
-    })
-    .catch(err => {
-        alert("Готово")
-        window.location.href = window.location.href;
-    })
+async function sendMessagesInWhatsapp(message, base64Image) {
+    const url = 'https://whatsapp-web-potato.herokuapp.com/mail/';
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                numbers: await recieveWhatsappPhoneList(),
+                message: message,
+                base64Image: base64Image.split(",")[1]
+            })
+        });
+        const res = await response.text();
+        console.log('Успех:', res);
+    } catch (error) {
+        console.error('Ошибка:', error);
+    }
 }
 
 function getMessageText() {
@@ -77,7 +84,7 @@ const sendMessage = async () => {
     popup("Вы уверены что хотите <strong>отправить</strong> сообщение?", async () => {
         removePopup()
         
-        await sendMessagesInTelegram(message, image_URI)
+        // await sendMessagesInTelegram(message, image_URI)
         await sendMessagesInWhatsapp(message, image_URI)
     })
 }
