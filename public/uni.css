@@ -77,6 +77,11 @@ a{
 	margin: 0;
 }
 
+#submit:disabled,
+#submit[disabled]{
+  background-color: #cccccc;
+  color: #666666;
+}
 
 #sum, #username, #password, #phone, .setting {
 	width:100vw;
