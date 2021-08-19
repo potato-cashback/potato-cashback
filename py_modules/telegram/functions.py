@@ -7,6 +7,7 @@ import re
 import json
 import urllib.request
 import traceback
+import base64
 
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from datetime import datetime
@@ -62,6 +63,12 @@ def set_phone_template(phone_number):
 	if not hasPlus:
 		return '+' + phone_number
 	return phone_number
+
+
+def convertBase64ToImage(uri):
+	decoded = base64.b64decode(uri)
+	img = Image.open(BytesIO(decoded))
+	return img
 
 # MONGODB UPDATES
 # <==========================================>

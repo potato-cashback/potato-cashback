@@ -40,7 +40,7 @@ def get(*args):
 	return [getValueInJson(data, k) for k in list(args)]
 
 bot = telebot.TeleBot(get("TOKEN")[0])
-URL_ser = 'https://potato-cashback.herokuapp.com'
+URL_ser = 'https://test-potato-cashback.herokuapp.com'
 URL_bot = URL_ser + '/bot/'
 URL_image = './py_modules/telegram/images/'
 
@@ -113,7 +113,16 @@ def sendMessages(u, p):
 	for phone in data['phones']:
 		print(phone)
 		user = find_user({'phone': phone})
-		bot.send_message(user._id, data['message'], parse_mode='html')
+
+		if data['base64Image'] != '#':
+			bot.send_photo(chat_id=user._id,
+						   photo=convertBase64ToImage(data['base64Image']),
+						   caption=data['message'],
+						   parse_mode='html')
+		else:
+			bot.send_message(chat_id=user._id, 
+							 photo=data['message'], 
+							 parse_mode='html')
 	return 'Message sent to all users'
 
 
