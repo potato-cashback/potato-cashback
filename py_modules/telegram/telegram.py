@@ -6,6 +6,7 @@
 # 5. Clear extract every month
 # 6. Change for every router to method POST
 
+from typing import Text
 from config import username, password
 from flask import current_app as app
 from py_modules.mongo import users
@@ -121,7 +122,7 @@ def sendMessages(u, p):
 						   parse_mode='html')
 		else:
 			bot.send_message(chat_id=user._id, 
-							 photo=data['message'], 
+							 text=data['message'], 
 							 parse_mode='html')
 	return 'Message sent to all users'
 
