@@ -88,6 +88,8 @@ const sendMessage = async () => {
     }
 
     popup("Вы уверены что хотите <strong>отправить</strong> сообщение?", async () => {    
+        removePopup()
+        
         await sendMessagesInTelegram(message, base64Image)
         // await sendMessagesInWhatsapp(message, base64Image)
     })
