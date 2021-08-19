@@ -16,8 +16,7 @@ async function recieveTelegramPhoneList() {
     await fetch("/mongodb/phones/telegram")
     .then(r => r.text())
     .then(r => {
-        r = r.split("'").join("\"")
-        phoneList = r
+        phoneList = r.split("'").map(String).filter(str => str[0] == '+')
     })
     console.log(phoneList)
     return phoneList
@@ -42,17 +41,17 @@ const sendMessage = async () => {
     if (request.ok) alert('Telegram messages were sent!')
     else alert('Telegram messages were not sent!!!, somethings wrong!')
 
-    const whatsapp_url = `https://whatsapp-web-potato.herokuapp.com/mail/?numbers=${await recieveWhatsappPhoneList()}&message=${message}`
-    fetch(whatsapp_url)
-    .then(async r => {
-        if(r.ok) {
-            alert("all good!")
-        }else{
-            alert(await r.text())
-        }
-    })
-    .catch(err => {
-        alert("Готово")
-        window.location.href = window.location.href;
-    })
+    // const whatsapp_url = `https://whatsapp-web-potato.herokuapp.com/mail/?numbers=${await recieveWhatsappPhoneList()}&message=${message}`
+    // fetch(whatsapp_url)
+    // .then(async r => {
+    //     if(r.ok) {
+    //         alert("all good!")
+    //     }else{
+    //         alert(await r.text())
+    //     }
+    // })
+    // .catch(err => {
+    //     alert("Готово")
+    //     window.location.href = window.location.href;
+    // })
 }
