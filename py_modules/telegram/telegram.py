@@ -109,9 +109,7 @@ def sendMessages(u, p):
 
 	data = json.loads(request.data)
 	print(data)
-	for key, value in data.items():
-		print(key, value)
-
+	
 	for phone in data['phones']:
 		print(phone)
 		user = find_user({'phone': phone})

@@ -17,14 +17,38 @@
 		</nav>
 	</a>
 	<main>
+		<div id="popup-container"> 
+			<div id="popup">
+				<div class="buttons">
+					<button class="cancel2" onclick="removePopup();"><img src="https://img.icons8.com/fluency-systems-regular/14/000000/multiply.png"/></button>
+				</div>
+				<div class="popup-message"></div>
+				<div class="buttons">
+					<button class="ok">OK</button>
+					<button class="cancel" onclick="removePopup();">cancel</button>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div id="message-image-container">
+			<img id="messageImg"src="#"/>
+			<br>
+			<input type='file'/>
+		</div>
 		<br>
 		<textarea name="message" id="message" cols="30" rows="10"></textarea>
-		<button onclick="sendMessage();" id="submit">Отправить сообщение</button>
-		
+		<br>
 		<details>
 			<summary>Получатели в WhatsApp</summary>
-			<div></div>
+			<div id="whatsapp-users"></div>
 		</details>
+		<br>
+		<details>
+			<summary>Получатели в Telegram</summary>
+			<div id="telegram-users"></div>
+		</details>
+		<br>
+		<button onclick="sendMessage();" id="submit">Отправить сообщение</button>
 	</main>
 <script src="./message/script.js"></script>
 </body>
