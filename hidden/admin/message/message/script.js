@@ -24,7 +24,7 @@ async function recieveTelegramPhoneList() {
 
 async function sendMessagesInTelegram(message, base64Image) {
     const telegram_url = `send_message`
-    console.log("hello?")
+    console.log("hello?", base64Image)
     try {
         const response = await fetch(telegram_url, {
             method:'POST',
@@ -81,6 +81,7 @@ const sendMessage = async () => {
     let message = getMessageText()
     let base64Image = getBase64Image()
 
+    console.log(base64Image)
     if (message == '') {
         alert('Введите текст сообщения')
         return
