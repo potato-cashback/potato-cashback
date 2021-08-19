@@ -87,18 +87,10 @@ const sendMessage = async () => {
         return
     }
 
-    popup("Вы уверены что хотите <strong>отправить</strong> сообщение?", async () => {
-        removePopup()
-        
+    popup("Вы уверены что хотите <strong>отправить</strong> сообщение?", async () => {    
         await sendMessagesInTelegram(message, base64Image)
         // await sendMessagesInWhatsapp(message, base64Image)
     })
-}
-
-function removeAllEventListeners(node) {
-    var old_element = node;
-    var new_element = old_element.cloneNode(true);
-    old_element.parentNode.replaceChild(new_element, old_element);
 }
 
 function removePopup() {
@@ -111,8 +103,7 @@ function popup(message, ok) {
 
     container.querySelector('.popup-message').innerHTML = message
 
-    removeAllEventListeners(buttonOk)
-    buttonOk.addEventListener('click', ok)
+    buttonOk.addEventListener('click', ok, { once: true })
 }
 
 (async () => {

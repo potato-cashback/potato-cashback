@@ -118,13 +118,6 @@ async function getJson() {
     return data
 }
 
-function removeAllEventListeners(node) {
-    var old_element = node;
-    var new_element = old_element.cloneNode(true);
-    old_element.parentNode.replaceChild(new_element, old_element);
-}
-
-
 function removePopup() {
     document.querySelector('#popup-container').style.visibility = 'hidden'
 }
@@ -135,8 +128,7 @@ function popup(message, ok) {
 
     container.querySelector('.message').innerHTML = message
 
-    removeAllEventListeners(buttonOk);
-    buttonOk.addEventListener('click', ok)
+    buttonOk.addEventListener('click', ok, { once: true })
 }
 
 const cancelJson = function() {
