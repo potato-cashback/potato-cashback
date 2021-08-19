@@ -24,7 +24,7 @@ async function recieveTelegramPhoneList() {
 
 async function sendMessagesInTelegram(message, base64Image) {
     const telegram_url = `send_message`
-    
+    console.log("hello?")
     try {
         const response = await fetch(telegram_url, {
             method:'POST',
@@ -89,7 +89,7 @@ const sendMessage = async () => {
         removePopup()
         
         await sendMessagesInTelegram(message, base64Image)
-        await sendMessagesInWhatsapp(message, base64Image)
+        // await sendMessagesInWhatsapp(message, base64Image)
     })
 }
 
