@@ -118,16 +118,25 @@ async function getJson() {
     return data
 }
 
+function removeAllEventListeners(node) {
+    var old_element = node;
+    var new_element = old_element.cloneNode(true);
+    old_element.parentNode.replaceChild(new_element, old_element);
+}
+
+
 function removePopup() {
     document.querySelector('#popup-container').style.visibility = 'hidden'
 }
 function popup(message, ok) {
     let container = document.querySelector('#popup-container')
+    let buttonOk = container.querySelector('button.ok')
     container.style.visibility = 'visible'
 
     container.querySelector('.message').innerHTML = message
 
-    container.querySelector('button.ok').addEventListener('click', ok)
+    removeAllEventListeners(buttonOk);
+    buttonOk.addEventListener('click', ok)
 }
 
 const cancelJson = function() {
