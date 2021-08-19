@@ -71,7 +71,8 @@ function getMessageText() {
 }
 
 function getBase64Image() {
-    return document.querySelector("#messageImg").src.split(",")[1];
+    let src = document.querySelector("#messageImg").src;
+    return (src != '#'? src.split(",")[1]: '#');
 }
 
 const sendMessage = async () => {
