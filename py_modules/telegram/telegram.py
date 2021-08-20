@@ -6,7 +6,6 @@
 # 5. Clear extract every month
 # 6. Change for every router to method POST
 
-from typing import Text
 from config import username, password
 from flask import current_app as app
 from py_modules.mongo import users

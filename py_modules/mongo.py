@@ -46,6 +46,7 @@ def send_data(phone, sum):
 		r = requests.get(URL + '/send_data/'+phone+'/'+sum)
 		if(r.text == 'nice'):
 			user = users.find_one({'phone': phone, "onTelegram": False})
+			print(user)
 			if(user != None):
 				send_to_whatsapp(phone, sum)
 			return 'good'
