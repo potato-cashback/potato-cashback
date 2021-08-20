@@ -91,7 +91,7 @@ const sendMessage = async () => {
         removePopup()
         
         await sendMessagesInTelegram(message, base64Image)
-        // await sendMessagesInWhatsapp(message, base64Image)
+        await sendMessagesInWhatsapp(message, base64Image)
     })
 }
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin – Рассылка опросников</title>
+    <title>Admin – Рассылка сообщений</title>
 	<link rel="stylesheet" href="/uni.css">
 	<link rel="stylesheet" href="message/style.css">
 </head>
@@ -17,14 +17,41 @@
 		</nav>
 	</a>
 	<main>
+		<div id="popup-container"> 
+			<div id="popup">
+				<div class="buttons">
+					<button class="cancel2" onclick="removePopup();"><img src="https://img.icons8.com/fluency-systems-regular/14/000000/multiply.png"/></button>
+				</div>
+				<div class="popup-message"></div>
+				<div class="buttons">
+					<button class="ok">OK</button>
+					<button class="cancel" onclick="removePopup();">cancel</button>
+				</div>
+			</div>
+		</div><br>
+		<div id="message-image-container">
+			<img id="messageImg" src="" />
+			<br>
+			<input type='file' />
+		</div>
 		<br>
 		<textarea name="message" id="message" cols="30" rows="10"></textarea>
-		<button onclick="sendMessage();" id="submit">Отправить сообщение</button>
-		
+		<br>
+		<input type="text" />
+		<ul id="poll-list">
+			<li class="poll-item">
+				<div contenteditable="true" class="poll-item-message"></div>
+				<div class="poll-item-buttons"></div>
+			</li>
+
+		</ul>
+		<br>
 		<details>
-			<summary>Получатели в WhatsApp</summary>
-			<div></div>
+			<summary>Получатели в Telegram</summary>
+			<div id="telegram-users"></div>
 		</details>
+		<br>
+		<button onclick="sendMessage();" id="submit">Отправить сообщение</button>
 	</main>
 <script src="./message/script.js"></script>
 </body>
