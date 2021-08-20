@@ -114,7 +114,7 @@ const sendMessage = async () => {
     popup("Вы уверены что хотите <strong>отправить</strong> этот опрос?", async () => {    
         removePopup()
         
-        await sendMessagesInTelegram(message, pollOptions)
+        await sendPollsInTelegram(message, pollOptions)
     })
 }
 
