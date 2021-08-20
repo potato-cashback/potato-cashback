@@ -45,7 +45,7 @@ async function sendMessagesInTelegram(message, base64Image) {
 }
 
 async function sendMessagesInWhatsapp(message, base64Image) {
-    const url = 'https://whatsapp-web-potato.herokuapp.com/mail/';
+    const url = 'send_whatsapp_message';
 
     try {
         const response = await fetch(url, {
