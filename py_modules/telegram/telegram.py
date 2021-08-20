@@ -86,46 +86,6 @@ def process_cashback(phone, sum):
 
 	return 'nice'
 
-@app.route('/admin/<u>/<p>/message/send_poll/', methods=['POST'])
-def sendPolls(u, p):
-	try: assert username == u and password == p
-	except: return 'wrong username or password'
-
-	data = json.loads(request.data)
-	print(data, type(data['phones']))
-	for phone in data['phones']:
-		user = find_user({'phone': phone})
-		poll = bot.send_poll(chat_id = user._id,
-						question = data['question'],
-						options = data['options'],
-						is_anonymous=False)
-		user.set_new_poll(poll.poll)
-	return 'Poll sent to all users'
-
-@app.route('/admin/<u>/<p>/message/send_message/', methods=['POST'])
-def sendMessages(u, p):
-	try: assert username == u and password == p
-	except: return 'wrong username or password'
-
-	data = json.loads(request.data)
-	print(data)
-	
-	for phone in data['phones']:
-		print(phone)
-		user = find_user({'phone': phone})
-
-		if data['base64Image'] != '#':
-			bot.send_photo(chat_id=user._id,
-						   photo=convertBase64ToImage(data['base64Image']),
-						   caption=data['message'],
-						   parse_mode='html')
-		else:
-			bot.send_message(chat_id=user._id, 
-							 text=data['message'], 
-							 parse_mode='html')
-	return 'Message sent to all users'
-
-
 @app.route('/bot/')
 def webhook():
 	bot.remove_webhook()
