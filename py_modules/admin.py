@@ -2,9 +2,10 @@ from config import username, password
 
 from flask import current_app as app
 from flask import send_from_directory, Response, request
+from PIL import Image
 
 from py_modules.telegram.telegram import bot
-from py_modules.telegram.functions import find_user, convertBase64ToImage
+from py_modules.telegram.functions import find_user
 from py_modules.mongo import users
 import json
 import traceback
@@ -136,16 +137,17 @@ def sendTelegramMessages(u, p):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'
 
-	data = json.loads(request.data)
-	print(data)
+	data = request.form
+	image = Image.open(request.files['image'])
+	phones = data['phones'].split(',')
+	print(data, image)
 	
-	for phone in data['phones']:
-		print(phone)
+	for phone in phones:
 		user = find_user({'phone': phone})
 
 		if data['base64Image'] != '#':
 			bot.send_photo(chat_id=user._id,
-						   photo=convertBase64ToImage(data['base64Image']),
+						   photo=image,
 						   caption=data['message'],
 						   parse_mode='html')
 		else:

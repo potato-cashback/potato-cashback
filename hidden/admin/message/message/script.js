@@ -10,7 +10,6 @@ async function recieveWhatsappPhoneList() {
     return phoneList
 }
 
-
 async function recieveTelegramPhoneList() {
     var phoneList = []
     await fetch("/mongodb/phones/telegram")
@@ -22,20 +21,26 @@ async function recieveTelegramPhoneList() {
     return phoneList
 }
 
+async function base64ImageToBlob(base64Image) {
+    return await fetch(base64Image).then(r => r.blob())
+}
+
 async function sendMessagesInTelegram(message, base64Image) {
-    const telegram_url = `send_message`
-    console.log("hello?", base64Image)
     try {
+        const telegram_url = `send_message`
+        let formData = new FormData()
+        const data = {
+            'message': message,
+            'phones': await recieveTelegramPhoneList(),
+            'image': await base64ImageToBlob(base64Image)
+        }
+        for (let key in data) {
+            formData.append(key, data[key])
+        }
+
         const response = await fetch(telegram_url, {
             method:'POST',
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                'message': message,
-                'phones': await recieveTelegramPhoneList(),
-                'base64Image': base64Image
-            })
+            body: formData
         })
         const res = await response.text();
         console.log('Успех:', res);
