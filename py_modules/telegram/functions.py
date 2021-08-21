@@ -83,7 +83,7 @@ def update_user(userId, function_name = "", set_args = {}, push_args = {}, pull_
 # <==========================================>
 
 def techincal_stop_check(update):
-	[tree, TECHNICAL_STOP] = telegram.get("tree", "TECHNICAL_STOP")
+	[notifications, TECHNICAL_STOP] = telegram.get("tree.notifications", "TECHNICAL_STOP")
 	if TECHNICAL_STOP:
 		try:
 			userId = update.message.chat.id
@@ -101,7 +101,7 @@ def techincal_stop_check(update):
 		except: pass
 		user = users.find_one({'_id': userId, 'admin': True})
 		if user is None:
-			telegram.bot.send_message(userId, tree['notification']['stop'])
+			telegram.bot.send_message(userId, notifications['stop'])
 			return True
 	return False
 
