@@ -10,6 +10,8 @@ import json
 import traceback
 import base64
 
+import requests 
+
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
 	try: assert username == u and password == p
@@ -117,6 +119,17 @@ def imageItem(u, p, path):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'
 	return send_from_directory("./py_modules/telegram/images/", path)
+
+@app.route('/admin/<u>/<p>/message/send_whatsapp_message/', methods=['POST'])
+def sendWhatsappMessages(u, p):
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+
+	data = json.loads(request.data)
+
+	r = requests.post('https://whatsapp-web-potato.herokuapp.com/mail/', data = data)  
+
+	return 'Responce: ' + r.text
 
 @app.route('/admin/<u>/<p>/message/send_message/', methods=['POST'])
 def sendTelegramMessages(u, p):
