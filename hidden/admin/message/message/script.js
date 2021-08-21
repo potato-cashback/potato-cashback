@@ -77,7 +77,7 @@ function getMessageText() {
 
 function getBase64Image() {
     let src = document.querySelector("#messageImg").src;
-    return (src.substring(0, 4) == 'data' ? src.split(",")[1]: '#');
+    return (src.substring(0, 4) == 'data'? src: '#');
 }
 
 const sendMessage = async () => {
@@ -86,7 +86,6 @@ const sendMessage = async () => {
     let message = getMessageText()
     let base64Image = getBase64Image()
 
-    console.log(base64Image)
     if (message == '') {
         alert('Введите текст сообщения')
         return
