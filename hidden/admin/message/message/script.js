@@ -40,6 +40,9 @@ async function sendMessagesInTelegram(message, base64Image) {
 
         const response = await fetch(telegram_url, {
             method:'POST',
+            headers: {
+                'Content-Type': null
+            },
             body: formData
         })
         const res = await response.text();

@@ -137,7 +137,11 @@ def sendTelegramMessages(u, p):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'
 
+	print("hello?")
+
 	data = request.form
+
+	print (data)
 	image = Image.open(request.files['image'])
 	phones = data['phones'].split(',')
 	print(data, image)
