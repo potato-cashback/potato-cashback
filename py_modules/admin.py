@@ -2,17 +2,13 @@ from config import username, password
 
 from flask import current_app as app
 from flask import send_from_directory, Response, request
-from io import BytesIO
-from PIL import Image
 
 from py_modules.telegram.telegram import bot
-from py_modules.telegram.functions import find_user
+from py_modules.telegram.functions import find_user, convertBase64ToImage
 from py_modules.mongo import users
 import json
 import traceback
 import base64
-
-import requests 
 
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
@@ -122,42 +118,21 @@ def imageItem(u, p, path):
 	except: return 'wrong username or password'
 	return send_from_directory("./py_modules/telegram/images/", path)
 
-@app.route('/admin/<u>/<p>/message/send_whatsapp_message/', methods=['POST'])
-def sendWhatsappMessages(u, p):
-	try: assert username == u and password == p
-	except: return 'wrong username or password'
-
-	data = json.loads(request.data)
-
-	r = requests.post('https://whatsapp-web-potato.herokuapp.com/mail/', data = data)  
-
-	return 'Responce: ' + r.text
-
-def getImageFromUrl(url):
-	response = requests.get(url)
-	image_bytes = BytesIO(response.content)
-	img = Image.open(image_bytes)
-	return img
-
 @app.route('/admin/<u>/<p>/message/send_message/', methods=['POST'])
 def sendTelegramMessages(u, p):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'
 
-	print("hello?")
-
 	data = json.loads(request.data)
 	print(data)
-	image = getImageFromUrl(data['urlImage'])
-
-	print(image)
-
+	
 	for phone in data['phones']:
+		print(phone)
 		user = find_user({'phone': phone})
-
-		if data['urlImage'] != '#':
+  
+		if data['base64Image'] != '#':
 			bot.send_photo(chat_id=user._id,
-						   photo=image,
+						   photo=convertBase64ToImage(data['base64Image']),
 						   caption=data['message'],
 						   parse_mode='html')
 		else:

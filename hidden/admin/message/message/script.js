@@ -10,6 +10,7 @@ async function recieveWhatsappPhoneList() {
     return phoneList
 }
 
+
 async function recieveTelegramPhoneList() {
     var phoneList = []
     await fetch("/mongodb/phones/telegram")
@@ -21,24 +22,22 @@ async function recieveTelegramPhoneList() {
     return phoneList
 }
 
-async function sendMessagesInTelegram(message, urlImage) {
+async function sendMessagesInTelegram(message, base64Image) {
+    const telegram_url = `send_message`
+    console.log("hello?", base64Image)
     try {
-        const telegram_url = `send_message`
-
         const response = await fetch(telegram_url, {
             method:'POST',
-            headers: {
+            headers:{
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 'message': message,
                 'phones': await recieveTelegramPhoneList(),
-                'urlImage': urlImage
+                'base64Image': base64Image
             })
         })
-    
         const res = await response.text();
-        alert("Сообщение былоуспешно отправлено")
         console.log('Успех:', res);
     } catch (error) {
         console.error('Ошибка:', error);
@@ -73,16 +72,16 @@ function getMessageText() {
 
 function getBase64Image() {
     let src = document.querySelector("#messageImg").src;
-    return (src.substring(0, 4) == 'data'? src: '#');
+    return (src.substring(0, 4) == 'data' ? src.split(",")[1]: '#');
 }
 
 const sendMessage = async () => {
     document.querySelector("button").disabled = true;
 
     let message = getMessageText()
-    // let base64Image = getBase64Image()
-    let urlImage = document.querySelector("#messageImg").src;
+    let base64Image = getBase64Image()
 
+    console.log(base64Image)
     if (message == '') {
         alert('Введите текст сообщения')
         return
@@ -91,8 +90,8 @@ const sendMessage = async () => {
     popup("Вы уверены что хотите <strong>отправить</strong> сообщение?", async () => {    
         removePopup()
         
-        await sendMessagesInTelegram(message, urlImage)
-        // await sendMessagesInWhatsapp(message, base64Image)
+        await sendMessagesInTelegram(message, base64Image)
+        await sendMessagesInWhatsapp(message, base64Image)
     })
 }
 
@@ -114,8 +113,12 @@ function popup(message, ok) {
     window.addEventListener('load', function() {
         document.querySelector('input[type="file"]').addEventListener('change', function() {
             if (this.files && this.files[0]) {
+                var reader = new FileReader();
                 var img = document.querySelector('#messageImg');
-                img.src = URL.createObjectURL(this.files[0]); // set src to blob url
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(this.files[0]);
             }
         });
     });
