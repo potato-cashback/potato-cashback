@@ -21,31 +21,24 @@ async function recieveTelegramPhoneList() {
     return phoneList
 }
 
-async function base64ImageToBlob(base64Image) {
-    return await fetch(base64Image).then(r => r.blob())
-}
-
-async function sendMessagesInTelegram(message, base64Image) {
+async function sendMessagesInTelegram(message, urlImage) {
     try {
         const telegram_url = `send_message`
-        let formData = new FormData()
-        const data = {
-            'message': message,
-            'phones': await recieveTelegramPhoneList(),
-            'image': await base64ImageToBlob(base64Image)
-        }
-        for (let key in data) {
-            formData.append(key, data[key])
-        }
 
         const response = await fetch(telegram_url, {
             method:'POST',
             headers: {
-                'Content-Type': null
+                'Content-Type': 'application/json'
             },
-            body: formData
+            body: JSON.stringify({
+                'message': message,
+                'phones': await recieveTelegramPhoneList(),
+                'urlImage': urlImage
+            })
         })
+    
         const res = await response.text();
+        alert("Сообщение былоуспешно отправлено")
         console.log('Успех:', res);
     } catch (error) {
         console.error('Ошибка:', error);
@@ -87,7 +80,8 @@ const sendMessage = async () => {
     document.querySelector("button").disabled = true;
 
     let message = getMessageText()
-    let base64Image = getBase64Image()
+    // let base64Image = getBase64Image()
+    let urlImage = document.querySelector("#messageImg").src;
 
     if (message == '') {
         alert('Введите текст сообщения')
@@ -97,8 +91,8 @@ const sendMessage = async () => {
     popup("Вы уверены что хотите <strong>отправить</strong> сообщение?", async () => {    
         removePopup()
         
-        await sendMessagesInTelegram(message, base64Image)
-        await sendMessagesInWhatsapp(message, base64Image)
+        await sendMessagesInTelegram(message, urlImage)
+        // await sendMessagesInWhatsapp(message, base64Image)
     })
 }
 
@@ -120,12 +114,8 @@ function popup(message, ok) {
     window.addEventListener('load', function() {
         document.querySelector('input[type="file"]').addEventListener('change', function() {
             if (this.files && this.files[0]) {
-                var reader = new FileReader();
                 var img = document.querySelector('#messageImg');
-                reader.onload = function(e) {
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(this.files[0]);
+                img.src = URL.createObjectURL(this.files[0]); // set src to blob url
             }
         });
     });

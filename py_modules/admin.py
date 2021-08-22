@@ -2,6 +2,7 @@ from config import username, password
 
 from flask import current_app as app
 from flask import send_from_directory, Response, request
+from io import BytesIO
 from PIL import Image
 
 from py_modules.telegram.telegram import bot
@@ -132,6 +133,12 @@ def sendWhatsappMessages(u, p):
 
 	return 'Responce: ' + r.text
 
+def getImageFromUrl(url):
+	response = requests.get(url)
+	image_bytes = BytesIO(response.content)
+	img = Image.open(image_bytes)
+	return img
+
 @app.route('/admin/<u>/<p>/message/send_message/', methods=['POST'])
 def sendTelegramMessages(u, p):
 	try: assert username == u and password == p
@@ -139,17 +146,16 @@ def sendTelegramMessages(u, p):
 
 	print("hello?")
 
-	data = request.form
+	data = json.loads(request.data)
+	print(data)
+	image = getImageFromUrl(data['urlImage'])
 
-	print (data)
-	image = Image.open(request.files['image'])
-	phones = data['phones'].split(',')
-	print(data, image)
-	
-	for phone in phones:
+	print(image)
+
+	for phone in data['phones']:
 		user = find_user({'phone': phone})
 
-		if data['base64Image'] != '#':
+		if data['urlImage'] != '#':
 			bot.send_photo(chat_id=user._id,
 						   photo=image,
 						   caption=data['message'],
