@@ -1,3 +1,12 @@
+var uploadField = document.querySelector("#message-image-container > input[type=file]");
+
+uploadField.onchange = function() {
+    if(this.files[0].size >  1048576){
+       alert("File is more than 1mb. Too big!");
+       this.value = "";
+    };
+};
+
 async function recieveWhatsappPhoneList() {
     var phoneList = []
     await fetch("/mongodb/phones/whatsapp")
