@@ -131,7 +131,7 @@ def sendWhatsappMessages(u, p):
 
 	return 'Responce: ' + r.text
 
-@app.route('/admin/<u>/<p>/message/send_message/', methods=['POST'])
+@app.route('/admin/<u>/<p>/message/send_telegram_message/', methods=['POST'])
 def sendTelegramMessages(u, p):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'

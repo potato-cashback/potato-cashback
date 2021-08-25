@@ -23,7 +23,7 @@ async function recieveTelegramPhoneList() {
 }
 
 async function sendMessagesInTelegram(message, base64Image) {
-    const telegram_url = `send_message`
+    const telegram_url = `send_telegram_message`
     console.log("hello?", base64Image)
     try {
         const response = await fetch(telegram_url, {
