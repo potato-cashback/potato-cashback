@@ -11,6 +11,7 @@ import traceback
 import base64
 
 import requests 
+import os
 
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
@@ -127,8 +128,19 @@ def sendWhatsappMessages(u, p):
 
 	data = json.loads(request.data)
 
-	r = requests.post('https://whatsapp-web-potato.herokuapp.com/mail/', data = data)  
+	f = open("temp_w.txt", "w+")
+	f.write(str(data))
+	f.close()
 
+	f = open("temp_w.txt", "r")
+	strData = f.read().replace("'", '"')
+	f.close()
+	os.remove("temp_w.txt")
+
+	data = json.loads(strData)
+
+	r = requests.post('https://whatsapp-web-potato.herokuapp.com/mail/', data = data)
+	
 	return 'Responce: ' + r.text
 
 @app.route('/admin/<u>/<p>/message/send_telegram_message/', methods=['POST'])
@@ -137,8 +149,18 @@ def sendTelegramMessages(u, p):
 	except: return 'wrong username or password'
 
 	data = json.loads(request.data)
-	print(data)
-	
+
+	f = open("temp_t.txt", "w+")
+	f.write(str(data))
+	f.close()
+
+	f = open("temp_t.txt", "r")
+	strData = f.read().replace("'", '"')
+	f.close()
+	os.remove("temp_t.txt")
+
+	data = json.loads(strData)
+
 	for phone in data['phones']:
 		print(phone)
 		user = find_user({'phone': phone})
