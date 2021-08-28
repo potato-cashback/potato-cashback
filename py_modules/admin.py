@@ -10,6 +10,14 @@ import json
 import traceback
 import base64
 
+<<<<<<< HEAD
+=======
+import requests 
+import os
+
+from io import BytesIO
+
+>>>>>>> 21b45d7bd53068b08f331ff92c7f545b02962fbf
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
 	try: assert username == u and password == p
@@ -118,14 +126,70 @@ def imageItem(u, p, path):
 	except: return 'wrong username or password'
 	return send_from_directory("./py_modules/telegram/images/", path)
 
+<<<<<<< HEAD
 @app.route('/admin/<u>/<p>/message/send_message/', methods=['POST'])
+=======
+@app.route('/admin/<u>/<p>/message/send_whatsapp_message/', methods=['POST'])
+def sendWhatsappMessages(u, p):
+	try: assert username == u and password == p
+	except: return 'wrong username or password'
+
+	data = json.loads(request.data)
+
+	f = open("temp_w.txt", "w+")
+	f.write(str(data))
+	f.close()
+
+	f = open("temp_w.txt", "r")
+	strData = f.read().replace("'", '"')
+	f.close()
+	os.remove("temp_w.txt")
+
+	data = json.loads(strData)
+
+	if data["base64Image"] != "#":
+		img = convertBase64ToImage(data["base64Image"])
+		img = img.resize((512, 512 * img.height // img.width))
+		
+		buffered = BytesIO()
+		img.save(buffered, format="PNG")
+		img_str = base64.b64encode(buffered.getvalue())
+
+		data["base64Image"] = img_str
+
+	r = requests.post('https://whatsapp-web-potato.herokuapp.com/mail/', data = data)
+	
+	return 'Responce: ' + r.text
+
+@app.route('/admin/<u>/<p>/message/send_telegram_message/', methods=['POST'])
+>>>>>>> 21b45d7bd53068b08f331ff92c7f545b02962fbf
 def sendTelegramMessages(u, p):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'
 
 	data = json.loads(request.data)
-	print(data)
-	
+
+	f = open("temp_t.txt", "w+")
+	f.write(str(data))
+	f.close()
+
+	f = open("temp_t.txt", "r")
+	strData = f.read().replace("'", '"')
+	f.close()
+	os.remove("temp_t.txt")
+
+	data = json.loads(strData)
+
+	if data["base64Image"] != "#":
+		img = convertBase64ToImage(data["base64Image"])
+		img = img.resize((512, 512 * img.height // img.width))
+		
+		buffered = BytesIO()
+		img.save(buffered, format="PNG")
+		img_str = base64.b64encode(buffered.getvalue())
+
+		data["base64Image"] = img_str
+
 	for phone in data['phones']:
 		print(phone)
 		user = find_user({'phone': phone})
