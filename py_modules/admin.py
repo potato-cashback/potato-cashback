@@ -10,14 +10,11 @@ import json
 import traceback
 import base64
 
-<<<<<<< HEAD
-=======
 import requests 
 import os
 
 from io import BytesIO
 
->>>>>>> 21b45d7bd53068b08f331ff92c7f545b02962fbf
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
 	try: assert username == u and password == p
@@ -126,9 +123,6 @@ def imageItem(u, p, path):
 	except: return 'wrong username or password'
 	return send_from_directory("./py_modules/telegram/images/", path)
 
-<<<<<<< HEAD
-@app.route('/admin/<u>/<p>/message/send_message/', methods=['POST'])
-=======
 @app.route('/admin/<u>/<p>/message/send_whatsapp_message/', methods=['POST'])
 def sendWhatsappMessages(u, p):
 	try: assert username == u and password == p
@@ -162,7 +156,6 @@ def sendWhatsappMessages(u, p):
 	return 'Responce: ' + r.text
 
 @app.route('/admin/<u>/<p>/message/send_telegram_message/', methods=['POST'])
->>>>>>> 21b45d7bd53068b08f331ff92c7f545b02962fbf
 def sendTelegramMessages(u, p):
 	try: assert username == u and password == p
 	except: return 'wrong username or password'
