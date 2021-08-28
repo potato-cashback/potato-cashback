@@ -16,7 +16,6 @@ import json
 import telebot
 from telebot.types import ReplyKeyboardRemove
 import urllib.request
-import datetime
 import traceback # Error handiling
 
 from flask import request
@@ -148,7 +147,7 @@ def extract(message):
 			menu(message)
 			return
 
-		operations = sorted(user.operations, key=lambda k: datetime.datetime.strptime(k['date']+"#"+k['time'], "%d/%m/%Y#%H:%M").date())
+		operations = sorted(user.operations, key=lambda k: datetime.strptime(k['date']+"#"+k['time'], "%d/%m/%Y#%H:%M").date())
 
 		queries = [{'date': re.sub(r'2021','21', o['date']), 
 					'details': o['details'],
