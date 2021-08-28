@@ -125,8 +125,10 @@ function popup(message, ok) {
                 var reader = new FileReader();
                 var img = document.querySelector('#messageImg');
                 reader.onload = function(e) {
+                    img.onload = () => {
+                        resizeImage()
+                    }
                     img.src = e.target.result;
-                    resizeImage()
                 };
                 reader.readAsDataURL(this.files[0]);
             }
