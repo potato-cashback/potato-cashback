@@ -64,3 +64,11 @@ h2 {
 #popup .popup-message {
     padding: 0.5rem 0 2rem 0;
 }
+
+
+
+canvas{
+    position: relative;
+    top:-1000px;
+    left:-1000px;
+}

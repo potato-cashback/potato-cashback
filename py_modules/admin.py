@@ -13,6 +13,8 @@ import base64
 import requests 
 import os
 
+from io import BytesIO
+
 @app.route('/admin/<u>/<p>/<path:path>')
 def loggingin(u, p, path):
 	try: assert username == u and password == p
@@ -139,6 +141,16 @@ def sendWhatsappMessages(u, p):
 
 	data = json.loads(strData)
 
+	if data["base64Image"] != "#":
+		img = convertBase64ToImage(data["base64Image"])
+		img = img.resize((512, 512 * img.height // img.width))
+		
+		buffered = BytesIO()
+		img.save(buffered, format="PNG")
+		img_str = base64.b64encode(buffered.getvalue())
+
+		data["base64Image"] = img_str
+
 	r = requests.post('https://whatsapp-web-potato.herokuapp.com/mail/', data = data)
 	
 	return 'Responce: ' + r.text
@@ -160,6 +172,16 @@ def sendTelegramMessages(u, p):
 	os.remove("temp_t.txt")
 
 	data = json.loads(strData)
+
+	if data["base64Image"] != "#":
+		img = convertBase64ToImage(data["base64Image"])
+		img = img.resize((512, 512 * img.height // img.width))
+		
+		buffered = BytesIO()
+		img.save(buffered, format="PNG")
+		img_str = base64.b64encode(buffered.getvalue())
+
+		data["base64Image"] = img_str
 
 	for phone in data['phones']:
 		print(phone)

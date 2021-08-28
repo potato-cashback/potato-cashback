@@ -126,6 +126,7 @@ function popup(message, ok) {
                 var img = document.querySelector('#messageImg');
                 reader.onload = function(e) {
                     img.src = e.target.result;
+                    resizeImage()
                 };
                 reader.readAsDataURL(this.files[0]);
             }
@@ -136,3 +137,15 @@ function popup(message, ok) {
     document.querySelector("#telegram-users").innerText = await recieveTelegramPhoneList()
 })();
 
+const resizeImage = () => {
+    let canvas = document.getElementsByTagName('canvas')[0];
+    let ctx = canvas.getContext('2d');
+    let image = document.querySelector('#messageImg');
+
+    canvas.height = 512 * (image.height / image.width);
+    canvas.width = 512;
+
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    image.src = canvas.toDataURL()
+}
