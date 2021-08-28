@@ -142,7 +142,7 @@ const resizeImage = () => {
     let ctx = canvas.getContext('2d');
     let image = document.querySelector('#messageImg');
 
-    canvas.height = 512 * (image.height / image.width);
+    canvas.height = 512 * (image.naturalHeight / image.naturalWidth);
     canvas.width = 512;
 
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
